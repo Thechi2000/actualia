@@ -40,7 +40,7 @@ jobs:
         run: flutter config --no-cli-animations
 
       - name: Install Dependencies
-        run: flutter pub get
+        run: flutter pub get --disable-telemetry
 
       - name: Check code format
         run: dart format lib -o none --set-exit-if-changed
