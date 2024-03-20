@@ -27,4 +27,4 @@ All the commits must follow the [Conventional Commits](https://www.conventionalc
 
 ## Figma
 
-The [Figma](https://www.figma.com/files/project/216524201) can be accessed by team members. It will be used to make the user interface of ActualIA.
+To direct the design process, a [Figma Board](https://www.figma.com/files/project/216524201) has been setup for team members. It houses the main design elements.
