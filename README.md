@@ -24,3 +24,7 @@ pre-commit install --hook-type commit-msg
 ## Keeping a clean code/git
 
 All the commits must follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. It is checked both locally by the `pre-commit` hook and by the CI on pull requests.
+
+## Figma
+
+The [Figma](https://www.figma.com/files/project/216524201) can be accessed by team members. It will be used to make the user interface of ActualIA.
