@@ -3,6 +3,25 @@ ActualIA Android app
 
 ## Setup Dev environment
 
+
+### Install Flutter
+
+You need to install flutter, by following this [tutorial](https://docs.flutter.dev/get-started/install).
+
+Then, add the recommended extensions to your IDE. On VSCode, this list can be fetched with the `@recommended` tag in the Marketplace.
+
+### Run
+
+The application can be run using the following command:
+
+```sh
+flutter run
+```
+
+or using the dedicated run configuration of your IDE.
+
+### Git hooks
+
 This repository uses client hooks to ensure the quality of the commits. You need to install the `pre-commit` python package to set up those:
 
 ```sh
