@@ -8,6 +8,9 @@ import {
   validateArray,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 
+interface Body {
+  categories: string[];
+}
 const schema = {
   categories: validateArray(true, [isString]),
 };
@@ -21,7 +24,6 @@ Deno.serve(async (request) => {
   }
 
   const requestBody = await request.json();
-
   const [passes, errors] = await validate(requestBody, schema);
   if (!passes) {
     return new Response(JSON.stringify({ status: 400, errors }), {
@@ -30,7 +32,12 @@ Deno.serve(async (request) => {
     });
   }
 
-  const url = `https://gnews.io/api/v4/search?q=example&apikey=${
+  const body: Body = requestBody;
+  const query = encodeURIComponent(
+    body.categories.map((s) => `"${s}"`).join(" OR "),
+  );
+
+  const url = `https://gnews.io/api/v4/search?q=${query}&apikey=${
     Deno.env.get("GNEWS_API_KEY")
   }`;
 
