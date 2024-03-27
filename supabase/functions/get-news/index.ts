@@ -2,7 +2,17 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-Deno.serve(async (_req) => {
+import {
+  isString,
+  validate,
+  validateArray,
+} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+
+const schema = {
+  categories: validateArray(true, [isString]),
+};
+
+Deno.serve(async (request) => {
   if (!Deno.env.has("GNEWS_API_KEY")) {
     console.error(
       "Missing GNews API key. Have you forgot the `GNEWS_API_KEY` variable in your `.env` file",
@@ -10,7 +20,19 @@ Deno.serve(async (_req) => {
     return new Response("Internal Server Error", { status: 500 });
   }
 
-  const url = `https://gnews.io/api/v4/search?q=example&apikey=${Deno.env.get("GNEWS_API_KEY")}`;
+  const requestBody = await request.json();
+
+  const [passes, errors] = await validate(requestBody, schema);
+  if (!passes) {
+    return new Response(JSON.stringify({ status: 400, errors }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const url = `https://gnews.io/api/v4/search?q=example&apikey=${
+    Deno.env.get("GNEWS_API_KEY")
+  }`;
 
   const result = await fetch(url);
   const json = await result.json();
