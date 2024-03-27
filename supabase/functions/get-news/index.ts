@@ -2,14 +2,18 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
-  }
+Deno.serve(async (_req) => {
+  const apikey = 'asdf';
+  const url = `https://gnews.io/api/v4/search?q=example&apikey=${apikey}`
+
+  const result = await fetch(url);
+  const json = await result.json();
+
+  console.log(result);
+  console.log(json);
 
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify(json),
     { headers: { "Content-Type": "application/json" } },
   )
 })
