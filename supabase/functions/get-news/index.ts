@@ -3,8 +3,14 @@
 // This enables autocomplete, go to definition, etc.
 
 Deno.serve(async (_req) => {
-  const apikey = 'asdf';
-  const url = `https://gnews.io/api/v4/search?q=example&apikey=${apikey}`
+  if (!Deno.env.has("GNEWS_API_KEY")) {
+    console.error(
+      "Missing GNews API key. Have you forgot the `GNEWS_API_KEY` variable in your `.env` file",
+    );
+    return new Response("Internal Server Error", { status: 500 });
+  }
+
+  const url = `https://gnews.io/api/v4/search?q=example&apikey=${Deno.env.get("GNEWS_API_KEY")}`;
 
   const result = await fetch(url);
   const json = await result.json();
@@ -15,8 +21,8 @@ Deno.serve(async (_req) => {
   return new Response(
     JSON.stringify(json),
     { headers: { "Content-Type": "application/json" } },
-  )
-})
+  );
+});
 
 /* To invoke locally:
 
