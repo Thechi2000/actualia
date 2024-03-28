@@ -3,6 +3,7 @@ import {
   validate,
   validateArray,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+import { assertHasEnv } from "../util.ts";
 
 // The query body.
 interface Body {
@@ -16,12 +17,7 @@ const schema = {
 
 Deno.serve(async (request) => {
   // Check that the required environment variables are available.
-  if (!Deno.env.has("GNEWS_API_KEY")) {
-    console.error(
-      "Missing GNews API key. Have you forgot the `GNEWS_API_KEY` variable in your `.env` file",
-    );
-    return new Response("Internal Server Error", { status: 500 });
-  }
+  assertHasEnv("GNEWS_API_KEY")
 
   // Get and the request body and check it has the correct schema.
   let requestBody;
