@@ -3,7 +3,6 @@ import {
   validate,
   validateArray,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
 
 // The query body.
 interface Body {
@@ -36,14 +35,6 @@ Deno.serve(async (request) => {
 
   // Cast the validated body for easy use
   const body: Body = requestBody;
-
-  // Get the current user
-  const authHeader = request.headers.get("Authorization")!;
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    { global: { headers: { Authorization: authHeader } } },
-  );
 
   // Computes the GNews query by ORing all the categories.
   // The categories must be "escaped" by putting them in quotes.
