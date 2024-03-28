@@ -24,7 +24,13 @@ Deno.serve(async (request) => {
   }
 
   // Get and the request body and check it has the correct schema.
-  const requestBody = await request.json();
+  let requestBody;
+  try {
+    requestBody = await request.json();
+  } catch (_) {
+    return new Response("Body should be a valid JSON", { status: 400 });
+  }
+
   const [passes, errors] = await validate(requestBody, schema);
   if (!passes) {
     return new Response(JSON.stringify({ status: 400, errors }), {
