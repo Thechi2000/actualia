@@ -15,6 +15,7 @@ import {
   validateArray,
   validateObject,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+import { DigestContext } from "https://deno.land/std@0.160.0/crypto/_wasm_crypto/mod.ts";
 
 // Set up the configuration for the Supabase client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -81,25 +82,20 @@ const testValid = async () => {
 
   assertNotEquals(res.data, null);
 
-  const context: Response = res.data.context;
-  assertEquals(context.status, 200);
-  const news = await context.json();
+  const news = res.data;
 
   const schema = {
-    news: validateArray(
-      true,
-      validateObject(true, {
-        articles: validateArray(
-          true,
-          validateObject(true, {
-            title: [isString, required],
-            description: [isString, required],
-            content: [isString, required],
-            url: [isString, required],
-          }),
-        ),
-      }),
-    ),
+    news: validateObject(true, {
+      articles: validateArray(
+        true,
+        validateObject(true, {
+          title: [isString, required],
+          description: [isString, required],
+          content: [isString, required],
+          url: [isString, required],
+        }),
+      ),
+    }),
   };
 
   const [passed, _] = await validate(news, schema);
@@ -110,4 +106,4 @@ const testValid = async () => {
 Deno.test("get-news without body", testNoBody);
 Deno.test("get-news with empty body", testEmptyBody);
 Deno.test("get-news with invalid body", testInvalidBody);
-Deno.test("get-news with valid body", testInvalidBody);
+Deno.test("get-news with valid body", testValid);
