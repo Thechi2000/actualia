@@ -22,7 +22,7 @@ jobs:
 
       # Start Supabase and store the keys/urls in a .env file
       - run: supabase start
-      - run: supabase status -o env --override-name api.url=SUPABASE_URL > supabase/.env
+      - run: supabase status -o env --override-name api.url=SUPABASE_URL --override-name auth.anon_key=SUPABASE_ANON_KEY > supabase/.env
 
       # Run the tests
       - run: deno test --allow-all functions/tests/*.ts --env .env
