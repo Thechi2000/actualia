@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:actualia/models/auth_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +35,7 @@ class _LoginViewState extends State<LoginView> {
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         ],
-        if (Platform.isAndroid) ...<Widget>[
+        if (defaultTargetPlatform == TargetPlatform.android) ...<Widget>[
           OutlinedButton(
             child: const Text('Login with Google'),
             onPressed: () async {
