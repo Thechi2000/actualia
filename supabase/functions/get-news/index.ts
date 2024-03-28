@@ -4,8 +4,6 @@ import {
   validateArray,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
-import { Profile } from "../model.ts";
-import { pool } from "../database.ts";
 
 // The query body.
 interface Body {
@@ -47,18 +45,6 @@ Deno.serve(async (request) => {
     { global: { headers: { Authorization: authHeader } } },
   );
 
-  const user = await supabaseClient.auth.getUser();
-  if (user.error !== null) {
-    console.error(user.error);
-    return new Response("Authentication error", { status: 401 });
-  }
-  console.log(user);
-
-  const db = await pool.connect();
-  const profile = await db.queryObject<Profile>(
-    `SELECT * FROM profiles WHERE id = '${user.data.user?.id}'`,
-  );
-
   // Computes the GNews query by ORing all the categories.
   // The categories must be "escaped" by putting them in quotes.
   // See https://gnews.io/docs/v4#search-endpoint-query-parameters for more details.
@@ -76,7 +62,7 @@ Deno.serve(async (request) => {
   // TODO: more advanced processing
   console.log(json);
 
-  return new Response(JSON.stringify({ user: profile.rows[0], news: json }), {
+  return new Response(JSON.stringify({ news: json }), {
     headers: { "Content-Type": "application/json" },
   });
 });
