@@ -1,0 +1,29 @@
+name: Edge functions tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Setup Supabase and Deno (for testing)
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x # Run with latest stable Deno.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Start Supabase and store the keys/urls in a .env file
+      - run: supabase start
+      - run: supabase status -o env --override-name api.url=SUPABASE_URL > supabase/.env
+
+      # Run the tests
+      - run: deno test --allow-all functions/tests/*.ts --env .env
+        working-directory: supabase
