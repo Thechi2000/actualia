@@ -20,6 +20,12 @@ jobs:
         with:
           version: latest
 
+      - name: 'Create env file'
+        working-directory: supabase/functions
+        run: |
+          touch .env
+          echo GNEWS_API_KEY=${{ secrets.GNEWS_API_KEY }} >> .env
+
       # Start Supabase and store the keys/urls in a .env file
       - run: supabase start
       - run: supabase status -o env --override-name api.url=SUPABASE_URL --override-name auth.anon_key=SUPABASE_ANON_KEY > supabase/.env
