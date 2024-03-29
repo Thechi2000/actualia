@@ -1,47 +1,41 @@
-import {
-  isString,
-  validate,
-  validateArray,
-} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 import { assertHasEnv } from "../util.ts";
-
-// The query body.
-interface Body {
-  categories: string[];
-}
-
-// Schema object from Validasaur to verify the query body.
-const schema = {
-  categories: validateArray(true, [isString]),
-};
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
 
 Deno.serve(async (request) => {
   // Check that the required environment variables are available.
-  assertHasEnv("GNEWS_API_KEY")
+  assertHasEnv("GNEWS_API_KEY");
 
-  // Get and the request body and check it has the correct schema.
-  let requestBody;
-  try {
-    requestBody = await request.json();
-  } catch (_) {
-    return new Response("Body should be a valid JSON", { status: 400 });
+  const authHeader = request.headers.get("Authorization")!;
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
+
+  const user = await supabaseClient.auth.getUser();
+  if (user.error !== null) {
+    console.error(user.error);
+    return new Response("Authentication error", { status: 401 });
   }
 
-  const [passes, errors] = await validate(requestBody, schema);
-  if (!passes) {
-    return new Response(JSON.stringify({ status: 400, errors }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+  const interests = await supabaseClient.from("news_settings").select(
+    "*",
+  )
+    .filter("created_by", "eq", user.data.user.id)
+    .filter("wants_interests", "eq", true);
+  if (interests.data === null) {
+    console.error(interests.error);
+    return new Response("Internal Server Error", { status: 500 });
   }
-
-  // Cast the validated body for easy use
-  const body: Body = requestBody;
 
   // Computes the GNews query by ORing all the categories.
   // The categories must be "escaped" by putting them in quotes.
   // See https://gnews.io/docs/v4#search-endpoint-query-parameters for more details.
-  const query = body.categories.map((s) => `"${s}"`).join(" OR ");
+  const query = interests.data.length > 0
+    ? (interests.data[0].interests as string[]).map((s) => `"${s}"`).join(
+      " OR ",
+    )
+    : "";
 
   // Constructs the query URL.
   const url = `https://gnews.io/api/v4/search?q=${
