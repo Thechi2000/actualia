@@ -119,6 +119,12 @@ CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR I
 
 CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
 
+CREATE POLICY "Users can see their own settings" ON "public"."news_settings" AS PERMISSIVE FOR SELECT TO authenticated USING (("auth"."uid"() = "created_by"));
+
+CREATE POLICY "Users can insert their own news settings" ON "public"."news_settings" FOR INSERT TO authenticated WITH CHECK (("auth"."uid"() = "created_by"));
+
+CREATE POLICY "Users can update their own news settings" ON "public"."news_settings" TO authenticated USING (("auth"."uid"() = "created_by"));
+
 ALTER TABLE "public"."news_providers" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."news_settings" ENABLE ROW LEVEL SECURITY;
