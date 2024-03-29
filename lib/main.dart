@@ -25,7 +25,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-
   @override
   void initState() {
     super.initState();
@@ -43,18 +42,17 @@ class _AppState extends State<App> {
     }
 
     return MaterialApp(
-      title: 'ActualIA',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('ActualIA'),
+        title: 'ActualIA',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
         ),
-        body: body,
-      )
-    );
+        home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text('ActualIA'),
+          ),
+          body: body,
+        ));
   }
 }

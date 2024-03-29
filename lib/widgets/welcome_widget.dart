@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 class WelcomeWidget extends StatelessWidget {
   const WelcomeWidget({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);

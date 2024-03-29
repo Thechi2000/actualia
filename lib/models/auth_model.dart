@@ -6,7 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthModel extends ChangeNotifier {
   final _supabase = Supabase.instance.client;
-  static const _webClientId = '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com';
+  static const _webClientId =
+      '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com';
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     serverClientId: _webClientId,
   );
@@ -19,13 +20,13 @@ class AuthModel extends ChangeNotifier {
   AuthModel() {
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
       print('Supabase onAuthStateChange new authState : ${authState.event}');
-  
+
       if (authState.event == AuthChangeEvent.signedIn) {
         user = authState.session!.user;
       } else if (authState.event == AuthChangeEvent.signedOut) {
         user = null;
       }
-      
+
       notifyListeners();
     }, onError: (e) {
       print('Supabase onAuthStateChange error : $e');
@@ -59,7 +60,7 @@ class AuthModel extends ChangeNotifier {
       );
 
       return res.user != null;
-    } catch (error) {      
+    } catch (error) {
       print(error);
       return false;
     }
@@ -69,9 +70,9 @@ class AuthModel extends ChangeNotifier {
     try {
       await _supabase.auth.signOut();
       if (_googleSignIn.currentUser != null) {
-        await _googleSignIn.signOut();  
+        await _googleSignIn.signOut();
       }
-      return true;    
+      return true;
     } catch (e) {
       print(e);
       return false;
@@ -79,7 +80,8 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
-    final res = await _supabase.auth.signInWithPassword(password: password, email: email);
+    final res = await _supabase.auth
+        .signInWithPassword(password: password, email: email);
     return res.user != null;
   }
 
