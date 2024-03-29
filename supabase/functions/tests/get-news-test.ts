@@ -68,4 +68,4 @@ const testValid = async () => {
 };
 
 // Register and run the tests
-Deno.test("get-news with valid body", testValid);
+Deno.test("get-news with valid parameters", testValid);
