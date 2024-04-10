@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:actualia/models/news.dart';
 
 class NewsText extends StatelessWidget {
+  final News news;
+  /*
   final String title;
   final String date;
   final List<Paragraph> paragraphs;
@@ -11,6 +13,8 @@ class NewsText extends StatelessWidget {
       required this.title,
       required this.date,
       required this.paragraphs});
+      */
+  const NewsText({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class NewsText extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  date,
+                  news.date,
                   style: const TextStyle(
                     color: Color(0xFFCDCDDC),
                     fontSize: 8,
@@ -36,7 +40,7 @@ class NewsText extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  title,
+                  news.title,
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 22,
@@ -53,7 +57,7 @@ class NewsText extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 64.0, vertical: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: paragraphs
+              children: news.paragraphs
                   .map((paragraph) => GestureDetector(
                         onTap: () {
                           //TODO: Action for the source button
@@ -79,4 +83,3 @@ class NewsText extends StatelessWidget {
     );
   }
 }
-
