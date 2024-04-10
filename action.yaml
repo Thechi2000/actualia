@@ -1,0 +1,36 @@
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  get-deps:
+    description: 'Whether to fetch project dependencies'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set Up Java
+      uses: actions/setup-java@v3.12.0
+      with:
+        distribution: 'oracle'
+        java-version: '17'
+
+    - name: Set Up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.3'
+        channel: 'stable'
+
+    - name: Disable analytics
+      run: flutter config --no-analytics
+      shell: sh
+
+    - name: Disable animations
+      run: flutter config --no-cli-animations
+      shell: sh
+
+    - name: Install Dependencies
+      run: flutter pub get
+      shell: sh
+      if: ${{ inputs.get-deps }}
