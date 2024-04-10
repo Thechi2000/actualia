@@ -45,6 +45,9 @@ jobs:
       - name: Build flutter app
         run: flutter build apk
 
+      - name: Generate stub test file for coverage-files
+        run: sh scripts/import_files_coverage.sh actualia
+
       - name: Test flutter app
         run: flutter test --coverage
 
