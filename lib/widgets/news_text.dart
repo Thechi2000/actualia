@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class NewsText extends StatelessWidget {
   final String title;
   final String date;
-  final String textBody;
+  final List<Paragraph> paragraphs;
 
   const NewsText(
       {super.key,
       required this.title,
       required this.date,
-      required this.textBody});
+      required this.paragraphs});
 
   @override
   Widget build(BuildContext context) {
@@ -50,20 +50,43 @@ class NewsText extends StatelessWidget {
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 64.0, vertical: 20.0),
-            child: Text(
-              textBody,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontFamily: 'Fira Code',
-                fontWeight: FontWeight.w300,
-              ),
-              softWrap: true,
-              textAlign: TextAlign.justify,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: paragraphs
+                  .map((paragraph) => TextButton(
+                        onPressed: () {
+                          //TODO : Action for the source button
+                          print("Source du paragraphe: ${paragraph.source}");
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          '${paragraph.text}\n',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: 'Fira Code',
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.none,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class Paragraph {
+  final String text;
+  final String source;
+
+  Paragraph({required this.text, required this.source});
 }

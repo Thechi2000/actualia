@@ -17,37 +17,52 @@ class NewsView extends StatelessWidget {
     String text3 =
         'Etiam orci urna, faucibus vitae imperdiet eget, condimentum eget ligula. Pellentesque non sapien nec erat interdum luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque euismod, ipsum id commodo ultricies, orci sem luctus dolor, sed sodales nibh nisl non ante. Sed laoreet, elit ut tincidunt cursus, augue dui sodales erat, in tristique libero magna pharetra odio. Etiam lorem metus, euismod eu nulla non, malesuada gravida velit. Nam odio tortor, luctus eget sodales in, laoreet in neque. Quisque congue a ligula ut efficitur. Ut pulvinar commodo hendrerit. Nulla facilisi. Vivamus sit amet augue nulla. Vivamus porta faucibus mauris nec mattis. Aliquam dignissim rhoncus magna, eget cursus nisi commodo et.';
 
-    List<Map<String, String>> newsList = [
+    List<Map<String, dynamic>> newsList = [
       {
         'title': title,
         'date': date,
-        'textBody': text1 + text2 + text3,
+        'paragraphs': [
+          Paragraph(text: text1, source: 'source1'),
+          Paragraph(text: text2, source: 'source2'),
+          Paragraph(text: text3, source: 'source3')
+        ],
       },
       {
         'title': 'A second title but shorter this time.',
         'date': date,
-        'textBody': text3 + text2,
+        'paragraphs': [
+          Paragraph(text: text3, source: 'source3'),
+          Paragraph(text: text2, source: 'source2')
+        ],
       },
     ];
 
     bool gotNews = newsList.isNotEmpty;
-    Widget body;
 
-    if (gotNews) {
-      body = ListView.builder(
-        itemCount: newsList.length,
-        itemBuilder: (context, index) {
-          return NewsText(
-            title: newsList[index]['title']!,
-            date: newsList[index]['date']!,
-            textBody: newsList[index]['textBody']!,
+    Widget body = gotNews
+        ? ListView.builder(
+            itemCount: newsList.length,
+            itemBuilder: (context, index) {
+              var news = newsList[index];
+              return NewsText(
+                title: news['title']!,
+                date: news['date']!,
+                paragraphs: news['paragraphs'] as List<Paragraph>,
+              );
+            },
+          )
+        : const Center(
+            child: Text(
+              'You don\'t have any news yet',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+                fontFamily: 'EB Garamond',
+                fontWeight: FontWeight.w400,
+                height: 1.2,
+              ),
+            ),
           );
-        },
-      );
-    } else {
-      body = const NewsText(
-          title: 'You don\'t have any news yet', date: '', textBody: '');
-    }
 
     return Scaffold(
       appBar: const TopAppBar(),
