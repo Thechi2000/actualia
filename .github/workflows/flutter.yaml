@@ -11,8 +11,8 @@ on:
       - synchronize
 
 jobs:
-  build:
-    name: Build & Test & Lint
+  setup:
+    name: Setup flutter
     runs-on: ubuntu-latest
 
     steps:
@@ -39,11 +39,26 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Check code format
-        run: dart format lib -o none --set-exit-if-changed
-
+  build:
+    name: Build APK
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Build flutter app
-        run: flutter build apk
+        run: flutter build apk --release
 
+  test:
+    name: Run tests
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Test flutter app
         run: flutter test
+
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check code format
+        run: dart format lib -o none --set-exit-if-changed
