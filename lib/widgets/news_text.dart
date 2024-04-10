@@ -53,16 +53,11 @@ class NewsText extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: paragraphs
-                  .map((paragraph) => TextButton(
-                        onPressed: () {
-                          //TODO : Action for the source button
+                  .map((paragraph) => GestureDetector(
+                        onTap: () {
+                          //TODO: Action for the source button
                           print("Source du paragraphe: ${paragraph.source}");
                         },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.centerLeft,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
                         child: Text(
                           '${paragraph.text}\n',
                           style: const TextStyle(
