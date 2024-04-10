@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:actualia/models/news.dart';
 
 class NewsText extends StatelessWidget {
   final String title;
@@ -79,9 +80,3 @@ class NewsText extends StatelessWidget {
   }
 }
 
-class Paragraph {
-  final String text;
-  final String source;
-
-  Paragraph({required this.text, required this.source});
-}
