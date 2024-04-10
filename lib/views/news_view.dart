@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:actualia/widgets/news_text.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
+import 'package:actualia/models/news.dart';
+import 'package:actualia/viewmodels/news.dart';
 
 class NewsView extends StatelessWidget {
   const NewsView({super.key});
@@ -26,7 +28,7 @@ class NewsView extends StatelessWidget {
           Paragraph(text: text2, source: 'source2'),
           Paragraph(text: text3, source: 'source3')
         ],
-      },
+      },/*
       {
         'title': 'A second title but shorter this time.',
         'date': date,
@@ -34,7 +36,7 @@ class NewsView extends StatelessWidget {
           Paragraph(text: text3, source: 'source3'),
           Paragraph(text: text2, source: 'source2')
         ],
-      },
+      },*/
     ];
 
     bool gotNews = newsList.isNotEmpty;
