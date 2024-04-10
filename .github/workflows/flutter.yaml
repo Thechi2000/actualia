@@ -11,49 +11,62 @@ on:
       - synchronize
 
 jobs:
-  setup:
-    name: Setup flutter
+  build:
+    name: Build APK
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set Up Java
-        uses: actions/setup-java@v3.12.0
+      - name: Install flutter
+        uses: ./
         with:
-          distribution: "oracle"
-          java-version: "17"
+          get-deps: true
+          
+      - name: Build flutter app
+        run: flutter build apk --release
 
-      - name: Set Up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/upload-artifact@master
         with:
-          flutter-version: "3.19.3"
-          channel: "stable"
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Disable analytics
-        run: flutter config --no-analytics
-      - name: Disable animations
-        run: flutter config --no-cli-animations
-
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Check code format
-        run: dart format lib -o none --set-exit-if-changed
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: true
 
       - name: Test flutter app
         run: flutter test
 
-      - name: Build flutter app
-        run: flutter build apk --release
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: false
+          
+      - name: Check code format
+        run: dart format lib -o none --set-exit-if-changed
+
+  release:
+    name: Release
+    needs: [build, test, lint]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: release-apk
+          path: actualia.apk
 
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           body: A new version is available.
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: actualia.apk
