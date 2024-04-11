@@ -16,40 +16,21 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);
+    double viewWidth = MediaQuery.of(context).size.width;
 
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          'Welcome !',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        Text(
-          'You need to login before proceeding',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        if (_error != null) ...<Widget>[
-          Text(
-            _error!,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+    Image monogram = Image.asset('assets/img/monogram.png', width: .35*viewWidth);
+    
+    return SizedBox(
+      width: double.maxFinite, // hacky potentially
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max, 
+        children: <Widget>[
+          monogram,
+          const Text("LOGIN GOES HERE")
         ],
-        if (defaultTargetPlatform == TargetPlatform.android) ...<Widget>[
-          OutlinedButton(
-            child: const Text('Login with Google'),
-            onPressed: () async {
-              await authModel.signInWithGoogle();
-            },
-          )
-        ],
-        OutlinedButton(
-          child: const Text('Login as actualia@example.com'),
-          onPressed: () async {
-            await authModel.signInWithFakeAccount();
-          },
-        )
-      ],
-    ));
+      )
+    );
   }
 }
