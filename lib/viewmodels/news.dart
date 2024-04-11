@@ -41,7 +41,8 @@ class NewsViewModel extends ChangeNotifier {
           title: 'No news found for this date',
           paragraphs: [
             Paragraph(
-                text: 'There has been an error fetching news from the database. (click me to print the error message)',
+                text:
+                    'There has been an error fetching news from the database. (click me to print the error message)',
                 source: e.toString())
           ]);
       notifyListeners();
