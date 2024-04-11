@@ -11,11 +11,9 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  String? _error;
 
   @override
   Widget build(BuildContext context) {
-    AuthModel authModel = Provider.of(context);
     double viewWidth = MediaQuery.of(context).size.width;
 
     // would want it to be an svg, but too bad
@@ -30,12 +28,6 @@ class _LoginViewState extends State<LoginView> {
         children: <Widget>[
           monogram,
           const SizedBox(height: 32),
-          if (_error != null) ...<Widget>[
-            Text(
-              _error!,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
           const SignInControls(),
         ],
       )
