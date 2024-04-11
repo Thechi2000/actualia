@@ -17,8 +17,8 @@ class _NewsViewState extends State<NewsView> {
   void initState() {
     super.initState();
     Future.microtask(() => Provider.of<NewsViewModel>(context, listen: false)
-            .fetchNews(DateTime.now()));
-            /*.pushNews(News(
+        .fetchNews(DateTime.now()));
+    /*.pushNews(News(
                 title: 'This title was pulled from the DataBase',
                 date: '2024-04-11',
                 paragraphs: [
