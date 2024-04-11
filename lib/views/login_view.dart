@@ -1,4 +1,5 @@
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/widgets/signin_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ class _LoginViewState extends State<LoginView> {
     AuthModel authModel = Provider.of(context);
     double viewWidth = MediaQuery.of(context).size.width;
 
+    // would want it to be an svg, but too bad
     Image monogram = Image.asset('assets/img/monogram.png', width: .35*viewWidth);
     
     return SizedBox(
@@ -28,7 +30,13 @@ class _LoginViewState extends State<LoginView> {
         children: <Widget>[
           monogram,
           const SizedBox(height: 32),
-          const Text("LOGIN AS GOOGLE/GUEST BUTTON")
+          if (_error != null) ...<Widget>[
+            Text(
+              _error!,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+          const SignInControls(),
         ],
       )
     );
