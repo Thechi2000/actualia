@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'Flutter setup'
+description: 'Install flutter and its dependencies'
 inputs:
   get-deps:
     description: 'Whether to fetch project dependencies'
