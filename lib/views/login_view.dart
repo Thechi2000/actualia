@@ -11,26 +11,25 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-
   @override
   Widget build(BuildContext context) {
     double viewWidth = MediaQuery.of(context).size.width;
 
     // would want it to be an svg, but too bad
-    Image monogram = Image.asset('assets/img/monogram.png', width: .35*viewWidth);
-    
+    Image monogram =
+        Image.asset('assets/img/monogram.png', width: .35 * viewWidth);
+
     return SizedBox(
-      width: double.maxFinite, // hacky potentially
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max, 
-        children: <Widget>[
-          monogram,
-          const SizedBox(height: 32),
-          const SignInControls(),
-        ],
-      )
-    );
+        width: double.maxFinite, // hacky potentially
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            monogram,
+            const SizedBox(height: 32),
+            const SignInControls(),
+          ],
+        ));
   }
 }
