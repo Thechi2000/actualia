@@ -1,5 +1,4 @@
 import 'package:actualia/models/auth_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,8 @@ class _LoginViewState extends State<LoginView> {
         mainAxisSize: MainAxisSize.max, 
         children: <Widget>[
           monogram,
-          const Text("LOGIN GOES HERE")
+          const SizedBox(height: 32),
+          const Text("LOGIN AS GOOGLE/GUEST BUTTON")
         ],
       )
     );
