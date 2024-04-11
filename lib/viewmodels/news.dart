@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:convert';
 
 class NewsViewModel extends ChangeNotifier {
   final supabase = Supabase.instance.client;
@@ -12,7 +13,6 @@ class NewsViewModel extends ChangeNotifier {
   Future<void> fetchNews(DateTime date) async {
     var dateString = date.toString().substring(0, 10);
     try {
-      print(DateTime.parse('2024-04-14').weekday);
       final res = await supabase
           .from('news')
           .select()
@@ -20,18 +20,23 @@ class NewsViewModel extends ChangeNotifier {
           .eq('date', dateString)
           .single();
 
-      final texts = res['texts'];
-      final sources = res['sources'];
+      //If pas de news pour ce jour là ET date == aujourd'hui, on appelle la fonction transcript
+      //Si bon jour mais avant l'heure, dire de revenir. Si bon jour après l'heure, dire qu'il y a un problème.
+
+      List<String> texts = List<String>.from(jsonDecode(res['texts']));
+      List<String> sources = List<String>.from(jsonDecode(res['sources']));
+      List<Paragraph> paragraphs = [];
+      for (var i = 0; i < texts.length; i++) {
+        paragraphs.add(Paragraph(text: texts[i], source: sources[i]));
+      }
+      /*
+      final get_news = await supabase.functions
+          .invoke("get_news", method: HttpMethod.post);*/
 
       _news = News(
         title: res['title'],
         date: res['date'],
-        paragraphs: List.generate(texts.length, (index) {
-          return Paragraph(
-            text: texts[index],
-            source: sources[index],
-          );
-        }),
+        paragraphs: paragraphs,
       );
       notifyListeners();
     } catch (e) {
@@ -49,4 +54,25 @@ class NewsViewModel extends ChangeNotifier {
       return;
     }
   }
+/*
+  Future<bool> pushNews(News news) async {
+    print("Pushing news: $news");
+    final texts = news.paragraphs.map((e) => e.text).toList();
+    final sources = news.paragraphs.map((e) => e.source).toList();
+    try {
+      final res = await supabase.from("news").upsert({
+        'user': supabase.auth.currentUser!.id,
+        'date': news.date,
+        'title': news.title,
+        'texts': texts,
+        'sources': sources,
+      },);
+      print("Pushed news: $res");
+      return true;
+    } catch (e) {
+      print("Error pushing news: $e");
+      log("Error pushing settings: $e");
+      return false;
+    }
+  }*/
 }
