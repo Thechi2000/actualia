@@ -3,21 +3,38 @@ import 'package:actualia/models/news.dart';
 
 class NewsText extends StatelessWidget {
   final News news;
-  /*
-  final String title;
-  final String date;
-  final List<Paragraph> paragraphs;
-
-  const NewsText(
-      {super.key,
-      required this.title,
-      required this.date,
-      required this.paragraphs});
-      */
   const NewsText({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = DateTime.parse(news.date);
+    List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    List<String> months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    String suffix;
+    if (dateTime.day == 1 || dateTime.day == 21 || dateTime.day == 31) {
+      suffix = "st";
+    } else if (dateTime.day == 2 || dateTime.day == 22) {
+      suffix = "nd";
+    } else if (dateTime.day == 3 || dateTime.day == 23) {
+      suffix = "rd";
+    } else {
+      suffix = "th";
+    }
+    String date =
+        "${weekDays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}$suffix, ${dateTime.year}";
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,7 +48,7 @@ class NewsText extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  news.date,
+                  date,
                   style: const TextStyle(
                     color: Color(0xFFCDCDDC),
                     fontSize: 8,
