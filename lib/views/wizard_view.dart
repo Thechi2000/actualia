@@ -102,7 +102,9 @@ class _WizardViewState extends State<WizardView> {
             interests: _interests,
             wantsCities: true,
             wantsCountries: true,
-            wantsInterests: true);
+            wantsInterests: true,
+            onboardingNeeded: false,
+          );
         newsSettingsModel?.pushSettings(toSend);
         //todo nav to main screen
       }),

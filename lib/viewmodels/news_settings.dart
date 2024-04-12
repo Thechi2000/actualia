@@ -32,24 +32,19 @@ class NewsSettingsViewModel extends ChangeNotifier {
         wantsCities: res['wants_cities'],
         wantsCountries: res['wants_countries'],
         wantsInterests: res['wants_interests'],
+        onboardingNeeded: false
       );
       notifyListeners();
     } catch (e) {
-      log("Error fetching settings: $e");
-      _settings = NewsSettings(
-          cities: [],
-          countries: [],
-          interests: [],
-          wantsCities: true,
-          wantsCountries: true,
-          wantsInterests: true);
+      print("Error fetching settings: $e");
+      _settings = NewsSettings.defaults();
       return;
     }
   }
 
   Future<bool> pushSettings(NewsSettings settings) async {
     try {
-      final res = await supabase.from("news_settings").upsert({
+      await supabase.from("news_settings").upsert({
         'created_by': supabase.auth.currentUser!.id,
         'cities': settings.cities,
         'countries': settings.countries,
@@ -60,7 +55,7 @@ class NewsSettingsViewModel extends ChangeNotifier {
       }, onConflict: "created_by");
       return true;
     } catch (e) {
-      log("Error pushing settings: $e");
+      print("Error pushing settings: $e");
       return false;
     }
   }
