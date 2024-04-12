@@ -53,10 +53,15 @@ class WizardWrapper extends StatelessWidget {
 void main() {
   // The `BuildContext` does not include the provider
   // needed by Provider<AuthModel>, UI will test more specific parts
-  testWidgets('Has all correct fields', (WidgetTester tester) async {
+  testWidgets('Has all correct inputs', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
     await tester.pumpWidget(
         WizardWrapper(const WizardView(), MockNewsSettingsViewModel()));
+
+    expect(find.text('Select some interests'), findsOne);
+    expect(find.text('Select some countries'), findsOne);
+    expect(find.text('Select some cities'), findsOne);
+    expect(find.text('Validate'), findsOne);
   });
 }
