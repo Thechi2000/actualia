@@ -23,12 +23,12 @@ class _WizardViewState extends State<WizardView> {
   Widget build(BuildContext context) {
     NewsSettingsViewModel? newsSettingsModel;
     NewsSettings newsSettingsDefault = NewsSettings.defaults();
-    NewsSettings fromDB;
+    NewsSettings? fromDB;
 
     newsSettingsModel = Provider.of<NewsSettingsViewModel>(context);
     fromDB = newsSettingsModel.settings;
 
-    if (fromDB.countries.isNotEmpty) {
+    if (fromDB!.countries.isNotEmpty) {
       _countries = fromDB.countries;
     }
     if (fromDB.cities.isNotEmpty) {
