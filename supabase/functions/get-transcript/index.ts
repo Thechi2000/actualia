@@ -48,16 +48,16 @@ Deno.serve(async (request) => {
     { global: { headers: { Authorization: authHeader } } },
   );
 
-  /*   // Get the user from the token.
+  // Get the user from the token.
   const user = await supabaseClient.auth.getUser();
   if (user.error !== null) {
     console.error(user.error);
     return new Response("Authentication error", { status: 401 });
   }
   const userId = user.data.user.id;
-  console.log("User ID:", userId); */
 
-  const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
+  // const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
+
   console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
