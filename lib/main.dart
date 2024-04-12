@@ -52,8 +52,9 @@ class _AppState extends State<App> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: body,
+      home: Scaffold(body: body),
     );
   }
 }
