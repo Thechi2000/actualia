@@ -22,7 +22,8 @@ class _NewsViewState extends State<NewsView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget loading = const LoadingView(text :"Please wait while we fetch the news for you.");
+    Widget loading =
+        const LoadingView(text: "Please wait while we fetch the news for you.");
     final newsViewModel = Provider.of<NewsViewModel>(context);
     final _news = newsViewModel.news;
     Widget body = _news == null ? loading : NewsText(news: _news);

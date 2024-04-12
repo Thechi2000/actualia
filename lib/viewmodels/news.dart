@@ -77,8 +77,7 @@ class NewsViewModel extends ChangeNotifier {
     try {
       // Placeholder for invoking a cloud function
       //TODO: Replace this with actual cloud function call
-      await Future.delayed(
-          const Duration(seconds: 5)); 
+      await Future.delayed(const Duration(seconds: 5));
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
       log("Error invoking cloud function: $e");
