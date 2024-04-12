@@ -66,7 +66,9 @@ Deno.serve(async (request) => {
     .filter("created_by", "eq", userId)
     .filter("wants_interests", "eq", true);
   if (interests.error) {
-    console.error("We can't get the user's interests: " + interests.error);
+    console.error("We can't get the user's interests");
+    console.log(interests);
+    console.log(interests.error);
     return new Response("Internal Server Error", { status: 500 });
   }
   console.log(interests);
@@ -84,7 +86,7 @@ Deno.serve(async (request) => {
   console.log(response);
 
   // Insert the transcript into the database.
-  const { data, error } = await supabaseClient.from("news").insert({
+  const { error } = await supabaseClient.from("news").insert({
     user: userId,
     title: "Hello! This is your daily news",
     transcript: response,
@@ -130,9 +132,10 @@ async function getGNews(interests: any) {
   // Computes the GNews query by ORing all the categories.
   // The categories must be "escaped" by putting them in quotes.
   // See https://gnews.io/docs/v4#search-endpoint-query-parameters for more details.
-  let gNewsQuery = interests && interests.data && interests.data.length > 0 &&
-      interests.data[0].interests
-    ? (interests.data[0].interests as string[]).map((s) => `"${s}"`).join(
+  let gNewsQuery = interests.data.length > 0
+    ? ((JSON.parse(interests.data[0].interests)) as string[]).map((s) =>
+      `"${s}"`
+    ).join(
       " OR ",
     )
     : "";
