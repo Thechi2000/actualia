@@ -58,6 +58,7 @@ Deno.serve(async (request) => {
   console.log("User ID:", userId); */
 
   const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
+  console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
   const interests = await supabaseClient.from("news_settings").select(
@@ -122,8 +123,6 @@ async function generateTranscript(articlesPrompt: any) {
   const transcriptJSON = JSON.parse(
     completion.choices[0].message.content || "",
   );
-  console.log(transcriptJSON);
-
   return transcriptJSON;
 }
 
@@ -147,7 +146,9 @@ async function getGNews(interests: any) {
   // Constructs the query URL.
   const url = `https://gnews.io/api/v4/search?q=${
     encodeURIComponent(gNewsQuery)
-  }&max=3&apikey=${encodeURIComponent(Deno.env.get("GNEWS_API_KEY") || "")}`;
+  }&lang=en&sortby=relevance&max=4&apikey=${
+    encodeURIComponent(Deno.env.get("GNEWS_API_KEY") || "")
+  }`;
 
   // Send the query and parse its result.
   const result = await fetch(url);
