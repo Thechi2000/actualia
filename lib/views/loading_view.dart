@@ -1,14 +1,28 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class LoadingView extends StatelessWidget {
-  const LoadingView({super.key});
+  final String text;
+  const LoadingView({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Fetching data ...",
-        textScaler: TextScaler.linear(0.75),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const CircularProgressIndicator(),
+        ],
       ),
     );
   }
