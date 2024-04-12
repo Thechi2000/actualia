@@ -19,7 +19,8 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => AuthModel()),
+      ChangeNotifierProvider(
+          create: (context) => AuthModel(Supabase.instance.client)),
       ChangeNotifierProvider(create: (context) => NewsViewModel()),
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
