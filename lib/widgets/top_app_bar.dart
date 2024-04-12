@@ -1,3 +1,4 @@
+import 'package:actualia/profilePage.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -37,7 +38,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.grey),
             onPressed: () {
-              // TODO : Action for the profile button
+              Navigator.push(context, MaterialPageRoute(builder: (builder) => const ProfilePageView()));
             },
           ),
         ],
