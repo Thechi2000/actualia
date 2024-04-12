@@ -52,12 +52,14 @@ void main() {
 
     expect(
         await vm.pushSettings(NewsSettings(
-            interests: ["Biology"],
-            cities: [],
-            countries: [],
-            wantsCities: false,
-            wantsCountries: false,
-            wantsInterests: true)),
+          interests: ["Biology"],
+          cities: [],
+          countries: [],
+          wantsCities: false,
+          wantsCountries: false,
+          wantsInterests: true,
+          onboardingNeeded: false,
+        )),
         isFalse);
   });
 }

@@ -8,6 +8,8 @@ class NewsSettings {
   bool wantsCountries;
   bool wantsInterests;
 
+  bool onboardingNeeded;
+
   // Predefined lists
   List<String> predefinedCities = [
     'New York',
@@ -42,6 +44,7 @@ class NewsSettings {
     required this.wantsCities,
     required this.wantsCountries,
     required this.wantsInterests,
+    required this.onboardingNeeded,
   });
 
   factory NewsSettings.defaults() {
@@ -52,6 +55,7 @@ class NewsSettings {
       wantsCities: false,
       wantsCountries: false,
       wantsInterests: false,
+      onboardingNeeded: true,
     );
   }
 }

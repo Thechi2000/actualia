@@ -42,7 +42,7 @@ class _ProfilePageState extends State<ProfilePageView> {
 
     Container fullLine = Container(child: const Divider());
 
-    return Center(
+    Widget profilePage = Center(
         child: ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
@@ -62,6 +62,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   left: 2 * horizontalPadding, bottom: verticalPadding / 2),
               child: OutlinedButton(
                   onPressed: () async {
+                    Navigator.pop(context);
                     print("Logout button pressed");
                     if (await authModel.signOut()) {
                       print("Logout successful !");
@@ -198,11 +199,19 @@ class _ProfilePageState extends State<ProfilePageView> {
                   ),
                   onPressed: () {
                     print("Click on Done");
+                    Navigator.pop(context);
                   },
                   child: const Text('Done',
                       style: TextStyle(color: Colors.black)))),
         ]),
       ],
     ));
+
+    return Material(
+      elevation: 5.0,
+      child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 96, 16, 16),
+          child: profilePage),
+    );
   }
 }
