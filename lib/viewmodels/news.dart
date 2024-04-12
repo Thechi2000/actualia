@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
@@ -38,23 +39,22 @@ class NewsViewModel extends ChangeNotifier {
 
   /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
-    var dateString = date.toString().substring(0, 10);
     try {
-      final response = await supabase
+      var supabaseResponse = (await supabase
           .from('news')
           .select()
           .eq('user', supabase.auth.currentUser!.id)
-          .eq('date', dateString)
-          .single();
+          .order('date', ascending: false));
+      final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
         _news = null;
         return;
       }
 
-      List<dynamic> newsItems = response['transcript']['news'];
+      List<dynamic> newsItems = response['transcript']['articles'];
       List<Paragraph> paragraphs = newsItems.map((item) {
-        return Paragraph(text: item['transcript'], source: item['titre']);
+        return Paragraph(text: item['transcript'], source: item['url']);
       }).toList();
 
       _news = News(
@@ -64,21 +64,16 @@ class NewsViewModel extends ChangeNotifier {
       );
       notifyListeners();
     } catch (e) {
-      print("Error fetching news: $e");
-      print('Error fetching news: $e');
+      log("Error fetching news: $e");
       _news = null;
     }
   }
 
   /// Invokes a cloud function to generate news transcripts.
-  ///
-  /// This is a simulated function call and should be replaced with an actual cloud function call.
   Future<void> invokeTranscriptFunction() async {
     try {
-      // Placeholder for invoking a cloud function
-      //TODO: Replace this with actual cloud function call
-      await Future.delayed(const Duration(seconds: 5));
-      print("Cloud function 'transcript' invoked successfully.");
+      await supabase.functions.invoke('get-transcript');
+      log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
       print("Error invoking cloud function: $e");
       throw Exception("Failed to invoke transcript function");
