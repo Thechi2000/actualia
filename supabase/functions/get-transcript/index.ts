@@ -57,7 +57,7 @@ Deno.serve(async (request) => {
   const userId = user.data.user.id;
   console.log("User ID:", userId); */
 
-  const userId = "48ecf965-4688-4b19-8af1-3df2fa50282b";
+  const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
 
   // Get the user's interests.
   const interests = await supabaseClient.from("news_settings").select(
@@ -89,10 +89,6 @@ Deno.serve(async (request) => {
     title: "Hello! This is your daily news",
     transcript: response,
   });
-  if (error) {
-    console.error("We can't insert the transcript: " + error);
-    return new Response("Internal Server Error", { status: 500 });
-  }
 
   // return transcript
   return new Response(JSON.stringify(response), {
