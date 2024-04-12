@@ -36,6 +36,8 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    permissions: write-all
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -61,6 +63,7 @@ jobs:
           minimum-coverage: 80
           artifact-name: code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
 
   lint:
     name: Lint
