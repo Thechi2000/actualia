@@ -1,4 +1,4 @@
-name: Edge functions tests
+name: Supabase integration
 on:
   push:
     branches:
