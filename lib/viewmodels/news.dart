@@ -1,13 +1,14 @@
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
-  final supabase = Supabase.instance.client;
+  late final supabase;
   News? _news;
   News? get news => _news;
+
+  NewsViewModel(this.supabase);
 
   /// Retrieves news for the specified date.
   ///

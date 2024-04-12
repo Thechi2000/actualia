@@ -1,9 +1,7 @@
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/views/loading_view.dart';
-import 'package:actualia/profilePage.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
-import 'package:actualia/views/news_view.dart';
 import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,7 @@ Future<void> main() async {
     providers: [
       ChangeNotifierProvider(
           create: (context) => AuthModel(Supabase.instance.client)),
-      ChangeNotifierProvider(create: (context) => NewsViewModel()),
+      ChangeNotifierProvider(create: (context) => NewsViewModel(Supabase.instance.client)),
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
     ],
