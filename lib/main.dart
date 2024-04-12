@@ -1,10 +1,12 @@
 import 'package:actualia/models/auth_model.dart';
-import 'package:actualia/views/home_view.dart';
+import 'package:actualia/views/loading_view.dart';
+import 'package:actualia/profilePage.dart';
+import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
+import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news.dart';
 
 Future<void> main() async {
@@ -18,6 +20,7 @@ Future<void> main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => AuthModel()),
       ChangeNotifierProvider(create: (context) => NewsViewModel()),
+      ChangeNotifierProvider(create: (context) => NewsSettingsViewModel()),
     ],
     child: const App(),
   ));
@@ -39,22 +42,36 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);
+    NewsSettingsViewModel newsSettingsVM =
+        Provider.of<NewsSettingsViewModel>(context);
 
-    Widget body;
-    if (authModel.isSignedIn) {
-      body = const NewsView();
-    } else {
-      body = const LoginView();
-    }
+    return FutureBuilder(
+        future: newsSettingsVM.fetchSettings(),
+        builder: (BuildContext context, AsyncSnapshot<void> fetch) {
+          Widget home;
+          if (authModel.isSignedIn) {
+            if (fetch.connectionState == ConnectionState.done) {
+              home = WizardView();
+            } else {
+              home = LoadingView();
+            }
+          } else {
+            home = Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                title: const Text('ActualIA'),
+              ),
+              body: const LoginView(),
+            );
+          }
 
-    return MaterialApp(
-      title: 'ActualIA',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: Scaffold(body: body),
-    );
+          return MaterialApp(
+              title: 'ActualIA',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+              ),
+              home: home);
+        });
   }
 }
