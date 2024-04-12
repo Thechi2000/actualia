@@ -64,7 +64,7 @@ class NewsViewModel extends ChangeNotifier {
       );
       notifyListeners();
     } catch (e) {
-      log("Error fetching news: $e");
+      print("Error fetching news: $e");
       print('Error fetching news: $e');
       _news = null;
     }
@@ -78,9 +78,9 @@ class NewsViewModel extends ChangeNotifier {
       // Placeholder for invoking a cloud function
       //TODO: Replace this with actual cloud function call
       await Future.delayed(const Duration(seconds: 5));
-      log("Cloud function 'transcript' invoked successfully.");
+      print("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
-      log("Error invoking cloud function: $e");
+      print("Error invoking cloud function: $e");
       throw Exception("Failed to invoke transcript function");
     }
   }
