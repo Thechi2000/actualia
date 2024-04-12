@@ -63,4 +63,4 @@ All the commits must follow the [Conventional Commits](https://www.conventionalc
 
 ## Figma
 
-To direct the design process, a [Figma Board](https://www.figma.com/file/vxgSg8jGsV4710Gm9mAyDL/Submissions?type=design&node-id=0%3A1&mode=design&t=XNBaO73K0ShlrV7s-1) has been setup for team members. It houses the main design elements.
+To direct the design process, a [Figma Board](https://www.figma.com/team_invite/redeem/LbT1WUk9GvAooNPRXd5Kwp) has been setup for team members. It houses the main design elements.
