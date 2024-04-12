@@ -6,6 +6,10 @@
 
 ActualIA Android app
 
+## Architecture Diagram
+![image](https://github.com/ActualIA/app/assets/18498650/a9d53580-9d8a-428b-b958-e074747dd140)
+
+
 ## Setup Dev environment
 
 
