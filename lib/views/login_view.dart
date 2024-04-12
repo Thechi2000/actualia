@@ -1,5 +1,5 @@
 import 'package:actualia/models/auth_model.dart';
-import 'package:flutter/foundation.dart';
+import 'package:actualia/widgets/signin_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,45 +11,25 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  String? _error;
-
   @override
   Widget build(BuildContext context) {
-    AuthModel authModel = Provider.of(context);
+    double viewWidth = MediaQuery.of(context).size.width;
 
-    return Center(
+    // would want it to be an svg, but too bad
+    Image monogram =
+        Image.asset('assets/img/monogram.png', width: .35 * viewWidth);
+
+    return SizedBox(
+        width: double.maxFinite, // hacky potentially
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          'Welcome !',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        Text(
-          'You need to login before proceeding',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        if (_error != null) ...<Widget>[
-          Text(
-            _error!,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ],
-        if (defaultTargetPlatform == TargetPlatform.android) ...<Widget>[
-          OutlinedButton(
-            child: const Text('Login with Google'),
-            onPressed: () async {
-              await authModel.signInWithGoogle();
-            },
-          )
-        ],
-        OutlinedButton(
-          child: const Text('Login as actualia@example.com'),
-          onPressed: () async {
-            await authModel.signInWithFakeAccount();
-          },
-        )
-      ],
-    ));
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            monogram,
+            const SizedBox(height: 32),
+            const SignInControls(),
+          ],
+        ));
   }
 }
