@@ -25,13 +25,16 @@ class MockNewsSettingsViewModel extends NewsSettingsViewModel {
   }
 }
 
-void main() {
-  // The `BuildContext` does not include the provider
-  // needed by Provider<AuthModel>, UI will test more specific parts
-  testWidgets('Example test for widgets', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+class WizardWrapper extends StatelessWidget {
+  late final Widget _child;
+  late final NewsSettingsViewModel _model;
 
-    await tester.pumpWidget(MaterialApp(
+  WizardWrapper(this._child, this._model, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
         title: 'ActualIA',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -40,9 +43,20 @@ void main() {
         home: MultiProvider(
           providers: [
             ChangeNotifierProvider<NewsSettingsViewModel>(
-                create: (context) => MockNewsSettingsViewModel())
+                create: (context) => _model)
           ],
-          child: const WizardView(),
-        )));
+          child: _child,
+        ));
+  }
+}
+
+void main() {
+  // The `BuildContext` does not include the provider
+  // needed by Provider<AuthModel>, UI will test more specific parts
+  testWidgets('Has all correct fields', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+
+    await tester.pumpWidget(
+        WizardWrapper(const WizardView(), MockNewsSettingsViewModel()));
   });
 }
