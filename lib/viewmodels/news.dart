@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
@@ -38,23 +39,22 @@ class NewsViewModel extends ChangeNotifier {
 
   /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
-    var dateString = date.toString().substring(0, 10);
     try {
-      final response = await supabase
+      var supabaseResponse = (await supabase
           .from('news')
           .select()
           .eq('user', supabase.auth.currentUser!.id)
-          .eq('date', dateString)
-          .single();
+          .order('date', ascending: false));
+      final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
         _news = null;
         return;
       }
 
-      List<dynamic> newsItems = response['transcript']['news'];
+      List<dynamic> newsItems = response['transcript']['articles'];
       List<Paragraph> paragraphs = newsItems.map((item) {
-        return Paragraph(text: item['transcript'], source: item['titre']);
+        return Paragraph(text: item['transcript'], source: item['url']);
       }).toList();
 
       _news = News(
@@ -65,7 +65,6 @@ class NewsViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       log("Error fetching news: $e");
-      print('Error fetching news: $e');
       _news = null;
     }
   }
@@ -77,7 +76,7 @@ class NewsViewModel extends ChangeNotifier {
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
       log("Error invoking cloud function: $e");
-      throw Exception("Failed to invoke transcript function");
+      throw Exception("Failed to invoke transcript function $e");
     }
   }
 
