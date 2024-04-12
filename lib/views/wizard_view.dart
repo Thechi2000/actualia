@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
@@ -55,8 +52,8 @@ class _WizardViewState extends State<WizardView> {
           )),
       body: Container(
         margin: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: ListView(
+          /// temp mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             //each formField is an entry in the wizard
             SelectorWithInstruction(
@@ -69,6 +66,7 @@ class _WizardViewState extends State<WizardView> {
               newsSettingsDefault.predefinedCountries,
               "Country",
               selectedItems: _countries,
+              key: const Key("country-selector"),
             ),
             SelectorWithInstruction(
               (value) {
@@ -80,6 +78,7 @@ class _WizardViewState extends State<WizardView> {
               newsSettingsDefault.predefinedCities,
               "City",
               selectedItems: _cities,
+              key: const Key("city-selector"),
             ),
             SelectorWithInstruction(
               (value) {
@@ -91,18 +90,21 @@ class _WizardViewState extends State<WizardView> {
               newsSettingsDefault.predefinedInterests,
               "Interests",
               selectedItems: _interests,
+              key: const Key("interest-selector"),
             )
           ],
         ),
       ),
       bottomNavigationBar: WizardNavigationButton('Validate', () {
         NewsSettings toSend = NewsSettings(
-            cities: _cities,
-            countries: _countries,
-            interests: _interests,
-            wantsCities: true,
-            wantsCountries: true,
-            wantsInterests: true);
+          cities: _cities,
+          countries: _countries,
+          interests: _interests,
+          wantsCities: true,
+          wantsCountries: true,
+          wantsInterests: true,
+          onboardingNeeded: false,
+        );
         newsSettingsModel?.pushSettings(toSend);
         //todo nav to main screen
       }),
