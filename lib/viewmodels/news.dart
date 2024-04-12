@@ -2,43 +2,41 @@ import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'dart:convert';
 
+/// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
   final supabase = Supabase.instance.client;
   News? _news;
   News? get news => _news;
 
+  /// Retrieves news for the specified date.
+  ///
+  /// If no news is found for the given date, it checks if the date is today.
+  /// If it is today, it invokes a cloud function to generate news and fetches it again.
+  /// If the news is still not found, it sets an error message.
   Future<void> getNews(DateTime date) async {
-    await fetchNews(date); // Try fetching news first
+    await fetchNews(date);
 
-    // Check if news is still null after fetch
     if (_news == null || _news!.paragraphs.isEmpty) {
-      // Check if the requested date is today
       DateTime today = DateTime.now();
       if (date.year == today.year &&
           date.month == today.month &&
           date.day == today.day) {
-        // If today, invoke transcript function to generate news
         await invokeTranscriptFunction();
-        // Try fetching the news again after news generation
         await fetchNews(date);
-        // Check again if news is still not fetched
         if (_news == null || _news!.paragraphs.isEmpty) {
-          // Handle error if no news even after invoking transcript
           setNewsError(date, 'News generation failed and no news found.',
               'Something went wrong while generating news. Please try again later.');
         }
       } else {
-        // If not today, set error news
         setNewsError(date, 'No news found for this date.',
             'There are no news for you on this date.');
       }
     }
-    // If news is fetched successfully or handled by error logic, notify listeners
     notifyListeners();
   }
 
+  /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
     var dateString = date.toString().substring(0, 10);
     try {
@@ -49,21 +47,15 @@ class NewsViewModel extends ChangeNotifier {
           .eq('date', dateString)
           .single();
 
-      // Check if the response contains an error or no data was found
       if (response['error'] != null || response.isEmpty) {
-        log("No news found or error: ${response['error']?.message}");
-        _news =
-            null; // Ensure news is null to trigger proper handling in getNews
+        _news = null;
         return;
       }
 
-      // Parsing texts and sources assuming they are JSON encoded strings
-      List<String> texts = List<String>.from(jsonDecode(response['texts']));
-      List<String> sources = List<String>.from(jsonDecode(response['sources']));
-      List<Paragraph> paragraphs = [];
-      for (var i = 0; i < texts.length; i++) {
-        paragraphs.add(Paragraph(text: texts[i], source: sources[i]));
-      }
+      List<dynamic> newsItems = response['transcript']['news'];
+      List<Paragraph> paragraphs = newsItems.map((item) {
+        return Paragraph(text: item['transcript'], source: item['titre']);
+      }).toList();
 
       _news = News(
         title: response['title'],
@@ -73,16 +65,20 @@ class NewsViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       log("Error fetching news: $e");
-      _news = null; // Ensure news is null to trigger proper handling in getNews
+      print('Error fetching news: $e');
+      _news = null;
     }
   }
 
+  /// Invokes a cloud function to generate news transcripts.
+  ///
+  /// This is a simulated function call and should be replaced with an actual cloud function call.
   Future<void> invokeTranscriptFunction() async {
     try {
       // Placeholder for invoking a cloud function
-      // This is simulated and should be replaced with actual cloud function call
+      //TODO: Replace this with actual cloud function call
       await Future.delayed(
-          Duration(seconds: 5)); // Simulate cloud function delay
+          const Duration(seconds: 5)); 
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
       log("Error invoking cloud function: $e");
@@ -90,6 +86,7 @@ class NewsViewModel extends ChangeNotifier {
     }
   }
 
+  /// Sets an error message for the news.
   void setNewsError(DateTime date, String title, String message) {
     _news = News(
       date: date.toString().substring(0, 10),
