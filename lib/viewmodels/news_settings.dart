@@ -4,9 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NewsSettingsViewModel extends ChangeNotifier {
   final supabase = Supabase.instance.client;
-  late NewsSettings _settings;
+  NewsSettings? _settings;
 
-  NewsSettings get settings => _settings;
+  NewsSettings? get settings => _settings;
 
   Future<void> fetchSettings() async {
     final res = await supabase
