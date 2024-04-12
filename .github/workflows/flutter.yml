@@ -54,7 +54,7 @@ jobs:
         run: sh scripts/import_files_coverage.sh actualia
 
       - name: Test flutter app
-        run: flutter test test/**/*.dart
+        run: flutter test test/**/*.dart --coverage
 
       - name: Report Code Coverage
         uses: zgosalvez/github-actions-report-lcov@v3
