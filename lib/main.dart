@@ -1,4 +1,6 @@
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/profilePage.dart';
+import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/home_view.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ Future<void> main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => AuthModel()),
       ChangeNotifierProvider(create: (context) => NewsViewModel()),
+      ChangeNotifierProvider(create: (context) => NewsSettingsViewModel()),
     ],
     child: const App(),
   ));
@@ -42,7 +45,7 @@ class _AppState extends State<App> {
 
     Widget body;
     if (authModel.isSignedIn) {
-      body = const NewsView();
+      body = const ProfilePageView();
     } else {
       body = const LoginView();
     }
