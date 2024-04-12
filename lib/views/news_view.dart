@@ -1,3 +1,4 @@
+import 'package:actualia/views/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/widgets/news_text.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
@@ -21,25 +22,7 @@ class _NewsViewState extends State<NewsView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget loading = const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Please wait while we fetch the news for you...',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
-              height: 1.2,
-            ),
-          ),
-          SizedBox(height: 16),
-          CircularProgressIndicator(),
-        ],
-      ),
-    );
+    Widget loading = const LoadingView(text :"Please wait while we fetch the news for you.");
     final newsViewModel = Provider.of<NewsViewModel>(context);
     final _news = newsViewModel.news;
     Widget body = _news == null ? loading : NewsText(news: _news);
