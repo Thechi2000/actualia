@@ -94,13 +94,13 @@ void main() {
   testWidgets("Can select interest", (WidgetTester tester) async {
     final vm = ValidateVM(
         NewsSettings(
-            interests: ["Biology"],
-            cities: [],
-            countries: [],
-            wantsCities: false,
-            wantsCountries: false,
-            wantsInterests: false,
-            onboardingNeeded: false,
+          interests: ["Biology"],
+          cities: [],
+          countries: [],
+          wantsCities: false,
+          wantsCountries: false,
+          wantsInterests: false,
+          onboardingNeeded: false,
         ),
         null);
     await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
@@ -126,8 +126,7 @@ void main() {
             wantsCities: false,
             wantsCountries: false,
             wantsInterests: false,
-            onboardingNeeded: false
-          ),
+            onboardingNeeded: false),
         null);
     await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
 
@@ -152,8 +151,7 @@ void main() {
             wantsCities: false,
             wantsCountries: false,
             wantsInterests: false,
-            onboardingNeeded: false
-          ),
+            onboardingNeeded: false),
         null);
     await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
 
@@ -177,8 +175,7 @@ void main() {
         wantsCities: false,
         wantsCountries: false,
         wantsInterests: false,
-        onboardingNeeded: false
-      );
+        onboardingNeeded: false);
     final vm = ValidateVM(ns, ns);
 
     await tester.pumpWidget(WizardWrapper(const WizardView(), vm));

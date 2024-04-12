@@ -38,7 +38,10 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.grey),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (builder) => const ProfilePageView()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => const ProfilePageView()));
             },
           ),
         ],

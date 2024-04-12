@@ -68,8 +68,7 @@ class _AppState extends State<App> {
     return MaterialApp(
         title: 'ActualIA',
         theme: ThemeData(
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
           useMaterial3: true,
         ),
         home: home);

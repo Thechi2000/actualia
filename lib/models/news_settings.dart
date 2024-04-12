@@ -7,7 +7,7 @@ class NewsSettings {
   bool wantsCities;
   bool wantsCountries;
   bool wantsInterests;
-  
+
   bool onboardingNeeded;
 
   // Predefined lists
