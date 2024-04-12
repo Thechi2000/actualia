@@ -1,4 +1,4 @@
-import 'package:actualia/profilePage.dart';
+import 'package:actualia/views/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
