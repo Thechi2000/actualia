@@ -1,6 +1,7 @@
 import { assertHasEnv } from "../util.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
 import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 
 interface News {
   transcript: string;
@@ -95,7 +96,8 @@ Deno.serve(async (request) => {
 
   // return transcript
   return new Response(JSON.stringify(response), {
-    headers: { "content-type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status: 200,
   });
 });
 
