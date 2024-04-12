@@ -75,8 +75,8 @@ class NewsViewModel extends ChangeNotifier {
       await supabase.functions.invoke('get-transcript');
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
-      log("Error invoking cloud function: $e");
-      throw Exception("Failed to invoke transcript function $e");
+      print("Error invoking cloud function: $e");
+      throw Exception("Failed to invoke transcript function");
     }
   }
 

@@ -48,30 +48,29 @@ class _AppState extends State<App> {
     NewsSettingsViewModel newsSettingsVM =
         Provider.of<NewsSettingsViewModel>(context);
 
-    return FutureBuilder(
-        future: newsSettingsVM.fetchSettings(),
-        builder: (BuildContext context, AsyncSnapshot<void> fetch) {
-          Widget home;
-          if (authModel.isSignedIn) {
-            if (fetch.connectionState == ConnectionState.done) {
-              home = const WizardView();
-            } else {
-              home = const LoadingView(text: 'Fetching your settings...');
-            }
-          } else {
-            home = const Scaffold(
-              body: LoginView(),
-            );
-          }
+    Widget home;
+    if (authModel.isSignedIn) {
+      if (newsSettingsVM.settings != null) {
+        if (newsSettingsVM.settings!.onboardingNeeded) {
+          home = const WizardView();
+        } else {
+          home = const NewsView();
+        }
+      } else {
+        home = const LoadingView(text: 'Fetching your settings...');
+      }
+    } else {
+      home = const Scaffold(
+        body: LoginView(),
+      );
+    }
 
-          return MaterialApp(
-              title: 'ActualIA',
-              theme: ThemeData(
-                colorScheme:
-                    ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
-                useMaterial3: true,
-              ),
-              home: home);
-        });
+    return MaterialApp(
+        title: 'ActualIA',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
+          useMaterial3: true,
+        ),
+        home: home);
   }
 }
