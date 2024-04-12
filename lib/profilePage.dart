@@ -26,7 +26,6 @@ class _ProfilePageState extends State<ProfilePageView> {
 
   @override
   Widget build(BuildContext context) {
-
     AuthModel authModel = Provider.of<AuthModel>(context);
     NewsSettingsViewModel newsSettings =
         Provider.of<NewsSettingsViewModel>(context);
@@ -84,12 +83,10 @@ class _ProfilePageState extends State<ProfilePageView> {
         // Username display
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Container(
-              padding: EdgeInsets.only(
-                  top: verticalPadding,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  bottom: verticalPadding / 2),
-              child: Text("Hey, ${_username ?? "unknown"} !")),
+              padding: EdgeInsets.fromLTRB(horizontalPadding, verticalPadding,
+                  horizontalPadding, verticalPadding),
+              child: Text("Hey, ${_username ?? "unknown"} !",
+                  style: const TextStyle(fontSize: 28))),
         ]),
 
         // Logout
@@ -245,7 +242,10 @@ class _ProfilePageState extends State<ProfilePageView> {
     )));
 
     return Material(
-      child: scrollView,
+      elevation: 5.0,
+      child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 96, 16, 16),
+          child: scrollView),
     );
   }
 }
