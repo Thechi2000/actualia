@@ -1,0 +1,83 @@
+name: "Flutter build"
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: true
+          
+      - name: Build flutter app
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: true
+
+      - name: Test flutter app
+        run: flutter test test/**/*.dart
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: false
+          
+      - name: Check code format
+        run: dart format lib -o none --set-exit-if-changed
+
+  release:
+    name: Release
+    needs: [build, test, lint]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: release-apk
+          path: actualia.apk
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: A new version is available.
+          files: actualia.apk
