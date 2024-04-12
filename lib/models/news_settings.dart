@@ -1,3 +1,5 @@
+import 'package:country_list/country_list.dart';
+
 class NewsSettings {
   List<String> cities;
   List<String> countries;
@@ -7,16 +9,20 @@ class NewsSettings {
   bool wantsInterests;
 
   // Predefined lists
-  static List<String> predefinedCities = ['City 1', 'City 2', 'City 3'];
-  static List<String> predefinedCountries = [
-    'Country 1',
-    'Country 2',
-    'Country 3'
-  ];
-  static List<String> predefinedInterests = [
-    'Interest 1',
-    'Interest 2',
-    'Interest 3'
+  List<String> predefinedCities = ['City 1', 'City 2', 'City 3'];
+  List<String> predefinedCountries = Countries.list.map((c) => c.name).toList();
+  List<String> predefinedInterests = [
+    'Sports',
+    'Music',
+    'Politics',
+    'Gaming',
+    'E-sports',
+    'Research',
+    'Physics',
+    'Biology',
+    'Math',
+    'People',
+    'Events',
   ];
 
   NewsSettings({
@@ -30,9 +36,9 @@ class NewsSettings {
 
   factory NewsSettings.defaults() {
     return NewsSettings(
-      cities: predefinedCities,
-      countries: predefinedCountries,
-      interests: predefinedInterests,
+      cities: [],
+      countries: [],
+      interests: [],
       wantsCities: false,
       wantsCountries: false,
       wantsInterests: false,
