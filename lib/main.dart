@@ -3,6 +3,7 @@ import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/profilePage.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
+import 'package:actualia/views/news_view.dart';
 import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,24 +53,21 @@ class _AppState extends State<App> {
           Widget home;
           if (authModel.isSignedIn) {
             if (fetch.connectionState == ConnectionState.done) {
-              home = WizardView();
+              home = const WizardView();
             } else {
-              home = LoadingView();
+              home = const LoadingView(text: 'Fetching your settings...');
             }
           } else {
-            home = Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: const Text('ActualIA'),
-              ),
-              body: const LoginView(),
+            home = const Scaffold(
+              body: LoginView(),
             );
           }
 
           return MaterialApp(
               title: 'ActualIA',
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
                 useMaterial3: true,
               ),
               home: home);
