@@ -75,21 +75,18 @@ class _ProfilePageState extends State<ProfilePageView> {
       getInterests();
     });
 
-    return SingleChildScrollView(
-        child: Center(
-            child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return Center(
+        child: ListView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
         // Username display
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.only(
-                  top: verticalPadding,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  bottom: verticalPadding / 2),
-              child: Text("Hey, ${_username ?? "unknown"} !")),
-        ]),
+        Container(
+            padding: EdgeInsets.only(
+                top: verticalPadding,
+                left: horizontalPadding,
+                right: horizontalPadding,
+                bottom: verticalPadding / 2),
+            child: Text("Hey, ${_username ?? "unknown"} !")),
 
         // Logout
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -239,6 +236,6 @@ class _ProfilePageState extends State<ProfilePageView> {
                       style: TextStyle(color: Colors.black)))),
         ]),
       ],
-    )));
+    ));
   }
 }
