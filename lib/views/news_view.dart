@@ -16,16 +16,33 @@ class _NewsViewState extends State<NewsView> {
   void initState() {
     super.initState();
     Future.microtask(() => Provider.of<NewsViewModel>(context, listen: false)
-        .fetchNews(DateTime.now()));
+        .getNews(DateTime.now()));
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget loading = const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Please wait while we fetch the news for you...',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+              height: 1.2,
+            ),
+          ),
+          SizedBox(height: 16),
+          CircularProgressIndicator(),
+        ],
+      ),
+    );
     final newsViewModel = Provider.of<NewsViewModel>(context);
     final _news = newsViewModel.news;
-    Widget body = _news == null
-        ? const Center(child: CircularProgressIndicator())
-        : NewsText(news: _news);
+    Widget body = _news == null ? loading : NewsText(news: _news);
 
     return Scaffold(
       appBar: const TopAppBar(),
