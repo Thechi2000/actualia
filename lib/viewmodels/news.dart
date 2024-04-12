@@ -71,13 +71,9 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   /// Invokes a cloud function to generate news transcripts.
-  ///
-  /// This is a simulated function call and should be replaced with an actual cloud function call.
   Future<void> invokeTranscriptFunction() async {
     try {
-      // Placeholder for invoking a cloud function
-      //TODO: Replace this with actual cloud function call
-      await Future.delayed(const Duration(seconds: 5));
+      await supabase.functions.invoke('get-transcript');
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
       log("Error invoking cloud function: $e");
