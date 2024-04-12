@@ -26,6 +26,7 @@ class _ProfilePageState extends State<ProfilePageView> {
 
   @override
   Widget build(BuildContext context) {
+
     AuthModel authModel = Provider.of<AuthModel>(context);
     NewsSettingsViewModel newsSettings =
         Provider.of<NewsSettingsViewModel>(context);
@@ -75,7 +76,7 @@ class _ProfilePageState extends State<ProfilePageView> {
       getInterests();
     });
 
-    return SingleChildScrollView(
+    Widget scrollView = SingleChildScrollView(
         child: Center(
             child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -98,6 +99,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   left: 2 * horizontalPadding, bottom: verticalPadding / 2),
               child: OutlinedButton(
                   onPressed: () async {
+                    Navigator.pop(context);
                     print("Logout button pressed");
                     if (await authModel.signOut()) {
                       print("Logout successful !");
@@ -234,11 +236,16 @@ class _ProfilePageState extends State<ProfilePageView> {
                   ),
                   onPressed: () {
                     print("Click on Done");
+                    Navigator.pop(context);
                   },
                   child: const Text('Done',
                       style: TextStyle(color: Colors.black)))),
         ]),
       ],
     )));
+
+    return Material(
+      child: scrollView,
+    );
   }
 }
