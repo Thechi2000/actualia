@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
   pull_request:
     types:
       - opened
@@ -24,7 +24,7 @@ jobs:
         uses: ./
         with:
           get-deps: true
-          
+
       - name: Build flutter app
         run: flutter build apk --release
 
@@ -51,7 +51,7 @@ jobs:
         run: sh scripts/import_files_coverage.sh actualia
 
       - name: Test flutter app
-        run: flutter test --coverage
+        run: flutter test test/**/*.dart
 
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
@@ -76,7 +76,7 @@ jobs:
         uses: ./
         with:
           get-deps: false
-          
+
       - name: Check code format
         run: dart format lib -o none --set-exit-if-changed
 
