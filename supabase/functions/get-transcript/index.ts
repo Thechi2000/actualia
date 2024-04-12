@@ -77,6 +77,7 @@ Deno.serve(async (request) => {
   // Generate a transcript from the news.
   const articlesPrompt = generateArticlesPrompt(gNews);
   const transcript = await generateTranscript(articlesPrompt);
+  console.log(transcript);
 
   // Merge the GNews and the transcript.
   const response = mergeJSON(transcript, gNews);
@@ -88,11 +89,13 @@ Deno.serve(async (request) => {
     title: "Hello! This is your daily news",
     transcript: response,
   });
-
-  console.log(data);
+  if (error) {
+    console.error("We can't insert the transcript: " + error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 
   // return transcript
-  return new Response(JSON.stringify(transcript), {
+  return new Response(JSON.stringify(response), {
     headers: { "content-type": "application/json" },
   });
 });
@@ -164,16 +167,21 @@ function generateArticlesPrompt(json: ArticlesResponse): string {
   return result;
 }
 
-function mergeJSON(
-  json1: MergedJSON,
-  json2: { totalArticles: number; articles: Article[] },
-): MergedJSON {
-  console.log(json2);
-  return {
+function mergeJSON(json1: any, json2: any): MergedJSON {
+  const mergedData: MergedJSON = {
     totalArticles: json2.totalArticles,
     totalNewsByLLM: json1.totalNewsByLLM,
-    articles: json2.articles.map((article) => ({ ...article, transcript: "" })),
+    articles: [],
   };
+
+  for (let i = 0; i < json2.articles.length; i++) {
+    const article = json2.articles[i];
+    const news = json1.news[i];
+    const mergedItem = { ...article, ...news };
+    mergedData.articles.push(mergedItem);
+  }
+
+  return mergedData;
 }
 
 // Verify the JSON structure of the OpenAI response
