@@ -4,11 +4,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserModel extends ChangeNotifier {
   final supabase = Supabase.instance.client;
-  static const webClientId = '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com';
+  static const webClientId =
+      '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com';
   final GoogleSignIn googleSignIn = GoogleSignIn(
     serverClientId: webClientId,
   );
-  
+
   User? get user => supabase.auth.currentUser;
   bool get isLoggedIn => supabase.auth.currentSession?.accessToken != null;
 
@@ -31,7 +32,7 @@ class UserModel extends ChangeNotifier {
 
       notifyListeners();
       return res.user != null;
-    } catch (error) {      
+    } catch (error) {
       print(error);
       return false;
     }
@@ -43,7 +44,8 @@ class UserModel extends ChangeNotifier {
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
-    final res = await supabase.auth.signInWithPassword(password: password, email: email);
+    final res = await supabase.auth
+        .signInWithPassword(password: password, email: email);
     return res.user != null;
   }
 }

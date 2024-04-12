@@ -9,7 +9,17 @@ class NewsSettings {
   bool wantsInterests;
 
   // Predefined lists
-  List<String> predefinedCities = ['City 1', 'City 2', 'City 3'];
+  List<String> predefinedCities = [
+    'New York',
+    'Mexico',
+    'Toronto',
+    'Basel',
+    'Lausanne',
+    'Paris',
+    'Rome',
+    'Berlin',
+    'Moscow'
+  ];
   List<String> predefinedCountries = Countries.list.map((c) => c.name).toList();
   List<String> predefinedInterests = [
     'Sports',

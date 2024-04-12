@@ -1,8 +1,6 @@
-
 import 'package:flutter/cupertino.dart';
 
 class LoadingView extends StatelessWidget {
-
   const LoadingView({super.key});
 
   @override

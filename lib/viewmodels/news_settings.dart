@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:actualia/models/news_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,13 +29,12 @@ class NewsSettingsViewModel extends ChangeNotifier {
     } catch (e) {
       log("Error fetching settings: $e");
       _settings = NewsSettings(
-        cities: [],
-        countries: [],
-        interests: [],
-        wantsCities: true,
-        wantsCountries: true,
-        wantsInterests: true
-      );
+          cities: [],
+          countries: [],
+          interests: [],
+          wantsCities: true,
+          wantsCountries: true,
+          wantsInterests: true);
       return;
     }
   }
