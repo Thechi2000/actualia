@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,8 +19,8 @@ class NewsViewModel extends ChangeNotifier {
           .eq('date', dateString)
           .single();
 
-      //If pas de news pour ce jour là ET date == aujourd'hui, on appelle la fonction transcript
-      //Si bon jour mais avant l'heure, dire de revenir. Si bon jour après l'heure, dire qu'il y a un problème.
+      // If there is no news for this day AND date == today, call the transcript function
+      // If it's the right day but before the time, tell them to come back. If it's the right day after the time, say there is a problem.
 
       List<String> texts = List<String>.from(jsonDecode(res['texts']));
       List<String> sources = List<String>.from(jsonDecode(res['sources']));
@@ -29,6 +28,7 @@ class NewsViewModel extends ChangeNotifier {
       for (var i = 0; i < texts.length; i++) {
         paragraphs.add(Paragraph(text: texts[i], source: sources[i]));
       }
+      //TODO : Implement the edge function call
       /*
       final get_news = await supabase.functions
           .invoke("get_news", method: HttpMethod.post);*/
@@ -54,25 +54,4 @@ class NewsViewModel extends ChangeNotifier {
       return;
     }
   }
-/*
-  Future<bool> pushNews(News news) async {
-    print("Pushing news: $news");
-    final texts = news.paragraphs.map((e) => e.text).toList();
-    final sources = news.paragraphs.map((e) => e.source).toList();
-    try {
-      final res = await supabase.from("news").upsert({
-        'user': supabase.auth.currentUser!.id,
-        'date': news.date,
-        'title': news.title,
-        'texts': texts,
-        'sources': sources,
-      },);
-      print("Pushed news: $res");
-      return true;
-    } catch (e) {
-      print("Error pushing news: $e");
-      log("Error pushing settings: $e");
-      return false;
-    }
-  }*/
 }
