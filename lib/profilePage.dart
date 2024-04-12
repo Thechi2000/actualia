@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePageView> {
       getInterests();
     });
 
-    return SingleChildScrollView(
+    Widget scrollView = SingleChildScrollView(
         child: Center(
             child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -83,12 +83,10 @@ class _ProfilePageState extends State<ProfilePageView> {
         // Username display
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Container(
-              padding: EdgeInsets.only(
-                  top: verticalPadding,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  bottom: verticalPadding / 2),
-              child: Text("Hey, ${_username ?? "unknown"} !")),
+              padding: EdgeInsets.fromLTRB(horizontalPadding, verticalPadding,
+                  horizontalPadding, verticalPadding),
+              child: Text("Hey, ${_username ?? "unknown"} !",
+                  style: const TextStyle(fontSize: 28))),
         ]),
 
         // Logout
@@ -98,6 +96,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   left: 2 * horizontalPadding, bottom: verticalPadding / 2),
               child: OutlinedButton(
                   onPressed: () async {
+                    Navigator.pop(context);
                     print("Logout button pressed");
                     if (await authModel.signOut()) {
                       print("Logout successful !");
@@ -234,11 +233,19 @@ class _ProfilePageState extends State<ProfilePageView> {
                   ),
                   onPressed: () {
                     print("Click on Done");
+                    Navigator.pop(context);
                   },
                   child: const Text('Done',
                       style: TextStyle(color: Colors.black)))),
         ]),
       ],
     )));
+
+    return Material(
+      elevation: 5.0,
+      child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 96, 16, 16),
+          child: scrollView),
+    );
   }
 }
