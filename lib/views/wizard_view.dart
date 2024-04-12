@@ -55,8 +55,8 @@ class _WizardViewState extends State<WizardView> {
           )),
       body: Container(
         margin: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: ListView(
+          /// temp mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             //each formField is an entry in the wizard
             SelectorWithInstruction(
