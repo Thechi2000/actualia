@@ -57,7 +57,9 @@ void main() {
             countries: [],
             wantsCities: false,
             wantsCountries: false,
-            wantsInterests: true)),
+            wantsInterests: true,
+            onboardingNeeded: false,
+        )),
         isFalse);
   });
 }
