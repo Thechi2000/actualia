@@ -42,39 +42,6 @@ class _ProfilePageState extends State<ProfilePageView> {
 
     Container fullLine = Container(child: const Divider());
 
-    Container getInterests() {
-      if (!isInterestUnfold.value) {
-        // Nothing
-        return Container();
-      } else {
-        // List of all interests
-        return Container(
-          padding: EdgeInsets.symmetric(
-              vertical: verticalPadding, horizontal: horizontalPadding),
-          child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _interests.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(_interests[index])));
-                  })),
-        );
-      }
-    }
-
-    isInterestUnfold.addListener(() {
-      getInterests();
-    });
-
     return Center(
         child: ListView(
       scrollDirection: Axis.vertical,
