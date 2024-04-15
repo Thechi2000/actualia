@@ -11,8 +11,6 @@ ActualIA Android app
 
 Get your own 1 minute daily summary of news that you choose, tailored to your needs. Wake up with the latest in tech, politics, society, or any subject you’d like. You can listen to your customized news feed, read a transcript, and look into the original sources of the headlines that caught your eye.
 
-[See the Figma here](https://www.figma.com/file/vxgSg8jGsV4710Gm9mAyDL/Submissions?type=design&node-id=0-1&mode=design&t=cyFxwt0EOjpTBYSd-0)
-
 ## Architecture Diagram
 ![image](https://github.com/ActualIA/app/assets/18498650/a9d53580-9d8a-428b-b958-e074747dd140)
 
@@ -64,3 +62,5 @@ All the commits must follow the [Conventional Commits](https://www.conventionalc
 ## Figma
 
 To direct the design process, a [Figma Board](https://www.figma.com/team_invite/redeem/LbT1WUk9GvAooNPRXd5Kwp) has been setup for team members. It houses the main design elements.
+
+For milestone 1, [see the Figma here](https://www.figma.com/file/vxgSg8jGsV4710Gm9mAyDL/Submissions?type=design&node-id=0-1&mode=design&t=cyFxwt0EOjpTBYSd-0).
