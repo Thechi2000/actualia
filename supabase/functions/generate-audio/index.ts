@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
   );
 
   console.log(
-    "Starting. We we'll generate audio for transcriptId:",
+    "Generating audio for transcriptId:",
     transcriptId,
   );
 
