@@ -53,6 +53,12 @@ Deno.serve(async (req) => {
     return new Response("Transcript not found", { status: 404 });
   }
 
+  // Verify that the file is not already existing in the db before generating it (audio column is empty)
+  if (data[0].audio) {
+    console.log("Audio already generated:", data[0].audio);
+    return new Response(data[0].audio, { status: 200 });
+  }
+
   const user = data[0].user;
   const transcript = data[0].transcript;
   const full_transcript = transcript.articles.reduce(
@@ -61,12 +67,6 @@ Deno.serve(async (req) => {
     "",
   );
   const path = `${user}/${transcriptId}.mp3`;
-
-  // Verify that the file is not already existing in the db before generating it (audio column is empty)
-  if (data[0].audio) {
-    console.log("Audio already generated:", data[0].audio);
-    return new Response(data[0].audio, { status: 200 });
-  }
 
   const openai = new OpenAI();
   try {
@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
       return new Response("Error uploading audio", { status: 500 });
     }
 
-    console.log("Audio generated and uploaded:", data);
+    console.log("Audio generated and uploaded:", data.path);
 
     // We update the transcript with the audio URL
     const { error: updateError } = await supabaseClient
