@@ -4,6 +4,7 @@ import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,9 +19,11 @@ class FakeGotrue extends Fake implements GoTrueClient {
   Stream<AuthState> get onAuthStateChange => Stream.empty();
 }
 
+class FakeGoogleSignin extends Fake implements GoogleSignIn {}
+
 // END
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.key) {
+  MockAuthModel(super.key, super._googleSignIn) {
     print("instantiated mockauth");
   }
 
@@ -91,8 +94,10 @@ void main() {
   testWidgets("Has all correct buttons", (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    await tester.pumpWidget(ProfilePageWrapper(const ProfilePageView(),
-        MockNewsSettingsViewModel(), MockAuthModel(FakeSupabaseClient())));
+    await tester.pumpWidget(ProfilePageWrapper(
+        const ProfilePageView(),
+        MockNewsSettingsViewModel(),
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text('Logout'), findsOne);
 
@@ -112,8 +117,10 @@ void main() {
   });
 
   testWidgets("Correct username", (WidgetTester tester) async {
-    await tester.pumpWidget(ProfilePageWrapper(const ProfilePageView(),
-        MockNewsSettingsViewModel(), MockAuthModel(FakeSupabaseClient())));
+    await tester.pumpWidget(ProfilePageWrapper(
+        const ProfilePageView(),
+        MockNewsSettingsViewModel(),
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text("Hey, test.test@epfl.ch !"), findsOne);
   });
