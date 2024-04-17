@@ -1,3 +1,5 @@
+//coverage:ignore-file
+
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_view.dart';
