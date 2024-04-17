@@ -1,11 +1,13 @@
+//coverage:ignore-file
+
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/views/loading_view.dart';
-import 'package:actualia/views/profile_view.dart';
+import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
-import 'package:actualia/views/news_view.dart';
 import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:actualia/viewmodels/news.dart';
@@ -20,8 +22,14 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
-          create: (context) => AuthModel(Supabase.instance.client)),
-      ChangeNotifierProvider(create: (context) => NewsViewModel()),
+          create: (context) => AuthModel(
+              Supabase.instance.client,
+              GoogleSignIn(
+                serverClientId:
+                    '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com',
+              ))),
+      ChangeNotifierProvider(
+          create: (context) => NewsViewModel(Supabase.instance.client)),
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
     ],
