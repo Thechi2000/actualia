@@ -74,10 +74,10 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: release-apk
-          path: ./actualia.apk
+          path: apk
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body: A new version is available.
-          files: '*.apk'
+          files: 'apk/*'
