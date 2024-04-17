@@ -9,6 +9,11 @@ class NewsViewModel extends ChangeNotifier {
   News? _news;
   News? get news => _news;
 
+  @protected
+  void setNews(News? news) {
+    _news = news;
+  }
+
   NewsViewModel(this.supabase);
 
   /// Retrieves news for the specified date.
