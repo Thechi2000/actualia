@@ -11,6 +11,7 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:actualia/views/login_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -49,10 +50,12 @@ class FakeGotrue extends Fake implements GoTrueClient {
   Stream<AuthState> get onAuthStateChange => const Stream.empty();
 }
 
+class FakeGoogleSignin extends Fake implements GoogleSignIn {}
+
 // END;
 
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.key) {
+  MockAuthModel(super.key, super._googleSignIn) {
     print("instantiated mockauth");
   }
 }
@@ -64,13 +67,6 @@ void main() {
     // Build our app and trigger a frame.
     // await tester.pumpWidget(const App());
 
-    print("startin");
-
-    // WidgetsFlutterBinding.ensureInitialized();
-    FakeSupabase instance = FakeSupabase();
-
-    print("middlin");
-
     await tester.pumpWidget(MaterialApp(
         title: 'ActualIA',
         theme: ThemeData(
@@ -79,7 +75,8 @@ void main() {
           scaffoldBackgroundColor: Colors.white,
         ),
         home: ListenableProvider<AuthModel>(
-            create: (context) => MockAuthModel(instance),
+            create: (context) =>
+                MockAuthModel(FakeSupabase(), FakeGoogleSignin()),
             builder: (context, child) => const LoginView())));
   });
 }
