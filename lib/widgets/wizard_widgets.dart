@@ -56,7 +56,7 @@ class _SelectorWithInstruction extends State<SelectorWithInstruction> {
       if (_validItems.contains(e)) {
         _items.remove(e);
       } else {
-        log('Error : item <$e> does not exist');
+        print('Error : item <$e> does not exist');
         _selectedItems.remove(e);
       }
     }

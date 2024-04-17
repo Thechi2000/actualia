@@ -97,12 +97,14 @@ class _WizardViewState extends State<WizardView> {
       ),
       bottomNavigationBar: WizardNavigationButton('Validate', () {
         NewsSettings toSend = NewsSettings(
-            cities: _cities,
-            countries: _countries,
-            interests: _interests,
-            wantsCities: true,
-            wantsCountries: true,
-            wantsInterests: true);
+          cities: _cities,
+          countries: _countries,
+          interests: _interests,
+          wantsCities: true,
+          wantsCountries: true,
+          wantsInterests: true,
+          onboardingNeeded: false,
+        );
         newsSettingsModel?.pushSettings(toSend);
         //todo nav to main screen
       }),
