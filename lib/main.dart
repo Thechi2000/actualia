@@ -1,5 +1,6 @@
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/views/loading_view.dart';
+import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:actualia/views/wizard_view.dart';

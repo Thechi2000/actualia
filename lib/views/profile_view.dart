@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:actualia/models/news_settings.dart';
+import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
@@ -42,52 +43,18 @@ class _ProfilePageState extends State<ProfilePageView> {
 
     Container fullLine = Container(child: const Divider());
 
-    Container getInterests() {
-      if (!isInterestUnfold.value) {
-        // Nothing
-        return Container();
-      } else {
-        // List of all interests
-        return Container(
-          padding: EdgeInsets.symmetric(
-              vertical: verticalPadding, horizontal: horizontalPadding),
-          child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _interests.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(_interests[index])));
-                  })),
-        );
-      }
-    }
-
-    isInterestUnfold.addListener(() {
-      getInterests();
-    });
-
-    Widget scrollView = SingleChildScrollView(
-        child: Center(
-            child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    Widget profilePage = Center(
+        child: ListView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
         // Username display
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.fromLTRB(horizontalPadding, verticalPadding,
-                  horizontalPadding, verticalPadding),
-              child: Text("Hey, ${_username ?? "unknown"} !",
-                  style: const TextStyle(fontSize: 28))),
-        ]),
+        Container(
+            padding: EdgeInsets.only(
+                top: verticalPadding,
+                left: horizontalPadding,
+                right: horizontalPadding,
+                bottom: verticalPadding / 2),
+            child: Text("Hey, ${_username ?? "unknown"} !")),
 
         // Logout
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -123,6 +90,12 @@ class _ProfilePageState extends State<ProfilePageView> {
                   onPressed: () {
                     // TODO 1 : Implement showig interests directly on this page
                     //isInterestUnfold.value = !isInterestUnfold.value;
+                    /*
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => const WizardView()));
+                            */
 
                     print("Click on Interests");
                   },
@@ -239,13 +212,13 @@ class _ProfilePageState extends State<ProfilePageView> {
                       style: TextStyle(color: Colors.black)))),
         ]),
       ],
-    )));
+    ));
 
     return Material(
       elevation: 5.0,
       child: Container(
           padding: const EdgeInsets.fromLTRB(16, 96, 16, 16),
-          child: scrollView),
+          child: profilePage),
     );
   }
 }
