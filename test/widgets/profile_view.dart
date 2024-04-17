@@ -2,7 +2,6 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
-import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -97,28 +96,19 @@ void main() {
 
     expect(find.text('Logout'), findsOne);
 
-    /*
-    await tester.tap(find.text('Interests'));
-    await tester.pump();
+    testButton(String text) async {
+      await tester.scrollUntilVisible(find.text(text), 1);
+      await tester.tap(find.text(text));
+      await tester.pump();
+    }
 
-    await tester.tap(find.text('Sources'));
-    await tester.pump();
-
-    await tester.tap(find.byKey(const Key('Alarm')));
-    await tester.pump();
-
-    await tester.tap(find.byKey(const Key('Manage Storage')));
-    await tester.pump();
-
-    await tester.tap(find.byKey(const Key('Narrator Settings')));
-    await tester.pump();
-
-    await tester.tap(find.byKey(const Key('Accessibility')));
-    await tester.pump();
-
-    await tester.tap(find.byKey(const Key('Done')));
-    await tester.pump();
-    */
+    await testButton('Interests');
+    await testButton('Sources');
+    await testButton('Alarm');
+    await testButton('Manage Storage');
+    await testButton('Narrator Settings');
+    await testButton('Accessibility');
+    await testButton('Done');
   });
 
   testWidgets("Correct username", (WidgetTester tester) async {
