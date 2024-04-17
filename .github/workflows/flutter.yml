@@ -26,7 +26,7 @@ jobs:
           get-deps: true
           
       - name: Build flutter app
-        run: flutter build apk
+        run: flutter build apk --debug
 
       - uses: actions/upload-artifact@master
         with:
