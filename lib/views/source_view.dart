@@ -8,13 +8,12 @@ class SourceView extends StatefulWidget {
   final String newsPaper;
   final String date;
 
-  const SourceView({
-    this.article = "",
-    this.title = "",
-    this.date = "",
-    this.newsPaper = "",
-    super.key
-  });
+  const SourceView(
+      {this.article = "",
+      this.title = "",
+      this.date = "",
+      this.newsPaper = "",
+      super.key});
 
   @override
   State<SourceView> createState() => _SourceViewState();
@@ -39,26 +38,22 @@ class _SourceViewState extends State<SourceView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopAppBar(
-        enableReturnButton: true,
-        onPressed: () => {
-          Navigator.pop(context)
-        },
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-            child: Column(
-              children: [
-                DisplayOrigin(origin: _newsPaper, date: _date),
-                const SizedBox(height: 20),
-                DisplayTitle(title: _title),
-                const SizedBox(height: 20),
-                ScrollableText(text: _article)
-              ],
-            )
+        appBar: TopAppBar(
+          enableReturnButton: true,
+          onPressed: () => {Navigator.pop(context)},
         ),
-      )
-    );
+        body: Container(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+              child: Column(
+            children: [
+              DisplayOrigin(origin: _newsPaper, date: _date),
+              const SizedBox(height: 20),
+              DisplayTitle(title: _title),
+              const SizedBox(height: 20),
+              ScrollableText(text: _article)
+            ],
+          )),
+        ));
   }
 }

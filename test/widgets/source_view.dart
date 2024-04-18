@@ -1,12 +1,14 @@
+import 'dart:math';
+
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-
-  testWidgets("Check every element of source view is present and working", (tester) async {
-
-    const String article = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+  testWidgets("Check every element of source view is present and working",
+      (tester) async {
+    const String article =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
         "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in"
         " reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
         "culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque "
@@ -37,22 +39,22 @@ void main() {
           useMaterial3: true,
           scaffoldBackgroundColor: Colors.white,
         ),
-        home: const SourceView(article: article, title: title, date: date, newsPaper: newsPaper)
-    ));
+        home: const SourceView(
+            article: article, title: title, date: date, newsPaper: newsPaper)));
 
     //check topBar
     expect(find.text("ActualIA"), findsOne);
-    
+
     //check return button
-    expect(find.text("Back"), findsOne);
     expect(find.byIcon(Icons.arrow_back_ios_new), findsOne);
-    
+
     //check article origin
-    expect(find.text("Article from $newsPaper,\n$date"), findsOne);
+    expect(find.text("Article from $newsPaper,"), findsOne);
+    expect(find.text("published the $date"), findsOne);
 
     //check title
     expect(find.text("Title of the article : $title"), findsOne);
-    
+
     //check article is present and scrollable
     await tester.scrollUntilVisible(find.text(article), 5, scrollable: null);
   });

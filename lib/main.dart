@@ -80,7 +80,6 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
           useMaterial3: true,
         ),
-        home: home
-    );
+        home: home);
   }
 }

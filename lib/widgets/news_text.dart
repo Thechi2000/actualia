@@ -84,16 +84,14 @@ class NewsText extends StatelessWidget {
                           //"source", "title", "date" and "content"
                           //from the paragraph.
                           print("Source du paragraphe: ${paragraph.source}");
-                          Navigator.push(context,
+                          Navigator.push(
+                              context,
                               MaterialPageRoute(
                                   builder: (builder) => SourceView(
-                                    article: paragraph.content,
-                                    title: paragraph.title,
-                                    date: paragraph.date,
-                                    newsPaper: paragraph.source
-                                  )
-                              )
-                          );
+                                      article: paragraph.content,
+                                      title: paragraph.title,
+                                      date: paragraph.date,
+                                      newsPaper: paragraph.source)));
                         },
                         child: Text(
                           '${paragraph.transcript}\n',

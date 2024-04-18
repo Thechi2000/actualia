@@ -13,7 +13,6 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Widget leftCorner;
     if (enableReturnButton) {
       leftCorner = ReturnButton(onPressed!);
@@ -26,7 +25,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           //Invisible box to center the title
-           leftCorner,
+          leftCorner,
           // Central button acting as the application title
           Expanded(
             child: TextButton(
@@ -75,7 +74,6 @@ class ReturnButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(16.0),

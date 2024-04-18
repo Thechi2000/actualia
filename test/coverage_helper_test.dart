@@ -9,6 +9,7 @@ import 'package:actualia/counter.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:actualia/views/login_view.dart';
+import 'package:actualia/views/source_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/wizard_view.dart';
@@ -16,10 +17,11 @@ import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news.dart';
+import 'package:actualia/widgets/sources_view_widgets.dart';
 import 'package:actualia/widgets/signin_controls.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:actualia/widgets/news_text.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:actualia/main.dart';
 
-void main(){}
+void main() {}
