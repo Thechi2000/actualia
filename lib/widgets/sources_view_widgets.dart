@@ -60,20 +60,22 @@ class DisplayOrigin extends StatelessWidget {
   final String origin;
   final String date;
 
-  const DisplayOrigin({this.origin = "", this.date = "00/00/0000", super.key});
+  const DisplayOrigin({this.origin = "", this.date = "", super.key});
 
   @override
   Widget build(BuildContext context) {
 
-    return Text(
-      "Article from $origin,\n$date",
-      style: const TextStyle(
-        color: Colors.black,
-        fontSize: 22,
-        fontFamily: 'EB Garamond',
-        fontWeight: FontWeight.w400,
-        height: 1.2,
-      ),
+    return Expanded(
+      child: Text(
+          "Article from $origin,\n$date",
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 22,
+            fontFamily: 'EB Garamond',
+            fontWeight: FontWeight.w400,
+            height: 1.2,
+          ),
+        )
     );
   }
 }
