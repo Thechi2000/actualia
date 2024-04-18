@@ -2,13 +2,19 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
-  final supabase = Supabase.instance.client;
+  late final supabase;
   News? _news;
   News? get news => _news;
+
+  @protected
+  void setNews(News? news) {
+    _news = news;
+  }
+
+  NewsViewModel(this.supabase);
 
   /// Retrieves news for the specified date.
   ///
@@ -39,12 +45,18 @@ class NewsViewModel extends ChangeNotifier {
 
   /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
+    String dayStart =
+        DateTime(date.year, date.month, date.day).toIso8601String();
+    String nextDayStart =
+        DateTime(date.year, date.month, date.day + 1).toIso8601String();
     try {
-      var supabaseResponse = (await supabase
+      var supabaseResponse = await supabase
           .from('news')
           .select()
           .eq('user', supabase.auth.currentUser!.id)
-          .order('date', ascending: false));
+          .gte('date', dayStart)
+          .lt('date', nextDayStart)
+          .order('date', ascending: false);
       final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
