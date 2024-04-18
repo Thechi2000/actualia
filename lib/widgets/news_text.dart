@@ -79,6 +79,7 @@ class NewsText extends StatelessWidget {
                         onTap: () {
                           //TODO: Action for the source button
                           print("Source du paragraphe: ${paragraph.source}");
+
                         },
                         child: Text(
                           '${paragraph.text}\n',
