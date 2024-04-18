@@ -43,6 +43,7 @@ class NewsText extends StatelessWidget {
           Padding(
             //Box containing the title and the date
             //NB : The alignment will change after we add the button to play the audio
+            //Note for audio : Use the transcriptID and audio fields from the news.
             padding: const EdgeInsets.symmetric(horizontal: 80.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,11 +79,14 @@ class NewsText extends StatelessWidget {
                   .map((paragraph) => GestureDetector(
                         onTap: () {
                           //TODO: Action for the source button
+                          //Note for source: Use the fields
+                          //"source", "title", "date" and "content"
+                          //from the paragraph.
                           print("Source du paragraphe: ${paragraph.source}");
 
                         },
                         child: Text(
-                          '${paragraph.text}\n',
+                          '${paragraph.transcript}\n',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 12,

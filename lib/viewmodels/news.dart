@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
@@ -45,12 +44,18 @@ class NewsViewModel extends ChangeNotifier {
 
   /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
+    String dayStart =
+        DateTime(date.year, date.month, date.day).toIso8601String();
+    String nextDayStart =
+        DateTime(date.year, date.month, date.day + 1).toIso8601String();
     try {
-      var supabaseResponse = (await supabase
+      var supabaseResponse = await supabase
           .from('news')
           .select()
           .eq('user', supabase.auth.currentUser!.id)
-          .order('date', ascending: false));
+          .gte('date', dayStart)
+          .lt('date', nextDayStart)
+          .order('date', ascending: false);
       final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
@@ -60,12 +65,19 @@ class NewsViewModel extends ChangeNotifier {
 
       List<dynamic> newsItems = response['transcript']['articles'];
       List<Paragraph> paragraphs = newsItems.map((item) {
-        return Paragraph(text: item['transcript'], source: item['url']);
+        return Paragraph(
+            transcript: item['transcript'],
+            source: item['source']['name'],
+            title: item['title'],
+            date: item['publishedAt'],
+            content: item['content']);
       }).toList();
 
       _news = News(
         title: response['title'],
         date: response['date'],
+        transcriptID: response['id'],
+        audio: response['audio'],
         paragraphs: paragraphs,
       );
       notifyListeners();
@@ -91,7 +103,16 @@ class NewsViewModel extends ChangeNotifier {
     _news = News(
       date: date.toString().substring(0, 10),
       title: title,
-      paragraphs: [Paragraph(text: message, source: 'System')],
+      transcriptID: -1,
+      audio: null,
+      paragraphs: [
+        Paragraph(
+            transcript: message,
+            source: 'System',
+            title: '',
+            date: '',
+            content: '')
+      ],
     );
   }
 }
