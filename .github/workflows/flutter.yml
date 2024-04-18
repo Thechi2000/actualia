@@ -26,7 +26,7 @@ jobs:
           get-deps: true
           
       - name: Build flutter app
-        run: flutter build apk --release
+        run: flutter build apk --debug
 
       - uses: actions/upload-artifact@master
         with:
@@ -74,10 +74,10 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: release-apk
-          path: actualia.apk
+          path: apk
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body: A new version is available.
-          files: actualia.apk
+          files: 'apk/*'
