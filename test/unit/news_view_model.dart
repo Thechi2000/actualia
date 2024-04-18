@@ -99,6 +99,28 @@ class AlreadyExistingNewsVM extends NewsViewModel {
   }
 
   @override
+  Future<void> getNewsList() {
+    List<News> newsList = [];
+    for (int i = 0; i < 4; i++) {
+      newsList.add(News(
+          date: DateTime.now().toIso8601String(),
+          title: "News + ${i.toString()}",
+          transcriptID: -1,
+          audio: null,
+          paragraphs: [
+            Paragraph(
+                transcript: "text",
+                source: "source",
+                title: "title",
+                date: "12-04-2024",
+                content: "content")
+          ]));
+    }
+    setNewsList(newsList);
+    return Future.value();
+  }
+
+  @override
   Future<void> invokeTranscriptFunction() {
     fail("invokeTranscriptFunction should not be called");
   }
@@ -132,6 +154,47 @@ class NonExistingNewsVM extends NewsViewModel {
   }
 
   @override
+  Future<void> getNewsList() {
+    List<News> newsList = [];
+    if (invokedTranscriptFunction) {
+      for (int i = 0; i < 4; i++) {
+        newsList.add(News(
+            date: DateTime.now().toIso8601String(),
+            title: "News + ${i.toString()}",
+            transcriptID: -1,
+            audio: null,
+            paragraphs: [
+              Paragraph(
+                  transcript: "text",
+                  source: "source",
+                  title: "title",
+                  date: "12-04-2024",
+                  content: "content")
+            ]));
+      }
+      setNewsList(newsList);
+    } else {
+      for (int i = 0; i < 3; i++) {
+        newsList.add(News(
+            date: DateTime.now().toIso8601String(),
+            title: "News + ${i.toString()}",
+            transcriptID: -1,
+            audio: null,
+            paragraphs: [
+              Paragraph(
+                  transcript: "text",
+                  source: "source",
+                  title: "title",
+                  date: "12-04-2024",
+                  content: "content")
+            ]));
+      }
+      setNewsList(newsList);
+    }
+    return Future.value();
+  }
+
+  @override
   Future<void> invokeTranscriptFunction() async {
     invokedTranscriptFunction = true;
   }
@@ -143,6 +206,12 @@ class NeverExistingNewsVM extends NewsViewModel {
   @override
   Future<void> fetchNews(DateTime date) {
     setNews(null);
+    return Future.value();
+  }
+
+  @override
+  Future<void> getNewsList() {
+    setNewsList([]);
     return Future.value();
   }
 
@@ -205,5 +274,11 @@ void main() {
     NewsViewModel vm = NeverExistingNewsVM();
     await vm.getNews(DateTime.now());
     expect(vm.news?.title, equals("News generation failed and no news found."));
+  });
+
+  test('getNewsList with non working EF reports error', () async {
+    NewsViewModel vm = NeverExistingNewsVM();
+    await vm.getNewsList();
+    expect(vm.newsList, isEmpty);
   });
 }
