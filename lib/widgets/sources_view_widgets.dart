@@ -30,32 +30,6 @@ class ScrollableText extends StatelessWidget {
   }
 }
 
-class ReturnButton extends StatelessWidget {
-  const ReturnButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return InkWell(
-      onTap: () => {/*todo*/},
-      borderRadius: BorderRadius.circular(20.0),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 4, 16),
-            child: Icon(Icons.arrow_back_ios_new),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(4, 16, 16, 16),
-            child: Text("Back"),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class DisplayOrigin extends StatelessWidget {
   final String origin;
   final String date;
@@ -65,17 +39,32 @@ class DisplayOrigin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Expanded(
-      child: Text(
-          "Article from $origin,\n$date",
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontFamily: 'EB Garamond',
-            fontWeight: FontWeight.w400,
-            height: 1.2,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+      child: Wrap(
+        children: [
+          Text(
+            "Article from $origin,",
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+              height: 1.2,
+            ),
           ),
-        )
+          Text(
+            "published the $date",
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+              height: 1.2,
+            ),
+          )
+        ],
+      )
     );
   }
 }

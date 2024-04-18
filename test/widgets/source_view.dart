@@ -51,9 +51,9 @@ void main() {
     expect(find.text("Article from $newsPaper,\n$date"), findsOne);
 
     //check title
-    expect(find.text("Title of the Article : $title"), findsOne);
+    expect(find.text("Title of the article : $title"), findsOne);
     
     //check article is present and scrollable
-    await tester.scrollUntilVisible(find.text("rutrum eu turpis a"), 10);
+    await tester.scrollUntilVisible(find.text(article), 5, scrollable: null);
   });
 }

@@ -80,11 +80,7 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
           useMaterial3: true,
         ),
-        home: const SourceView(
-          article: "None",
-          title: "None",
-          date: "00/00/0000",
-          newsPaper: "https://dummy.com",
-        ));
+        home: home
+    );
   }
 }

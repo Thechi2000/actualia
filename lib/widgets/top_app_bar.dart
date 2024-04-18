@@ -2,17 +2,31 @@ import 'package:actualia/views/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final bool enableReturnButton;
+  final void Function()? onPressed;
+
   const TopAppBar({
+    this.enableReturnButton = false,
+    this.onPressed,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    Widget leftCorner;
+    if (enableReturnButton) {
+      leftCorner = ReturnButton(onPressed!);
+    } else {
+      leftCorner = const SizedBox(width: 10);
+    }
+
     return AppBar(
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           //Invisible box to center the title
-          const SizedBox(width: 40),
+           leftCorner,
           // Central button acting as the application title
           Expanded(
             child: TextButton(
@@ -52,4 +66,23 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(48);
+}
+
+class ReturnButton extends StatelessWidget {
+  final void Function() onPressed;
+
+  const ReturnButton(this.onPressed, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(16.0),
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        child: Icon(Icons.arrow_back_ios_new),
+      ),
+    );
+  }
 }

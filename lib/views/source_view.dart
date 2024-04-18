@@ -39,20 +39,19 @@ class _SourceViewState extends State<SourceView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TopAppBar(),
+      appBar: TopAppBar(
+        enableReturnButton: true,
+        onPressed: () => {
+          Navigator.pop(context)
+        },
+      ),
       body: Container(
         padding: const EdgeInsets.all(16),
         child: Center(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween ,
-                  children: [
-                    const ReturnButton(),
-                    DisplayOrigin(origin: _newsPaper, date: _date)
-                  ],
-                ),
-                const SizedBox(height: 40),
+                DisplayOrigin(origin: _newsPaper, date: _date),
+                const SizedBox(height: 20),
                 DisplayTitle(title: _title),
                 const SizedBox(height: 20),
                 ScrollableText(text: _article)
