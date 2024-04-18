@@ -16,9 +16,8 @@ class _NewsViewState extends State<NewsView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => Provider.of<NewsViewModel>(context, listen: false)
-        //.getNews(DateTime.now()));
-        .getNewsList());
+    Future.microtask(
+        () => Provider.of<NewsViewModel>(context, listen: false).getNewsList());
   }
 
   @override
