@@ -96,13 +96,7 @@ class NewsViewModel extends ChangeNotifier {
 
   Future<void> getNewsList() async {
     try {
-      var response = await supabase
-          .from('news')
-          .select()
-          .eq('user', supabase.auth.currentUser!.id)
-          .order('date', ascending: false) // Sorting by date descending
-          .limit(10); // Limiting to 10 news items;
-
+      var response = await fetchNewsList();
       if (response.isEmpty) {
         await invokeTranscriptFunction();
         await fetchNews(DateTime.now());
@@ -153,6 +147,15 @@ class NewsViewModel extends ChangeNotifier {
       _newsList = [];
       notifyListeners();
     }
+  }
+
+  Future<List<dynamic>> fetchNewsList() async {
+    return await supabase
+        .from('news')
+        .select()
+        .eq('user', supabase.auth.currentUser!.id)
+        .order('date', ascending: false) // Sorting by date descending
+        .limit(10); // Limiting to 10 news items;
   }
 
   /// Invokes a cloud function to generate news transcripts.
