@@ -5,12 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthModel extends ChangeNotifier {
-  static const _webClientId =
-      '505202936017-bn8uc2veq2hv5h6ksbsvr9pr38g12gde.apps.googleusercontent.com';
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId: _webClientId,
-  );
-
+  late final GoogleSignIn _googleSignIn;
   late final _supabase;
 
   User? user;
@@ -18,7 +13,7 @@ class AuthModel extends ChangeNotifier {
 
   bool get isSignedIn => user != null;
 
-  AuthModel(SupabaseClient supabaseClient) {
+  AuthModel(SupabaseClient supabaseClient, this._googleSignIn) {
     _supabase = supabaseClient;
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
       print('Supabase onAuthStateChange new authState : ${authState.event}');
