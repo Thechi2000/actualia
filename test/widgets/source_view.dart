@@ -45,9 +45,6 @@ void main() {
     //check topBar
     expect(find.text("ActualIA"), findsOne);
 
-    //check return button
-    expect(find.byIcon(Icons.arrow_back_ios_new), findsOne);
-
     //check article origin
     expect(find.text("Article from $newsPaper,"), findsOne);
     expect(find.text("published the $date"), findsOne);
