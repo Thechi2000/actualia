@@ -35,12 +35,7 @@ class NewsViewModel extends ChangeNotifier {
       if (date.year == today.year &&
           date.month == today.month &&
           date.day == today.day) {
-        await invokeTranscriptFunction();
-        await fetchNews(date);
-        if (_news == null || _news!.paragraphs.isEmpty) {
-          setNewsError(date, 'News generation failed and no news found.',
-              'Something went wrong while generating news. Please try again later.');
-        }
+        generateAndGetNews();
       } else {
         setNewsError(date, 'No news found for this date.',
             'There are no news for you on this date.');
@@ -63,6 +58,7 @@ class NewsViewModel extends ChangeNotifier {
           .gte('date', dayStart)
           .lt('date', nextDayStart)
           .order('date', ascending: false);
+
       final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
@@ -70,23 +66,7 @@ class NewsViewModel extends ChangeNotifier {
         return;
       }
 
-      List<dynamic> newsItems = response['transcript']['articles'];
-      List<Paragraph> paragraphs = newsItems.map((item) {
-        return Paragraph(
-            transcript: item['transcript'],
-            source: item['source']['name'],
-            title: item['title'],
-            date: item['publishedAt'],
-            content: item['content']);
-      }).toList();
-
-      _news = News(
-        title: response['title'],
-        date: response['date'],
-        transcriptID: response['id'],
-        audio: response['audio'],
-        paragraphs: paragraphs,
-      );
+      _news = parseNews(response);
       notifyListeners();
     } catch (e) {
       log("Error fetching news: $e");
@@ -97,55 +77,35 @@ class NewsViewModel extends ChangeNotifier {
   Future<void> getNewsList() async {
     try {
       var response = await fetchNewsList();
+
       if (response.isEmpty) {
-        await invokeTranscriptFunction();
-        await fetchNews(DateTime.now());
-        if (_news == null || _news!.paragraphs.isEmpty) {
-          setNewsError(
-              DateTime.now(),
-              'News generation failed and no news found.',
-              'Something went wrong while generating news. Please try again later.');
-        }
+        generateAndGetNews();
         _newsList.insert(0, _news!);
       } else {
-        _newsList = response.map<News>((news) {
-          List<dynamic> newsItems = news['transcript']['articles'];
+        _newsList = response.map<News>((news) => parseNews(news)).toList();
 
-          List<Paragraph> paragraphs = newsItems.map((item) {
-            return Paragraph(
-                transcript: item['transcript'],
-                source: item['source']['name'],
-                title: item['title'],
-                date: item['publishedAt'],
-                content: item['content']);
-          }).toList();
-          return News(
-            title: news['title'],
-            date: news['date'],
-            transcriptID: news['id'],
-            audio: news['audio'],
-            paragraphs: paragraphs,
-          );
-        }).toList();
         //If the date of the first news is not today, call the cloud function
         if (_newsList[0].date.substring(0, 10) !=
             DateTime.now().toString().substring(0, 10)) {
-          await invokeTranscriptFunction();
-          await fetchNews(DateTime.now());
-          if (_news == null || _news!.paragraphs.isEmpty) {
-            setNewsError(
-                DateTime.now(),
-                'News generation failed and no news found.',
-                'Something went wrong while generating news. Please try again later.');
-          }
+          generateAndGetNews();
           _newsList.insert(0, _news!);
         }
       }
-      notifyListeners();
     } catch (e) {
       log("Error fetching news list: $e");
       _newsList = [];
-      notifyListeners();
+    }
+    notifyListeners();
+  }
+
+  @protected
+  Future<void> generateAndGetNews() async {
+    await invokeTranscriptFunction();
+    await fetchNews(DateTime.now());
+
+    if (_news == null || _news!.paragraphs.isEmpty) {
+      setNewsError(DateTime.now(), 'News generation failed and no news found.',
+          'Something went wrong while generating news. Please try again later.');
     }
   }
 
@@ -156,6 +116,26 @@ class NewsViewModel extends ChangeNotifier {
         .eq('user', supabase.auth.currentUser!.id)
         .order('date', ascending: false) // Sorting by date descending
         .limit(10); // Limiting to 10 news items;
+  }
+
+  News parseNews(dynamic response) {
+    List<dynamic> newsItems = response['transcript']['articles'];
+    List<Paragraph> paragraphs = newsItems.map((item) {
+      return Paragraph(
+          transcript: item['transcript'],
+          source: item['source']['name'],
+          title: item['title'],
+          date: item['publishedAt'],
+          content: item['content']);
+    }).toList();
+
+    return News(
+      title: response['title'],
+      date: response['date'],
+      transcriptID: response['id'],
+      audio: response['audio'],
+      paragraphs: paragraphs,
+    );
   }
 
   /// Invokes a cloud function to generate news transcripts.
