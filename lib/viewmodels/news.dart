@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
@@ -66,12 +65,19 @@ class NewsViewModel extends ChangeNotifier {
 
       List<dynamic> newsItems = response['transcript']['articles'];
       List<Paragraph> paragraphs = newsItems.map((item) {
-        return Paragraph(text: item['transcript'], source: item['url']);
+        return Paragraph(
+            transcript: item['transcript'],
+            source: item['source']['name'],
+            title: item['title'],
+            date: item['publishedAt'],
+            content: item['content']);
       }).toList();
 
       _news = News(
         title: response['title'],
         date: response['date'],
+        transcriptID: response['id'],
+        audio: response['audio'],
         paragraphs: paragraphs,
       );
       notifyListeners();
@@ -97,7 +103,16 @@ class NewsViewModel extends ChangeNotifier {
     _news = News(
       date: date.toString().substring(0, 10),
       title: title,
-      paragraphs: [Paragraph(text: message, source: 'System')],
+      transcriptID: -1,
+      audio: null,
+      paragraphs: [
+        Paragraph(
+            transcript: message,
+            source: 'System',
+            title: '',
+            date: '',
+            content: '')
+      ],
     );
   }
 }

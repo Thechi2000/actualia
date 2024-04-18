@@ -12,12 +12,37 @@ class MockNewsViewModel extends NewsViewModel {
   MockNewsViewModel() : super(FakeSupabaseClient());
 
   @override
-  News? get news => News(title: "Title", date: "1970-01-01", paragraphs: [
-        Paragraph(text: "text1", source: "source1"),
-        Paragraph(text: "text2", source: "source2"),
-        Paragraph(text: "text3", source: "source3"),
-        Paragraph(text: "text4", source: "source4")
-      ]);
+  News? get news => News(
+          title: "Title",
+          date: "1970-01-01",
+          transcriptID: -1,
+          audio: null,
+          paragraphs: [
+            Paragraph(
+                transcript: "text1",
+                source: "source1",
+                title: "title1",
+                date: "1970-01-01",
+                content: "content1"),
+            Paragraph(
+                transcript: "text2",
+                source: "source2",
+                title: "title2",
+                date: "1970-01-01",
+                content: "content2"),
+            Paragraph(
+                transcript: "text3",
+                source: "source3",
+                title: "title3",
+                date: "1970-01-01",
+                content: "content3"),
+            Paragraph(
+                transcript: "text4",
+                source: "source4",
+                title: "title4",
+                date: "1970-01-01",
+                content: "content4")
+          ]);
 
   @override
   Future<void> getNews(DateTime date) {
