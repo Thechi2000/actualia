@@ -7,6 +7,8 @@ class NewsViewModel extends ChangeNotifier {
   late final supabase;
   News? _news;
   News? get news => _news;
+  List<News> _newsList = [];
+  List<News> get newsList => _newsList;
 
   @protected
   void setNews(News? news) {
@@ -87,13 +89,74 @@ class NewsViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> getNewsList() async {
+    try {
+      var response = await supabase
+          .from('news')
+          .select()
+          .eq('user', supabase.auth.currentUser!.id)
+          .order('date', ascending: false) // Sorting by date descending
+          .limit(10); // Limiting to 10 news items;
+
+      if (response.isEmpty) {
+        await invokeTranscriptFunction();
+        await fetchNews(DateTime.now());
+        if (_news == null || _news!.paragraphs.isEmpty) {
+          setNewsError(
+              DateTime.now(),
+              'News generation failed and no news found.',
+              'Something went wrong while generating news. Please try again later.');
+        }
+        _newsList.insert(0, _news!);
+      } else {
+        _newsList = response.map<News>((news) {
+          List<dynamic> newsItems = news['transcript']['articles'];
+
+          List<Paragraph> paragraphs = newsItems.map((item) {
+            return Paragraph(
+                transcript: item['transcript'],
+                source: item['source']['name'],
+                title: item['title'],
+                date: item['publishedAt'],
+                content: item['content']);
+          }).toList();
+          return News(
+            title: news['title'],
+            date: news['date'],
+            transcriptID: news['id'],
+            audio: news['audio'],
+            paragraphs: paragraphs,
+          );
+        }).toList();
+        //If the date of the first news is not today, call the cloud function
+        if (_newsList[0].date.substring(0, 10) !=
+            DateTime.now().toString().substring(0, 10)) {
+          await invokeTranscriptFunction();
+          await fetchNews(DateTime.now());
+          if (_news == null || _news!.paragraphs.isEmpty) {
+            setNewsError(
+                DateTime.now(),
+                'News generation failed and no news found.',
+                'Something went wrong while generating news. Please try again later.');
+          }
+          _newsList.insert(0, _news!);
+        }
+      }
+      notifyListeners();
+    } catch (e) {
+      log("Error fetching news list: $e");
+      _newsList = [];
+      notifyListeners();
+    }
+  }
+
   /// Invokes a cloud function to generate news transcripts.
   Future<void> invokeTranscriptFunction() async {
     try {
       await supabase.functions.invoke('get-transcript');
       log("Cloud function 'transcript' invoked successfully.");
     } catch (e) {
-      print("Error invoking cloud function: $e");
+      log("Error invoking cloud function: $e");
       throw Exception("Failed to invoke transcript function");
     }
   }
