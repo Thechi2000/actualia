@@ -99,28 +99,6 @@ class AlreadyExistingNewsVM extends NewsViewModel {
   }
 
   @override
-  Future<void> getNewsList() {
-    List<News> newsList = [];
-    for (int i = 0; i < 4; i++) {
-      newsList.add(News(
-          date: DateTime.now().toIso8601String(),
-          title: "News + ${i.toString()}",
-          transcriptID: -1,
-          audio: null,
-          paragraphs: [
-            Paragraph(
-                transcript: "text",
-                source: "source",
-                title: "title",
-                date: "12-04-2024",
-                content: "content")
-          ]));
-    }
-    setNewsList(newsList);
-    return Future.value();
-  }
-
-  @override
   Future<void> invokeTranscriptFunction() {
     fail("invokeTranscriptFunction should not be called");
   }
@@ -219,6 +197,56 @@ class NeverExistingNewsVM extends NewsViewModel {
   Future<void> invokeTranscriptFunction() async {}
 }
 
+class NewsListVM extends NewsViewModel {
+  NewsListVM(SupabaseClient supabase) : super(supabase);
+
+  @override
+  Future<void> fetchNews(DateTime date) {
+    setNews(News(
+        date: DateTime.now().toIso8601String(),
+        title: "News",
+        transcriptID: -1,
+        audio: null,
+        paragraphs: [
+          Paragraph(
+              transcript: "text",
+              source: "source",
+              title: "title",
+              date: "12-04-2024",
+              content: "content")
+        ]));
+    return Future.value();
+  }
+
+  @override
+  Future<List<dynamic>> fetchNewsList() async {
+    return Future.value([
+      {
+        "date": DateTime.now().toIso8601String(),
+        "title": "News",
+        "id": -1,
+        "audio": null,
+        "transcript": {
+          "articles": [
+            {
+              "transcript": "text",
+              "source": {"name": "source"},
+              "title": "title",
+              "publishedAt": "12-04-2024",
+              "content": "content"
+            }
+          ]
+        }
+      }
+    ]);
+  }
+
+  @override
+  Future<void> invokeTranscriptFunction() {
+    fail("invokeTranscriptFunction should not be called");
+  }
+}
+
 void main() {
   test("get-transcript failure is reported", () async {
     NewsViewModel vm = NewsViewModel(FakeFailingSupabaseClient());
@@ -280,5 +308,13 @@ void main() {
     NewsViewModel vm = NeverExistingNewsVM();
     await vm.getNewsList();
     expect(vm.newsList, isEmpty);
+  });
+
+  test('getNewsList with working EF returns correct list', () async {
+    NewsListVM vm = NewsListVM(FakeSupabaseClient());
+    await vm.getNewsList();
+    expect(vm.newsList.length, equals(1));
+    expect(vm.newsList[0].title, equals("News"));
+    expect(vm.newsList[0].paragraphs[0].source, equals("source"));
   });
 }
