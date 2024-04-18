@@ -90,7 +90,7 @@ class NewsText extends StatelessWidget {
                                   builder: (builder) => SourceView(
                                       article: paragraph.content,
                                       title: paragraph.title,
-                                      date: paragraph.date,
+                                      date: paragraph.date.substring(0, 10),
                                       newsPaper: paragraph.source)));
                         },
                         child: Text(
