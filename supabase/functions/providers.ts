@@ -1,5 +1,6 @@
 import { News, NewsSettings, Provider } from "../functions/model.ts";
 import { parseFeed } from "https://deno.land/x/rss@1.0.2/mod.ts";
+import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
 
 interface GNewsOutput {
   totalArticles: number;
@@ -28,20 +29,20 @@ export async function fetchNews(
     provider: Provider,
     newsSettings: NewsSettings,
   ): Promise<News[]> {
+    const topics: string[] = [];
+    if (newsSettings.wants_interests) {
+      topics.push(newsSettings.interests);
+    }
+    if (newsSettings.wants_countries) {
+      topics.push(newsSettings.countries);
+    }
+    if (newsSettings.wants_cities) {
+      topics.push(newsSettings.cities);
+    }
+
     switch (provider.type) {
       case "gnews": {
         console.info("Fetching from GNews");
-
-        const topics: string[] = [];
-        if (newsSettings.wants_interests) {
-          topics.push(newsSettings.interests);
-        }
-        if (newsSettings.wants_countries) {
-          topics.push(newsSettings.countries);
-        }
-        if (newsSettings.wants_cities) {
-          topics.push(newsSettings.cities);
-        }
 
         const query = topics.map((s) => `"${s}"`).join(" OR ");
         const url = `https://gnews.io/api/v4/search?q=${
@@ -79,9 +80,38 @@ export async function fetchNews(
         }))
           .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
 
-        // TODO: Filter news according to user settings.
+        // Filter news by AI according to user settings
+        const openai = new OpenAI();
+        const completion = await openai.chat.completions.create({
+          "model": "gpt-3.5-turbo",
+          "response_format": {
+            "type": "json_object",
+          },
+          "messages": [
+            {
+              "role": "system",
+              "content":
+                "You are a trained news assistant. You're given a JSON of news, and in this JSON you must select the news that matches the following themes:" +
+                topics +
+                "You return a JSON in the same form, but without the news that doesn't match the themes.",
+            },
+            {
+              "role": "user",
+              "content": JSON.stringify(news),
+            },
+          ],
+        });
 
-        return news;
+        // verify that the completion is valid
+        let filteredNews: News[] = [];
+        try {
+          filteredNews = JSON.parse(
+            completion.choices[0].message.content || "",
+          );
+        } catch (error) {
+          console.error("Error parsing filtered news:", error);
+        }
+        return filteredNews;
       }
       default:
         throw new Error(
