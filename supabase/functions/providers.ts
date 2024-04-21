@@ -71,13 +71,17 @@ export async function fetchNews(
         const feed = await parseFeed(xml);
 
         feed.entries.forEach((e) => console.log(e));
-        return feed.entries.map((i) => ({
+        const news = feed.entries.map((i) => ({
           title: i.title?.value || "",
           description: i.description?.value || "",
           date: i.published || new Date(Date.now()),
           link: i.links[0].href || "",
         }))
           .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
+
+        // TODO: Filter news according to user settings.
+
+        return news;
       }
       default:
         throw new Error(
