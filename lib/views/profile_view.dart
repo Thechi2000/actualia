@@ -90,13 +90,12 @@ class _ProfilePageState extends State<ProfilePageView> {
                   onPressed: () {
                     // TODO 1 : Implement showig interests directly on this page
                     //isInterestUnfold.value = !isInterestUnfold.value;
-                    /*
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (builder) => const WizardView()));
-                            */
-
+                            builder: (builder) => const WizardView(
+                                  fromSetting: true,
+                                )));
                     print("Click on Interests");
                   },
                   child: const Text('Interests'))),

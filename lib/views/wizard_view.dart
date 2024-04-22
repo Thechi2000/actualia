@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
 
 class WizardView extends StatefulWidget {
-  const WizardView({super.key});
+  final bool fromSetting;
+
+  const WizardView({this.fromSetting = false, super.key});
 
   @override
   State<StatefulWidget> createState() => _WizardViewState();
@@ -107,6 +109,10 @@ class _WizardViewState extends State<WizardView> {
         );
         newsSettingsModel?.pushSettings(toSend);
         //todo nav to main screen
+
+        if (widget.fromSetting) {
+          Navigator.pop(context);
+        }
       }),
     );
   }
