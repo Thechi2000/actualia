@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,31 @@ class _WizardViewState extends State<WizardView> {
     if (fromDB.interests.isNotEmpty) {
       _interests = fromDB.interests;
     }
+
+    Widget bottomBar = WizardNavigationBottomBar(
+      showLeft: widget.fromSetting,
+      lText: 'Cancel',
+      lOnPressed: () {
+        Navigator.pop(context);
+        },
+      showRight: true,
+      rText: 'Validate',
+      rOnPressed: () {
+        NewsSettings toSend = NewsSettings(
+          cities: _cities,
+          countries: _countries,
+          interests: _interests,
+          wantsCities: true,
+          wantsCountries: true,
+          wantsInterests: true,
+          onboardingNeeded: false,
+        );
+        newsSettingsModel?.pushSettings(toSend);
+        //todo nav to main screen
+        if (widget.fromSetting) {
+          Navigator.pop(context);
+        }
+    });
 
     return Scaffold(
       appBar: PreferredSize(
@@ -97,23 +124,7 @@ class _WizardViewState extends State<WizardView> {
           ],
         ),
       ),
-      bottomNavigationBar: WizardNavigationButton('Validate', () {
-        NewsSettings toSend = NewsSettings(
-          cities: _cities,
-          countries: _countries,
-          interests: _interests,
-          wantsCities: true,
-          wantsCountries: true,
-          wantsInterests: true,
-          onboardingNeeded: false,
-        );
-        newsSettingsModel?.pushSettings(toSend);
-        //todo nav to main screen
-
-        if (widget.fromSetting) {
-          Navigator.pop(context);
-        }
-      }),
+      bottomNavigationBar: bottomBar
     );
   }
 }
