@@ -107,7 +107,17 @@ void main() {
       await tester.pump();
     }
 
-    await testButton('Interests');
+    testInterestButton() async {
+      expect(find.text("Interests"), findsOne);
+      await tester.tap(find.text("Interests"));
+      await tester.pump();
+      expect(find.text("Cancel"), findsOne);
+      await tester.tap(find.text("Cancel"));
+      await tester.pump();
+      expect(find.text("Interests"), findsOne);
+    }
+
+    await testInterestButton();
     await testButton('Sources');
     await testButton('Alarm');
     await testButton('Manage Storage');
