@@ -65,20 +65,9 @@ export async function fetchNews(
       case "rss": {
         console.info("Fetching RSS from ", provider.url);
 
-        // Uses https://rssfilter.netlify.app/ to generate a filtered rss feed using a
-        // Each topic is wrapped between either a boundary delimiter or a whitespace,
-        // to ensure it matches whole words.
-        const regex = "(?i)(" +
-          topics.map((t) => `(?:^|\\s)${t}(?:$|\\s)`).join("|") + ")";
-
-        const url =
-          `https://rssfilter-a7aj2utffa-uc.a.run.app/feed?title_allow=${
-            encodeURIComponent(regex)
-          }&url=${encodeURIComponent(provider.url)}`;
-
-        console.log("Using rss-filter as middleware with URL: ", url);
-
-        const response = await fetch(url);
+        const response = await fetch(
+          provider.url,
+        );
         const xml = await response.text();
         const feed = await parseFeed(xml);
 
@@ -91,7 +80,38 @@ export async function fetchNews(
         }))
           .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
 
-        return news;
+        // Filter news by AI according to user settings
+        const openai = new OpenAI();
+        const completion = await openai.chat.completions.create({
+          "model": "gpt-3.5-turbo",
+          "response_format": {
+            "type": "json_object",
+          },
+          "messages": [
+            {
+              "role": "system",
+              "content":
+                "You are a trained news assistant. You're given a JSON of news, and in this JSON you must select the news that matches the following themes:" +
+                topics +
+                "You return a JSON in the same form, but without the news that doesn't match the themes.",
+            },
+            {
+              "role": "user",
+              "content": JSON.stringify(news),
+            },
+          ],
+        });
+
+        // verify that the completion is valid
+        let filteredNews: News[] = [];
+        try {
+          filteredNews = JSON.parse(
+            completion.choices[0].message.content || "",
+          );
+        } catch (error) {
+          console.error("Error parsing filtered news:", error);
+        }
+        return filteredNews;
       }
       default:
         throw new Error(
