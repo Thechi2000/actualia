@@ -73,20 +73,21 @@ class ProfilePageWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NewsSettingsViewModel>(
+            create: (context) => _newsSettingsModel),
+        ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
+      ],
+      child: MaterialApp(
         title: "ActualIA",
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+        useMaterial3: true,
         ),
-        home: MultiProvider(
-          providers: [
-            ChangeNotifierProvider<NewsSettingsViewModel>(
-                create: (context) => _newsSettingsModel),
-            ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
-          ],
-          child: _child,
-        ));
+        home: _child,
+      )
+    );
   }
 }
 
@@ -110,7 +111,7 @@ void main() {
     testInterestButton() async {
       expect(find.text("Interests"), findsOne);
       await tester.tap(find.text("Interests"));
-      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
       expect(find.text("Cancel"), findsOne);
       await tester.tap(find.text("Cancel"));
       await tester.pump();
