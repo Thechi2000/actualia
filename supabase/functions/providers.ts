@@ -29,15 +29,15 @@ export async function fetchNews(
     provider: Provider,
     newsSettings: NewsSettings,
   ): Promise<News[]> {
-    const topics: string[] = [];
+    let topics: string[] = [];
     if (newsSettings.wants_interests) {
-      topics.push(newsSettings.interests);
+      topics = topics.concat(JSON.parse(newsSettings.interests));
     }
     if (newsSettings.wants_countries) {
-      topics.push(newsSettings.countries);
+      topics = topics.concat(JSON.parse(newsSettings.countries));
     }
     if (newsSettings.wants_cities) {
-      topics.push(newsSettings.cities);
+      topics = topics.concat(JSON.parse(newsSettings.cities));
     }
 
     switch (provider.type) {
@@ -71,7 +71,6 @@ export async function fetchNews(
         const xml = await response.text();
         const feed = await parseFeed(xml);
 
-        feed.entries.forEach((e) => console.log(e));
         const news = feed.entries.map((i) => ({
           title: i.title?.value || "",
           description: i.description?.value || "",
@@ -103,7 +102,7 @@ export async function fetchNews(
         });
 
         // verify that the completion is valid
-        let filteredNews: News[] = [];
+        let filteredNews = {news: [] as News[]};
         try {
           filteredNews = JSON.parse(
             completion.choices[0].message.content || "",
@@ -111,11 +110,11 @@ export async function fetchNews(
         } catch (error) {
           console.error("Error parsing filtered news:", error);
         }
-        return filteredNews;
+        return filteredNews.news;
       }
       default:
         throw new Error(
-          `Unknown provider: ${(provider as { type: string }).type}`,
+          `Unknown provider: ${JSON.stringify(provider)}`,
         );
     }
   }
