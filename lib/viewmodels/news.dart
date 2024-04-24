@@ -35,7 +35,7 @@ class NewsViewModel extends ChangeNotifier {
       if (date.year == today.year &&
           date.month == today.month &&
           date.day == today.day) {
-        generateAndGetNews();
+        await generateAndGetNews();
       } else {
         setNewsError(date, 'No news found for this date.',
             'There are no news for you on this date.');
