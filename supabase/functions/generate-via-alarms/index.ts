@@ -34,8 +34,8 @@ Deno.serve(async (req) => {
     .from("alarms")
     .select()
     .gte("timetz", timetz)
-    .lte("timetz", timetz_plus_1h)
-    .lte("last_used", timestampz_minus_10h);
+    .lte("timetz", timetz_plus_1h);
+  //.lte("last_used", timestampz_minus_10h);
   if (error) {
     console.error("Error getting alarms:", error);
     return new Response("Error getting alarms", { status: 500 });
