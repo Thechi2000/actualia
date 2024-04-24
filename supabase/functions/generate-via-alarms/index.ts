@@ -15,6 +15,13 @@ Deno.serve(async (req) => {
   const timestampz_minus_10h = new Date(Date.now() - 22 * 60 * 60 * 1000)
     .toISOString();
 
+  console.log(
+    "Lauching and treating alarms between",
+    timetz,
+    "and",
+    timetz_plus_1h,
+  );
+
   // We create a Supabase client with the service role key.
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -34,10 +41,14 @@ Deno.serve(async (req) => {
     return new Response("Error getting alarms", { status: 500 });
   }
 
+  console.log("Alarms to treat:", alarms);
+
   // All the alarms have a row "transcript_id" that we use to get the list of transcripts to generate.
   const transcriptIds = alarms.map((alarm: { transcript_id: bigint }) =>
     alarm.transcript_id
   );
+
+  console.log("Transcript IDs to generate:", transcriptIds);
 
   // We get the list of transcripts to generate.
   const { data: transcripts, error: errorTranscripts } = await supabaseClient
@@ -49,10 +60,14 @@ Deno.serve(async (req) => {
     return new Response("Error getting transcripts", { status: 500 });
   }
 
+  console.log("Transcripts to generate:", transcripts);
+
   // We verify we have the same number of transcripts as alarms (not critical)
   if (transcripts.length !== alarms.length) {
     console.error("Number of transcripts does not match number of alarms");
   }
+
+  console.log("Generating transcripts & audios...");
 
   // We generate the transcripts & audios by calling edge functions "generate-transcript" & "generate-audio".
   for (let i = 0; i < transcripts.length; i++) {
@@ -86,6 +101,8 @@ Deno.serve(async (req) => {
     }
   }
 
+  console.log("Transcripts & audios generated");
+
   // Update the "alarms" colums last_used with the current timestampz.
   const { error: updateError } = await supabaseClient
     .from("alarms")
@@ -97,6 +114,8 @@ Deno.serve(async (req) => {
     console.error("Error updating alarms:", updateError);
     return new Response("Error updating alarms", { status: 500 });
   }
+
+  console.log("Alarms updated");
 
   return new Response("All good captain", { status: 200 });
 });
