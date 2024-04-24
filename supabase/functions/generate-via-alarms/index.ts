@@ -33,8 +33,8 @@ Deno.serve(async (req) => {
   const { data: alarms, error } = await supabaseClient
     .from("alarms")
     .select()
-    .gte("timez", timetz)
-    .lte("timez", timetz_plus_1h)
+    .gte("timetz", timetz)
+    .lte("timetz", timetz_plus_1h)
     .lte("last_used", timestampz_minus_10h);
   if (error) {
     console.error("Error getting alarms:", error);
@@ -107,8 +107,8 @@ Deno.serve(async (req) => {
   const { error: updateError } = await supabaseClient
     .from("alarms")
     .update({ last_used: timestampz })
-    .gte("timez", timetz)
-    .lte("timez", timetz_plus_1h)
+    .gte("timetz", timetz)
+    .lte("timetz", timetz_plus_1h)
     .lte("last_used", timestampz_minus_10h);
   if (updateError) {
     console.error("Error updating alarms:", updateError);
