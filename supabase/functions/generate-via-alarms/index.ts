@@ -43,21 +43,21 @@ Deno.serve(async (req) => {
 
   console.log("Alarms to treat:", alarms);
 
-  // All the alarms have a row "transcript_id" that we use to get the list of transcripts to generate.
-  const transcriptIds = alarms.map((alarm: { transcript_id: bigint }) =>
-    alarm.transcript_id
+  // All the alarms have a row "transcript_settings_id" that we use to get the list of transcripts to generate.
+  const settingsIds = alarms.map((alarm: { transcript_settings_id: bigint }) =>
+    alarm.transcript_settings_id
   );
 
-  console.log("Transcript IDs to generate:", transcriptIds);
+  console.log("Transcript settings IDs to generate:", settingsIds);
 
   // We get the list of transcripts to generate.
   const { data: transcripts, error: errorTranscripts } = await supabaseClient
-    .from("news")
+    .from("news_settings")
     .select()
-    .in("id", transcriptIds);
+    .in("id", settingsIds);
   if (errorTranscripts) {
-    console.error("Error getting transcripts:", errorTranscripts);
-    return new Response("Error getting transcripts", { status: 500 });
+    console.error("Error getting transcripts settings:", errorTranscripts);
+    return new Response("Error getting transcripts settings", { status: 500 });
   }
 
   console.log("Transcripts to generate:", transcripts);
@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
     // Call the "generate-transcript" edge function
     const generateTranscriptResponse = await supabaseClient.rpc(
       "generate-transcript",
-      { transcriptId: transcript.id },
+      { userId: transcript.created_by },
     );
 
     if (generateTranscriptResponse.error) {
@@ -87,9 +87,11 @@ Deno.serve(async (req) => {
       return new Response("Error generating transcript", { status: 500 });
     }
 
+    console.log(generateTranscriptResponse);
+
     // Call the "generate-audio" edge function
     const generateAudioResponse = await supabaseClient.rpc("generate-audio", {
-      transcriptId: transcript.id,
+      transcriptId: generateTranscriptResponse.data.id,
     });
 
     if (generateAudioResponse.error) {
@@ -99,6 +101,8 @@ Deno.serve(async (req) => {
       );
       return new Response("Error generating audio", { status: 500 });
     }
+
+    console.log(generateAudioResponse);
   }
 
   console.log("Transcripts & audios generated");
