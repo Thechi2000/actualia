@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/models/news.dart';
@@ -10,6 +12,7 @@ class NewsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String date = convertDate(news.date);
+    var source = Uint8List(1);
 
     return Center(
       child: Column(
@@ -24,7 +27,9 @@ class NewsText extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Align(alignment: Alignment.topLeft, child: AudioPlayer()),
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: PlayButton(source: source)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Align(
@@ -103,7 +108,7 @@ class NewsText extends StatelessWidget {
     );
   }
 
-  String convertDate(String date) {
+  static String convertDate(String date) {
     DateTime dateTime = DateTime.parse(date);
     List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     List<String> months = [

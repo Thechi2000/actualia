@@ -1,11 +1,13 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
-  late final supabase;
+  late final SupabaseClient supabase;
   News? _news;
   News? get news => _news;
   List<News> _newsList = [];
@@ -77,6 +79,7 @@ class NewsViewModel extends ChangeNotifier {
 
   Future<void> getNewsList() async {
     try {
+      getAudioFile("feur");
       var response = await fetchNewsList();
 
       if (response.isEmpty) {
@@ -149,6 +152,35 @@ class NewsViewModel extends ChangeNotifier {
     } catch (e) {
       log("Error invoking cloud function: $e", level: Level.WARNING.value);
       throw Exception("Failed to invoke transcript function");
+    }
+  }
+
+  //Function to get the audio file from the database
+  Future<Uint8List?> getAudioFile(String audio) async {
+    audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
+    print("audio : $audio");
+    try {
+      // File download
+      final response = await supabase.storage.from("audios").download(audio);
+      print("response : $response");
+
+      if (response.isEmpty) {
+        log('Audio file not found.', level: Level.WARNING.value);
+        print("Audio file not found.");
+        return null;
+      }
+      /*
+      final file = File(audio);
+      await file.writeAsBytes(response);
+      */
+
+      log('Audio file downloaded successfully.', level: Level.INFO.value);
+      print("Audio file downloaded successfully.");
+      return response;
+    } catch (e) {
+      log('Error downloading audio file: $e', level: Level.WARNING.value);
+      print("Error downloading audio file: $e");
+      return null;
     }
   }
 
