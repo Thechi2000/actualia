@@ -10,7 +10,7 @@ class RSSFeedProvider extends NewsProvider {
 }
 
 abstract class NewsProvider {
-  static NewsProvider? parse(dynamic dict) {
+  static NewsProvider? deserialize(dynamic dict) {
     try {
       switch (dict['type']) {
         case "gnews":
