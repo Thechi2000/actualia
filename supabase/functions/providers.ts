@@ -29,21 +29,22 @@ export async function fetchNews(
     provider: Provider,
     newsSettings: NewsSettings,
   ): Promise<News[]> {
-    const topics: string[] = [];
+    let topics: string[] = [];
     if (newsSettings.wants_interests) {
-      topics.push(newsSettings.interests);
+      topics = topics.concat(JSON.parse(newsSettings.interests));
     }
     if (newsSettings.wants_countries) {
-      topics.push(newsSettings.countries);
+      topics = topics.concat(JSON.parse(newsSettings.countries));
     }
     if (newsSettings.wants_cities) {
-      topics.push(newsSettings.cities);
+      topics = topics.concat(JSON.parse(newsSettings.cities));
     }
 
     switch (provider.type) {
       case "gnews": {
         console.info("Fetching from GNews");
 
+        // Generate the url with the query, date API key and language parameters.
         const query = topics.map((s) => `"${s}"`).join(" OR ");
         const url = `https://gnews.io/api/v4/search?q=${
           encodeURIComponent(query)
@@ -53,8 +54,10 @@ export async function fetchNews(
           encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
         }&lang=en`;
 
+        // Get the news from GNews.
         const news: GNewsOutput = await (await fetch(url)).json();
 
+        // Normalizes the output to the correct format.
         return news.articles.map((a) => ({
           title: a.title,
           description: a.description,
@@ -65,13 +68,14 @@ export async function fetchNews(
       case "rss": {
         console.info("Fetching RSS from ", provider.url);
 
+        // Fetches and parses the rss feed.
         const response = await fetch(
           provider.url,
         );
         const xml = await response.text();
         const feed = await parseFeed(xml);
 
-        feed.entries.forEach((e) => console.log(e));
+        // Normalizes the output and filters out out of date news.
         const news = feed.entries.map((i) => ({
           title: i.title?.value || "",
           description: i.description?.value || "",
@@ -80,7 +84,7 @@ export async function fetchNews(
         }))
           .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
 
-        // Filter news by AI according to user settings
+        // Filter news by AI according to user settings.
         const openai = new OpenAI();
         const completion = await openai.chat.completions.create({
           "model": "gpt-3.5-turbo",
@@ -102,8 +106,8 @@ export async function fetchNews(
           ],
         });
 
-        // verify that the completion is valid
-        let filteredNews: News[] = [];
+        // Verify that the completion is valid.
+        let filteredNews = {news: [] as News[]};
         try {
           filteredNews = JSON.parse(
             completion.choices[0].message.content || "",
@@ -111,11 +115,11 @@ export async function fetchNews(
         } catch (error) {
           console.error("Error parsing filtered news:", error);
         }
-        return filteredNews;
+        return filteredNews.news;
       }
       default:
         throw new Error(
-          `Unknown provider: ${(provider as { type: string }).type}`,
+          `Unknown provider: ${JSON.stringify(provider)}`,
         );
     }
   }
