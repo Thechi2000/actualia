@@ -79,7 +79,7 @@ class NewsViewModel extends ChangeNotifier {
       var response = await fetchNewsList();
 
       if (response.isEmpty) {
-        generateAndGetNews();
+        await generateAndGetNews();
         _newsList.insert(0, _news!);
       } else {
         _newsList = response.map<News>((news) => parseNews(news)).toList();
@@ -87,7 +87,7 @@ class NewsViewModel extends ChangeNotifier {
         //If the date of the first news is not today, call the cloud function
         if (_newsList[0].date.substring(0, 10) !=
             DateTime.now().toString().substring(0, 10)) {
-          generateAndGetNews();
+          await generateAndGetNews();
           _newsList.insert(0, _news!);
         }
       }
@@ -101,7 +101,8 @@ class NewsViewModel extends ChangeNotifier {
   @protected
   Future<void> generateAndGetNews() async {
     await invokeTranscriptFunction();
-    await fetchNews(DateTime.now());
+    await fetchNews(DateTime
+        .now()); //We only fetch one news since we already fetched the list and it was either empty or needed a single entry to be added
 
     if (_news == null || _news!.paragraphs.isEmpty) {
       setNewsError(DateTime.now(), 'News generation failed and no news found.',
