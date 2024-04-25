@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,7 +27,7 @@ void main() {
         "facilisis sem. In massa urna, rutrum eu turpis a";
     const String title = "lorem ipsum dolor sit amet, consectetur";
     const String newsPaper = "https://dummy.com";
-    const String date = "00/00/0000";
+    const String date = "1111-11-11";
 
     //init SourceView
     await tester.pumpWidget(MaterialApp(
@@ -47,7 +45,7 @@ void main() {
 
     //check article origin
     expect(find.text("Article from $newsPaper,"), findsOne);
-    expect(find.text("published the $date"), findsOne);
+    expect(find.text("Published on $date"), findsOne);
 
     //check title
     expect(find.text("Title of the article : $title"), findsOne);
