@@ -43,7 +43,7 @@ abstract class NewsProvider {
   /// Converts a dynamic value to a NewsProvider.
   ///
   /// The following format are accepted:
-  /// - GNews: `{"type", "gnews"}`
+  /// - GNews: `{"type", "gnews"}` todo change ',' by ':'
   /// - RSS: `{"type": "rss", "url": string}`
   static NewsProvider? deserialize(dynamic dict) {
     try {
