@@ -1,6 +1,7 @@
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/models/news.dart';
+import 'package:actualia/widgets/play_button.dart';
 
 class NewsText extends StatelessWidget {
   final News news;
@@ -8,7 +9,102 @@ class NewsText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime dateTime = DateTime.parse(news.date);
+    String date = convertDate(news.date);
+
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            //Box containing the title, date and play button
+            //NB : The alignment will change after we add the button to play the audio
+            //Note for audio : Use the transcriptID and audio fields from the news.
+            padding: const EdgeInsets.fromLTRB(30.0, 0.0, 80.0, 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Align(alignment: Alignment.topLeft, child: AudioPlayer()),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          date,
+                          style: const TextStyle(
+                            color: Color(0xFFC8C8C8),
+                            fontSize: 8,
+                            fontFamily: 'Fira Code',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          news.title,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                            fontFamily: 'EB Garamond',
+                            fontWeight: FontWeight.w400,
+                            height: 1.2,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(64.0, 20.0, 64.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: news.paragraphs
+                  .map((paragraph) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => SourceView(
+                                      article: paragraph.content,
+                                      title: paragraph.title,
+                                      date: convertDate(paragraph.date),
+                                      newsPaper: paragraph.source)));
+                        },
+                        child: Text(
+                          '${paragraph.transcript}\n',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: 'Fira Code',
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.none,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+          const Divider(
+            height: 60,
+            thickness: 0.5,
+            indent: 64.0,
+            endIndent: 64.0,
+            color: Color(0xFFC8C8C8),
+          )
+        ],
+      ),
+    );
+  }
+
+  String convertDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
     List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     List<String> months = [
       "January",
@@ -34,82 +130,6 @@ class NewsText extends StatelessWidget {
     } else {
       suffix = "th";
     }
-    String date =
-        "${weekDays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}$suffix, ${dateTime.year}";
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            //Box containing the title and the date
-            //NB : The alignment will change after we add the button to play the audio
-            //Note for audio : Use the transcriptID and audio fields from the news.
-            padding: const EdgeInsets.symmetric(horizontal: 80.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  date,
-                  style: const TextStyle(
-                    color: Color(0xFFCDCDDC),
-                    fontSize: 8,
-                    fontFamily: 'Fira Code',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  news.title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontFamily: 'EB Garamond',
-                    fontWeight: FontWeight.w400,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 64.0, vertical: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: news.paragraphs
-                  .map((paragraph) => GestureDetector(
-                        onTap: () {
-                          //TODO: Action for the source button
-                          //Note for source: Use the fields
-                          //"source", "title", "date" and "content"
-                          //from the paragraph.
-                          print("Source du paragraphe: ${paragraph.source}");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) => SourceView(
-                                      article: paragraph.content,
-                                      title: paragraph.title,
-                                      date: paragraph.date.substring(0, 10),
-                                      newsPaper: paragraph.source)));
-                        },
-                        child: Text(
-                          '${paragraph.transcript}\n',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontFamily: 'Fira Code',
-                            fontWeight: FontWeight.w300,
-                            decoration: TextDecoration.none,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
-    );
+    return "${weekDays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}$suffix, ${dateTime.year}";
   }
 }

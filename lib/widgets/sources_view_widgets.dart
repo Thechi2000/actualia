@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ScrollableText extends StatelessWidget {
@@ -15,13 +14,13 @@ class ScrollableText extends StatelessWidget {
               child: Text(
                 text,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 35, 35, 35),
                   fontSize: 12,
                   fontFamily: 'Fira Code',
                   fontWeight: FontWeight.w300,
                   decoration: TextDecoration.none,
                 ),
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.justify,
               ),
             )));
   }
@@ -43,18 +42,18 @@ class DisplayOrigin extends StatelessWidget {
               "Article from $origin,",
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 22,
-                fontFamily: 'EB Garamond',
+                fontSize: 16,
+                fontFamily: 'Fira Code',
                 fontWeight: FontWeight.w400,
                 height: 1.2,
               ),
             ),
             Text(
-              "published the $date",
+              "Published on $date",
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 22,
-                fontFamily: 'EB Garamond',
+                fontSize: 16,
+                fontFamily: 'Fira Code',
                 fontWeight: FontWeight.w400,
                 height: 1.2,
               ),
@@ -72,7 +71,7 @@ class DisplayTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
         child: Text(
           "Title of the article : $title",
           style: const TextStyle(

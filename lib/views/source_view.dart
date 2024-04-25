@@ -46,11 +46,12 @@ class _SourceViewState extends State<SourceView> {
           padding: const EdgeInsets.all(16),
           child: Center(
               child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DisplayOrigin(origin: _newsPaper, date: _date),
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
               DisplayTitle(title: _title),
-              const SizedBox(height: 20),
+              const SizedBox(height: 32),
               ScrollableText(text: _article)
             ],
           )),
