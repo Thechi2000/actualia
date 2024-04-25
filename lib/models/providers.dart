@@ -6,6 +6,11 @@ class GNewsProvider extends NewsProvider {
   serialize() {
     return {"type": "gnews"};
   }
+
+  @override
+  String displayName() {
+    return "Google News";
+  }
 }
 
 class RSSFeedProvider extends NewsProvider {
@@ -16,6 +21,18 @@ class RSSFeedProvider extends NewsProvider {
   @override
   serialize() {
     return {"type": "rss", "url": url};
+  }
+
+  @override
+  String displayName() {
+    var name = (RegExp(r"https?:\/\/(?:[^./]+\.)*([^./]+)\.[^./]+(?:\/.*)?")
+                .firstMatch(url)
+                ?.group(1) ??
+            "")
+        .replaceAll("[^a-zA-Z0-9]", " ")
+        .toUpperCase();
+
+    return "$name (RSS)";
   }
 }
 
@@ -39,4 +56,6 @@ abstract class NewsProvider {
   }
 
   dynamic serialize();
+
+  String displayName();
 }
