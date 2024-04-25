@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
@@ -69,7 +70,7 @@ class NewsViewModel extends ChangeNotifier {
       _news = parseNews(response);
       notifyListeners();
     } catch (e) {
-      log("Error fetching news: $e");
+      log("Error fetching news: $e", level: Level.WARNING.value);
       _news = null;
     }
   }
@@ -92,7 +93,7 @@ class NewsViewModel extends ChangeNotifier {
         }
       }
     } catch (e) {
-      log("Error fetching news list: $e");
+      log("Error fetching news list: $e", level: Level.WARNING.value);
       _newsList = [];
     }
     notifyListeners();
@@ -143,9 +144,10 @@ class NewsViewModel extends ChangeNotifier {
   Future<void> invokeTranscriptFunction() async {
     try {
       await supabase.functions.invoke('get-transcript');
-      log("Cloud function 'transcript' invoked successfully.");
+      log("Cloud function 'transcript' invoked successfully.",
+          level: Level.INFO.value);
     } catch (e) {
-      log("Error invoking cloud function: $e");
+      log("Error invoking cloud function: $e", level: Level.WARNING.value);
       throw Exception("Failed to invoke transcript function");
     }
   }
