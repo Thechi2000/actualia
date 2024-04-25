@@ -78,20 +78,19 @@ class ProfilePageWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NewsSettingsViewModel>(
-            create: (context) => _newsSettingsModel),
-        ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
-      ],
-      child: MaterialApp(
-        title: "ActualIA",
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        ),
-        home: _child,
-      )
-    );
+        providers: [
+          ChangeNotifierProvider<NewsSettingsViewModel>(
+              create: (context) => _newsSettingsModel),
+          ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
+        ],
+        child: MaterialApp(
+          title: "ActualIA",
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: _child,
+        ));
   }
 }
 

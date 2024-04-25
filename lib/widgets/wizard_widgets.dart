@@ -106,27 +106,35 @@ class WizardNavigationBottomBar extends StatelessWidget {
   final void Function()? rOnPressed;
   final void Function()? lOnPressed;
 
-  const WizardNavigationBottomBar({
-    this.showLeft = true,
-    this.showRight = true,
-    this.rText = "right button",
-    this.lText = "left button",
-    this.rOnPressed,
-    this.lOnPressed,
-    super.key});
+  const WizardNavigationBottomBar(
+      {this.showLeft = true,
+      this.showRight = true,
+      this.rText = "right button",
+      this.lText = "left button",
+      this.rOnPressed,
+      this.lOnPressed,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
-
     Widget right = const SizedBox();
     Widget left = const SizedBox();
-    if (showRight) {right = WizardNavigationButton(text: rText, onPressed: rOnPressed,);}
-    if (showLeft) {left = WizardNavigationButton(text: lText, onPressed: lOnPressed,);}
+    if (showRight) {
+      right = WizardNavigationButton(
+        text: rText,
+        onPressed: rOnPressed,
+      );
+    }
+    if (showLeft) {
+      left = WizardNavigationButton(
+        text: lText,
+        onPressed: lOnPressed,
+      );
+    }
 
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      left,
-      right
-    ]);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [left, right]);
   }
 }
 
