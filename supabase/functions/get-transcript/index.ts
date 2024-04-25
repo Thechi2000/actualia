@@ -25,21 +25,34 @@ Deno.serve(async (request) => {
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
 
-  // Create a Supabase client with the user's token.
-  const authHeader = request.headers.get("Authorization")!;
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    { global: { headers: { Authorization: authHeader } } },
-  );
+  const url = new URL(request.url);
+  const userIdProvided = url.searchParams.get("userId");
+  let supabaseClient;
+  let userId;
 
-  // Get the user from the token.
-  const user = await supabaseClient.auth.getUser();
-  if (user.error !== null) {
-    console.error(user.error);
-    return new Response("Authentication error", { status: 401 });
+  if (userIdProvided) {
+    supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+    userId = userIdProvided;
+  } else {
+    // Create a Supabase client with the user's token.
+    const authHeader = request.headers.get("Authorization")!;
+    supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } },
+    );
+
+    // Get the user from the token.
+    const user = await supabaseClient.auth.getUser();
+    if (user.error !== null) {
+      console.error(user.error);
+      return new Response("Authentication error", { status: 401 });
+    }
+    userId = user.data.user.id;
   }
-  const userId = user.data.user.id;
 
   console.log("We start the process for the user with ID:", userId);
 
@@ -88,7 +101,10 @@ Deno.serve(async (request) => {
   };
 
   // Insert the transcript into the database.
-  console.log("Inserting transcript in the database: ", JSON.stringify(transcript));
+  console.log(
+    "Inserting transcript in the database: ",
+    JSON.stringify(transcript),
+  );
   const { error } = await supabaseClient.from("news").insert({
     user: userId,
     title: "Hello! This is your daily news",
