@@ -205,7 +205,7 @@ void main() {
 
   testWidgets("Cancel present", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
-    await tester.pumpWidget(WizardWrapper(WizardView(fromSetting: true), vm));
+    await tester.pumpWidget(WizardWrapper(const WizardView(isInitialOnboarding: false), vm));
 
     expect(find.text("Cancel"), findsOne);
   });
