@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

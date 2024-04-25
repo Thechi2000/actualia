@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
