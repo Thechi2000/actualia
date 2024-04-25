@@ -96,6 +96,28 @@ class _SelectorWithInstruction extends State<SelectorWithInstruction> {
   }
 }
 
+class WizardTopBar extends StatelessWidget {
+  final String text;
+
+  const WizardTopBar({super.key, this.text = ""});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 50, 16, 8.0),
+      child: Text(
+        text,
+        textScaler: const TextScaler.linear(2.0),
+        style: const TextStyle(
+            fontFamily: 'EB Garamond',
+            fontWeight: FontWeight.w700,
+            color: Colors.black),
+        maxLines: 2,
+      ),
+    );
+  }
+}
+
 class WizardNavigationBottomBar extends StatelessWidget {
   final bool showLeft;
   final bool showRight;

@@ -1,6 +1,6 @@
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/viewmodels/news_settings.dart";
-import "package:actualia/views/wizard_view.dart";
+import "package:actualia/views/interests_wizard_view.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:provider/provider.dart";
@@ -79,8 +79,8 @@ void main() {
   testWidgets("Has all correct inputs", (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    await tester.pumpWidget(
-        WizardWrapper(const WizardView(), MockNewsSettingsViewModel()));
+    await tester.pumpWidget(WizardWrapper(
+        const InterestsWizardView(), MockNewsSettingsViewModel()));
 
     expect(find.text("Select some interests"), findsOne);
     expect(find.text("Interests"), findsOne);
@@ -103,7 +103,7 @@ void main() {
           onboardingNeeded: false,
         ),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
+    await tester.pumpWidget(WizardWrapper(const InterestsWizardView(), vm));
 
     await tester.tap(find.byKey(const Key("interest-selector")));
     await tester.pumpAndSettle();
@@ -128,7 +128,7 @@ void main() {
             wantsInterests: false,
             onboardingNeeded: false),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
+    await tester.pumpWidget(WizardWrapper(const InterestsWizardView(), vm));
 
     await tester.tap(find.byKey(const Key("city-selector")));
     await tester.pumpAndSettle();
@@ -153,7 +153,7 @@ void main() {
             wantsInterests: false,
             onboardingNeeded: false),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
+    await tester.pumpWidget(WizardWrapper(const InterestsWizardView(), vm));
 
     await tester.tap(find.byKey(const Key("country-selector")));
     await tester.pumpAndSettle();
@@ -178,7 +178,7 @@ void main() {
         onboardingNeeded: false);
     final vm = ValidateVM(ns, ns);
 
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
+    await tester.pumpWidget(WizardWrapper(const InterestsWizardView(), vm));
 
     final validateFinder = find.text("Validate");
     expect(validateFinder, findsOne);
@@ -192,7 +192,7 @@ void main() {
   testWidgets("Can validate", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
 
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm));
+    await tester.pumpWidget(WizardWrapper(const InterestsWizardView(), vm));
 
     final validateFinder = find.text("Validate");
     expect(validateFinder, findsOne);
@@ -205,8 +205,8 @@ void main() {
 
   testWidgets("Cancel present", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
-    await tester.pumpWidget(
-        WizardWrapper(const WizardView(isInitialOnboarding: false), vm));
+    await tester.pumpWidget(WizardWrapper(
+        const InterestsWizardView(isInitialOnboarding: false), vm));
 
     expect(find.text("Cancel"), findsOne);
   });

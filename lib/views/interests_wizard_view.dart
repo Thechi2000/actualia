@@ -37,19 +37,10 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
       _interests = fromDB.interests;
     }
 
-    PreferredSizeWidget appBar = PreferredSize(
-        preferredSize: const Size.fromHeight(120.0),
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 50, 16, 8.0),
-          child: const Text(
-            "Tell us more about your interests",
-            textScaler: TextScaler.linear(2.0),
-            style: TextStyle(
-                fontFamily: 'EB Garamond',
-                fontWeight: FontWeight.w700,
-                color: Colors.black),
-            maxLines: 2,
-          ),
+    PreferredSizeWidget appBar = const PreferredSize(
+        preferredSize: Size.fromHeight(120.0),
+        child: WizardTopBar(
+          text: "Tell us more about your interests",
         ));
 
     Widget body = Container(

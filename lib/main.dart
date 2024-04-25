@@ -1,6 +1,7 @@
 //coverage:ignore-file
 
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
@@ -32,6 +33,8 @@ Future<void> main() async {
           create: (context) => NewsViewModel(Supabase.instance.client)),
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
+      ChangeNotifierProvider(
+          create: (context) => ProvidersViewModel(Supabase.instance.client)),
     ],
     child: const App(),
   ));
