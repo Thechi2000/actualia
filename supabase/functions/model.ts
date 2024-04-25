@@ -32,8 +32,13 @@ export interface NewsSettings {
 export interface News {
   title: string;
   description: string;
-  date: Date;
-  link: string;
+  content: string;
+  publishedAt: Date;
+  url: string;
+  source: {
+    name: string;
+    url: string;
+  };
 }
 
 interface GNewsProvider {
