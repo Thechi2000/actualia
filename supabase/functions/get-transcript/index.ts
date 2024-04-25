@@ -41,8 +41,6 @@ Deno.serve(async (request) => {
   }
   const userId = user.data.user.id;
 
-  // const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
-
   console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
@@ -77,8 +75,8 @@ Deno.serve(async (request) => {
     providers = providersDB.data.map((p) => p.type);
   }
 
-  // Get the news from GNews.
-  console.log("Fetching all news from providers");
+  // Get the news.
+  console.log(`Fetching news from ${providers.length} providers`);
   const news = await fetchNews(providers, interests);
 
   // Generate a transcript from the news.
