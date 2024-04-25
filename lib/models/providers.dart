@@ -1,12 +1,22 @@
 import 'dart:developer';
 import 'package:logging/logging.dart';
 
-class GNewsProvider extends NewsProvider {}
+class GNewsProvider extends NewsProvider {
+  @override
+  serialize() {
+    return {"type": "gnews"};
+  }
+}
 
 class RSSFeedProvider extends NewsProvider {
   final String url;
 
   RSSFeedProvider({required this.url});
+
+  @override
+  serialize() {
+    return {"type": "rss", "url": url};
+  }
 }
 
 abstract class NewsProvider {
@@ -27,4 +37,6 @@ abstract class NewsProvider {
       return null;
     }
   }
+
+  dynamic serialize();
 }
