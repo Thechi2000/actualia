@@ -46,6 +46,7 @@ Deno.serve(async (request) => {
   console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
+  console.log("Fetching user settings");
   const interestsDB = await supabaseClient.from("news_settings").select(
     "*",
   )
@@ -61,6 +62,7 @@ Deno.serve(async (request) => {
     interests = interestsDB.data[0];
   }
 
+  console.log("Fetching provider from the database");
   const providersDB = await supabaseClient.from("news_providers").select("*")
     .in(
       "id",
@@ -76,12 +78,19 @@ Deno.serve(async (request) => {
   }
 
   // Get the news from GNews.
+  console.log("Fetching all news from providers");
   const news = await fetchNews(providers, interests);
 
   // Generate a transcript from the news.
-  const transcript = await generateTranscript(news);
+  console.log("Generating transcript from news");
+  const transcript = news.length > 0 ? await generateTranscript(news) : {
+    totalArticles: 0,
+    totalNewsByLLM: 0,
+    articles: [],
+  };
 
   // Insert the transcript into the database.
+  console.log("Inserting transcript in the database: ", JSON.stringify(transcript));
   const { error } = await supabaseClient.from("news").insert({
     user: userId,
     title: "Hello! This is your daily news",
