@@ -59,7 +59,7 @@ class _WizardViewState extends State<WizardView> {
         children: <Widget>[
           //each formField is an entry in the wizard
           SelectorWithInstruction(
-                (value) {
+            (value) {
               setState(() {
                 _countries = value;
               });
@@ -71,7 +71,7 @@ class _WizardViewState extends State<WizardView> {
             key: const Key("country-selector"),
           ),
           SelectorWithInstruction(
-                (value) {
+            (value) {
               setState(() {
                 _cities = value;
               });
@@ -83,7 +83,7 @@ class _WizardViewState extends State<WizardView> {
             key: const Key("city-selector"),
           ),
           SelectorWithInstruction(
-                (value) {
+            (value) {
               setState(() {
                 _interests = value;
               });
@@ -123,10 +123,6 @@ class _WizardViewState extends State<WizardView> {
           }
         });
 
-    return Scaffold(
-        appBar: appBar,
-        body: body,
-        bottomNavigationBar: bottomBar
-    );
+    return Scaffold(appBar: appBar, body: body, bottomNavigationBar: bottomBar);
   }
 }
