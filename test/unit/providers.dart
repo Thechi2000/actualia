@@ -2,9 +2,18 @@ import 'package:actualia/models/providers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test("Correctly serializes GNews provider", () {
+    expect(GNewsProvider().serialize(), equals({"type": "gnews"}));
+  });
+
   test("Correctly deserializes GNews provider", () async {
     expect(NewsProvider.deserialize({"type": "gnews"}).runtimeType,
         equals(GNewsProvider));
+  });
+
+  test("Correctly serializes RSS provider", () {
+    expect(RSSFeedProvider(url: "https://rss.example.org").serialize(),
+        equals({"type": "rss", "url": "https://rss.example.org"}));
   });
 
   test("Correctly deserializes RSS provider", () async {
