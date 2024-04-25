@@ -5,7 +5,7 @@ import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
-import 'package:actualia/views/wizard_view.dart';
+import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +60,7 @@ class _AppState extends State<App> {
     if (authModel.isSignedIn) {
       if (newsSettingsVM.settings != null) {
         if (newsSettingsVM.settings!.onboardingNeeded) {
-          home = const WizardView(isInitialOnboarding: true);
+          home = const InterestsWizardView(isInitialOnboarding: true);
         } else {
           home = const NewsView();
         }

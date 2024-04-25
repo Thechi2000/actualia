@@ -4,23 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_custom_selector/widget/flutter_single_select.dart';
 
-class Wizard extends StatelessWidget {
-  final String topBarText;
-  final Widget body;
-  final Widget? bottomBar;
-
-  const Wizard(
-      {this.topBarText = "",
-      this.body = const Center(child: Text("Not Implemented")),
-      this.bottomBar});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
 /// Create a selector from a given a list with instructions displayed above
 /// @onSelectionDone: the callBack to execute when the user select a choice
 /// @instr: the instructions to display

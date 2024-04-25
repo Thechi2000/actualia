@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
 
-class WizardView extends StatefulWidget {
+class InterestsWizardView extends StatefulWidget {
   final bool isInitialOnboarding;
 
-  const WizardView({this.isInitialOnboarding = false, super.key});
+  const InterestsWizardView({this.isInitialOnboarding = false, super.key});
 
   @override
-  State<StatefulWidget> createState() => _WizardViewState();
+  State<StatefulWidget> createState() => _InterestsWizardViewState();
 }
 
-class _WizardViewState extends State<WizardView> {
+class _InterestsWizardViewState extends State<InterestsWizardView> {
   List<String> _cities = [];
   List<String> _countries = [];
   List<String> _interests = [];
