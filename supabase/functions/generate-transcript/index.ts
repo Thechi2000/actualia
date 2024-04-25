@@ -132,6 +132,9 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
     return result;
   }
 
+  const articlesToGenereate = generateArticlesPrompt(news);
+  console.log("Generating transcript from news", articlesToGenereate);
+
   const openai = new OpenAI();
   const completion1 = await openai.chat.completions.create({
     "model": "gpt-3.5-turbo",
@@ -143,7 +146,7 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
       },
       {
         "role": "user",
-        "content": generateArticlesPrompt(news),
+        "content": articlesToGenereate,
       },
     ],
   });
@@ -167,7 +170,7 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
     return mergedData;
   }
 
-  const completion = await openai.chat.completions.create({
+  const completion2 = await openai.chat.completions.create({
     "model": "gpt-3.5-turbo",
     "response_format": {
       "type": "json_object",
@@ -186,7 +189,7 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
   });
 
   const transcriptJSON = JSON.parse(
-    completion.choices[0].message.content || "",
+    completion2.choices[0].message.content || "",
   );
   return mergeJSON(transcriptJSON, news);
 }
