@@ -91,7 +91,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const WizardView(
-                                  fromSetting: true,
+                                  isInitialOnboarding: false,
                                 )));
                     print("Click on Interests");
                   },

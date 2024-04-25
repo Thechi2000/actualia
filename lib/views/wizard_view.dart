@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
 
 class WizardView extends StatefulWidget {
-  final bool fromSetting;
+  final bool isInitialOnboarding;
 
-  const WizardView({this.fromSetting = false, super.key});
+  const WizardView({this.isInitialOnboarding = false, super.key});
 
   @override
   State<StatefulWidget> createState() => _WizardViewState();
@@ -99,7 +99,7 @@ class _WizardViewState extends State<WizardView> {
     );
 
     Widget bottomBar = WizardNavigationBottomBar(
-        showLeft: widget.fromSetting,
+        showLeft: !widget.isInitialOnboarding,
         lText: 'Cancel',
         lOnPressed: () {
           Navigator.pop(context);
@@ -118,7 +118,7 @@ class _WizardViewState extends State<WizardView> {
           );
           newsSettingsModel?.pushSettings(toSend);
           //todo nav to main screen
-          if (widget.fromSetting) {
+          if (!widget.isInitialOnboarding) {
             Navigator.pop(context);
           }
         });
