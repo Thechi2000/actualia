@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
+import 'package:actualia/views/wizard_view.dart';
+import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -110,12 +114,6 @@ void main() {
 
     testInterestButton() async {
       expect(find.text("Interests"), findsOne);
-      await tester.tap(find.text("Interests"));
-      await tester.pump(const Duration(seconds: 10));
-      expect(find.text("Cancel"), findsOne);
-      await tester.tap(find.text("Cancel"));
-      await tester.pump();
-      expect(find.text("Interests"), findsOne);
     }
 
     await testInterestButton();
@@ -134,5 +132,30 @@ void main() {
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text("Hey, test.test@epfl.ch !"), findsOne);
+  });
+
+  testWidgets("Interests button work as intended", (tester) async {
+    await tester.pumpWidget(ProfilePageWrapper(
+        const ProfilePageView(),
+        MockNewsSettingsViewModel(),
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+
+    expect(find.text("Interests"), findsOne);
+    await tester.tap(find.text("Interests"));
+    await tester.pumpAndSettle();
+
+    //check wizard is on screen
+    expect(find.byType(WizardView), findsOneWidget);
+    expect(find.byType(WizardNavigationButton), findsExactly(2));
+    Finder finder = find.text("Cancel");
+    expect(finder, findsOne);
+
+    //click on cancel button
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
+
+    //check wizard not on screen anymore
+    expect(find.byType(WizardView), findsNothing);
+    expect(find.text("Interests"), findsOne);
   });
 }
