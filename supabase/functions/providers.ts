@@ -44,6 +44,7 @@ export async function fetchNews(
       case "gnews": {
         console.info("Fetching from GNews");
 
+        // Generate the url with the query, date API key and language parameters.
         const query = topics.map((s) => `"${s}"`).join(" OR ");
         const url = `https://gnews.io/api/v4/search?q=${
           encodeURIComponent(query)
@@ -53,8 +54,10 @@ export async function fetchNews(
           encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
         }&lang=en`;
 
+        // Get the news from GNews.
         const news: GNewsOutput = await (await fetch(url)).json();
 
+        // Normalizes the output to the correct format.
         return news.articles.map((a) => ({
           title: a.title,
           description: a.description,
@@ -65,12 +68,14 @@ export async function fetchNews(
       case "rss": {
         console.info("Fetching RSS from ", provider.url);
 
+        // Fetches and parses the rss feed.
         const response = await fetch(
           provider.url,
         );
         const xml = await response.text();
         const feed = await parseFeed(xml);
 
+        // Normalizes the output and filters out out of date news.
         const news = feed.entries.map((i) => ({
           title: i.title?.value || "",
           description: i.description?.value || "",
@@ -79,7 +84,7 @@ export async function fetchNews(
         }))
           .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
 
-        // Filter news by AI according to user settings
+        // Filter news by AI according to user settings.
         const openai = new OpenAI();
         const completion = await openai.chat.completions.create({
           "model": "gpt-3.5-turbo",
@@ -101,7 +106,7 @@ export async function fetchNews(
           ],
         });
 
-        // verify that the completion is valid
+        // Verify that the completion is valid.
         let filteredNews = {news: [] as News[]};
         try {
           filteredNews = JSON.parse(
