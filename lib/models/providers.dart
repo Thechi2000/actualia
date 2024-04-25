@@ -63,6 +63,10 @@ abstract class NewsProvider {
     }
   }
 
+  static List<NewsProvider> predefinedProviders = [
+    GNewsProvider(),
+  ];
+
   /// Converts a NewsProvider to a dynamic value, usable as a json.
   dynamic serialize();
 

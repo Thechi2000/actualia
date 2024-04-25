@@ -7,6 +7,7 @@ import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -82,6 +83,8 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
           useMaterial3: true,
         ),
-        home: home);
+        home: const InterestsWizardView(
+          isInitialOnboarding: true,
+        ));
   }
 }

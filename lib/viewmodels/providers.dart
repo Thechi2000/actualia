@@ -17,20 +17,39 @@ class ProvidersViewModel extends ChangeNotifier {
     _newsProviders = newsProviders;
   }
 
+  List<String> providersToString(List<NewsProvider> providers) {
+    return providers.map((e) => e.displayName()).toList();
+  }
+
+  List<NewsProvider> stringToProviders(List<String> names) {
+    return names.map((e) {
+      switch (e) {
+        case "gnews":
+          return GNewsProvider();
+        default:
+          log("Unknown provider name: $e", level: Level.WARNING.value);
+          return GNewsProvider();
+      }
+    }).toList();
+  }
+
   Future<bool> fetchNewsProviders() async {
+    //todo fix
     try {
       final res = await supabase
           .from('news_providers')
           .select()
           .eq("created_by", supabase.auth.currentUser!.id)
           .single();
-      List<dynamic> temp = jsonDecode(res['providers']);
+      debugPrint("providers: ${res['providers']}");
+      final temp = List.from(jsonDecode(res['providers']));
       _newsProviders = temp.map((e) => NewsProvider.deserialize(e)!).toList();
       return true;
     } catch (e) {
-      debugPrint("ERROR: $e");
       log("Error when fetching news providers: $e",
           name: "ERROR", level: Level.WARNING.value);
+      _newsProviders = [];
+      debugPrint("_newsProviders initialized: $_newsProviders");
       return false;
     }
   }

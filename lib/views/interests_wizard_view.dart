@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/viewmodels/providers.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
@@ -97,7 +101,7 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
         },
         showRight: true,
         rText: 'Validate',
-        rOnPressed: () {
+        rOnPressed: () async {
           NewsSettings toSend = NewsSettings(
             cities: _cities,
             countries: _countries,
@@ -111,6 +115,21 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
           //todo nav to main screen
           if (!widget.isInitialOnboarding) {
             Navigator.pop(context);
+          } else {
+            try {
+              ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
+              pvm.fetchNewsProviders();
+
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => const ProvidersWizardView(
+                            isInitialOnboarding: true,
+                          )));
+              Navigator.pop(context);
+            } catch (e) {
+              log("Error in provider wizard: $e");
+            }
           }
         });
 
