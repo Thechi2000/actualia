@@ -132,6 +132,24 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
     return result;
   }
 
+  const openai = new OpenAI();
+  const completion1 = await openai.chat.completions.create({
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {
+        "role": "system",
+        "content":
+          "You're a radio journalist writing a script to announce the day's news. The user gives you the news to announce. Your radio broadcast should only last 2-3 minutes, so try to find interesting transitions between the news items. Write the script.",
+      },
+      {
+        "role": "user",
+        "content": generateArticlesPrompt(news),
+      },
+    ],
+  });
+
+  const fullTranscript = completion1.choices[0].message.content;
+
   function mergeJSON(json1: NewsJSONLLM, json2: News[]): Transcript {
     const mergedData: Transcript = {
       totalArticles: json2.length,
@@ -149,7 +167,6 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
     return mergedData;
   }
 
-  const openai = new OpenAI();
   const completion = await openai.chat.completions.create({
     "model": "gpt-3.5-turbo",
     "response_format": {
@@ -159,11 +176,11 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
       {
         "role": "system",
         "content":
-          'You are a journalist who provide a transcript from a selection of article headlines that we give you. It\'s up to you to compose your own text according to these, and to make interesting transitions between transcript items (IMPORTANT). For exemple, you can use Also, On the other hand, etc. to do the transition between news. Create a valid JSON array from this news-cut transcript, as in the example here {"totalNewsByLLM":"The number of news you proceed (ex. 3 here)","news":[{"transcript":"The summary of the news 1"},{"transcript":"The summary of the news 2"},{"transcript":"etc."}]}',
+          'You\'re an assistant trained to create JSON. You\'re given a text which is a radio chronicle about the news of the day. You\'re asked to recognize each news item and classify it in the JSON below. You should also be able to recognize the intro and conclusion. Don\'t leave out any words from the text. {"totalNewsByLLM":"Number of news you have recognized ","intro":"intro you have recognized","outro":"outro you have recognized","news":[{"transcript":"Content of the first news"},{"transcript":"Content of the second news"},{"transcript":"etc."}]}',
       },
       {
         "role": "user",
-        "content": generateArticlesPrompt(news),
+        "content": fullTranscript || "",
       },
     ],
   });
