@@ -1,6 +1,7 @@
 import { News, NewsSettings, Provider } from "../functions/model.ts";
 import { parseFeed } from "https://deno.land/x/rss@1.0.2/mod.ts";
 import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
+import { URL } from "node:url";
 
 interface GNewsOutput {
   totalArticles: number;
@@ -13,6 +14,10 @@ interface GNewsItem {
   url: string;
   image: string;
   publishedAt: string;
+  source: {
+    name: string;
+    url: string;
+  };
 }
 
 /**
@@ -40,7 +45,8 @@ export async function fetchNews(
       topics = topics.concat(JSON.parse(newsSettings.cities));
     }
 
-    if (topics.length) {
+    if (topics.length === 0) {
+      console.warn("No topics, skipping");
       return [];
     }
 
@@ -67,12 +73,11 @@ export async function fetchNews(
             return [];
           }
 
+          console.log(JSON.stringify(news.articles))
           // Normalizes the output to the correct format.
-          return news.articles.map((a) => ({
-            title: a.title,
-            description: a.description,
-            link: a.url,
-            date: new Date(a.publishedAt),
+          return news.articles.map((n) => ({
+            ...n,
+            publishedAt: new Date(n.publishedAt),
           }));
         }
         case "rss": {
@@ -86,13 +91,27 @@ export async function fetchNews(
           const feed = await parseFeed(xml);
 
           // Normalizes the output and filters out out of date news.
-          const news = feed.entries.map((i) => ({
-            title: i.title?.value || "",
-            description: i.description?.value || "",
-            date: i.published || new Date(Date.now()),
-            link: i.links[0].href || "",
-          }))
-            .filter((i: News) => (Date.now() - i.date.getTime()) < 86400000);
+          const news: News[] = feed.entries.map((i) => {
+            const re = /(?:[^./]+\.)*([^./]+)\.[^./]+(?:\/.*)?/;
+            const url = new URL(provider.url);
+            const match = re.exec(url.hostname);
+            const name = match && match.groups ? match.groups[1] : "";
+
+            return {
+              title: i.title?.value || "",
+              description: i.description?.value || "",
+              content: i.description?.value || "",
+              publishedAt: i.published || new Date(Date.now()),
+              url: i.links[0].href || "",
+              source: {
+                name: name,
+                url: url.origin,
+              },
+            };
+          })
+            .filter((i: News) =>
+              (Date.now() - i.publishedAt.getTime()) < 86400000
+            );
 
           // Filter news by AI according to user settings.
           const openai = new OpenAI();
@@ -125,6 +144,7 @@ export async function fetchNews(
           } catch (error) {
             console.error("Error parsing filtered news:", error);
           }
+
           return filteredNews.news;
         }
         default:
