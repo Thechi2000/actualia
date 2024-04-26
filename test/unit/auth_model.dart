@@ -126,6 +126,9 @@ class StateChangeSignOutEmitter extends FakeGoTrueClient {
 
 class FakeGoTrueClient extends Fake implements GoTrueClient {
   late final FakeGotrueFetch _mockFetch = FakeGotrueFetch();
+  final Map<String, String> _headers = {};
+
+  FakeGotrueFetch get mockFetch => _mockFetch;
 
   @override
   User? get currentUser => const User(
@@ -169,14 +172,19 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
   @override
   Future<UserResponse> updateUser(UserAttributes attributes,
       {String? emailRedirectTo}) async {
-    final response =
-        await FakeGotrueFetch().request("", RequestMethodType.post);
-    return UserResponse.fromJson(response);
+    Map<String, dynamic>? userJson = currentUser?.toJson();
+    userJson?["user_metadata"] = attributes.toJson();
+    GotrueRequestOptions options =
+        GotrueRequestOptions(headers: _headers, body: userJson);
+    mockFetch.request("", RequestMethodType.post, options: options);
+    return UserResponse.fromJson(attributes.toJson());
   }
 }
 
 class FakeGotrueFetch extends Fake implements GotrueFetch {
-  late User? user;
+  late User? _userdb;
+
+  User? get userdb => _userdb;
 
   @override
   Future<dynamic> request(
@@ -184,14 +192,16 @@ class FakeGotrueFetch extends Fake implements GotrueFetch {
     RequestMethodType method, {
     GotrueRequestOptions? options,
   }) async {
-    final response = await "";
-    return response;
+    _userdb = User.fromJson(options!.body!);
+    debugPrint("user metadata should be updated ${_userdb?.userMetadata}");
+    return userdb?.toJson();
   }
 }
 
 class FakeGotrueRequestOption extends Fake implements GotrueRequestOptions {}
 
 class FakeSupabaseClient extends Fake implements SupabaseClient {
+  late User? userdb;
   GoTrueClient client;
   FakeSupabaseClient(this.client);
 
@@ -332,8 +342,13 @@ void main() {
   });
 
   test("SetOnboardingIsDone work as intended", () async {
-    AuthModel auth =
-        AuthModel(FakeSupabaseClient(FakeGoTrueClient()), FakeGoogleSignin());
-    await auth.setOnboardingIsDone();
+    FakeGoTrueClient fakeClient = FakeGoTrueClient();
+    FakeSupabaseClient fakedb = FakeSupabaseClient(fakeClient);
+    AuthModel auth = AuthModel(fakedb, FakeGoogleSignin());
+    auth.setOnboardingIsDone();
+
+    expect(fakeClient.mockFetch._userdb?.userMetadata, {
+      "data": {"onboardingDone": true}
+    });
   });
 }
