@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:gotrue/src/fetch.dart';
+import 'package:gotrue/src/types/fetch_options.dart';
 
 class PasswordSignin extends FakeGoTrueClient {
   @override
@@ -123,6 +125,8 @@ class StateChangeSignOutEmitter extends FakeGoTrueClient {
 }
 
 class FakeGoTrueClient extends Fake implements GoTrueClient {
+  late final FakeGotrueFetch _mockFetch = FakeGotrueFetch();
+
   @override
   User? get currentUser => const User(
       id: "1234",
@@ -164,12 +168,28 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
 
   @override
   Future<UserResponse> updateUser(UserAttributes attributes,
-      {String? emailRedirectTo}) {
-    UserResponse res = UserResponse.fromJson();
-
-    return Future.value(null);
+      {String? emailRedirectTo}) async {
+    final response =
+        await FakeGotrueFetch().request("", RequestMethodType.post);
+    return UserResponse.fromJson(response);
   }
 }
+
+class FakeGotrueFetch extends Fake implements GotrueFetch {
+  late User? user;
+
+  @override
+  Future<dynamic> request(
+    String url,
+    RequestMethodType method, {
+    GotrueRequestOptions? options,
+  }) async {
+    final response = await "";
+    return response;
+  }
+}
+
+class FakeGotrueRequestOption extends Fake implements GotrueRequestOptions {}
 
 class FakeSupabaseClient extends Fake implements SupabaseClient {
   GoTrueClient client;
