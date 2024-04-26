@@ -124,6 +124,14 @@ class StateChangeSignOutEmitter extends FakeGoTrueClient {
 
 class FakeGoTrueClient extends Fake implements GoTrueClient {
   @override
+  User? get currentUser => const User(
+      id: "1234",
+      appMetadata: <String, dynamic>{},
+      userMetadata: <String, dynamic>{},
+      aud: "aud",
+      createdAt: "createdAt");
+
+  @override
   Stream<AuthState> get onAuthStateChange => const Stream.empty();
 
   @override
@@ -152,6 +160,14 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
             userMetadata: {},
             aud: "",
             createdAt: "")));
+  }
+
+  @override
+  Future<UserResponse> updateUser(UserAttributes attributes,
+      {String? emailRedirectTo}) {
+    UserResponse res = UserResponse.fromJson();
+
+    return Future.value(null);
   }
 }
 
@@ -293,5 +309,11 @@ void main() {
     AuthModel vm =
         AuthModel(FakeSupabaseClient(Signout()), FakeFailingGoogleSignin());
     expect(await vm.signOut(), isFalse);
+  });
+
+  test("SetOnboardingIsDone work as intended", () async {
+    AuthModel auth =
+        AuthModel(FakeSupabaseClient(FakeGoTrueClient()), FakeGoogleSignin());
+    await auth.setOnboardingIsDone();
   });
 }
