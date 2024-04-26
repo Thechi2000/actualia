@@ -14,15 +14,22 @@ class PlayButton extends StatefulWidget {
 }
 
 class _PlayButtonState extends State<PlayButton> {
-  var isPlaying = false;
-  var hasStarted = false;
+  PlayerState _PlayerState = PlayerState.completed;
 
   @override
   Widget build(BuildContext context) {
     final AudioPlayer audioPlayer = AudioPlayer();
+    audioPlayer.setReleaseMode(ReleaseMode.stop);
+    audioPlayer.onPlayerComplete.listen((s) async {
+      setState(() {
+        _PlayerState = PlayerState.completed;
+      });
+      await audioPlayer.release();
+    });
+    audioPlayer.onPlayerStateChanged.listen((s) => debugPrint("$s"));
 
     return IconButton(
-        icon: isPlaying
+        icon: _PlayerState == PlayerState.playing
             ? const Icon(
                 Icons.pause_circle_outline,
                 size: 40.0,
@@ -34,18 +41,24 @@ class _PlayButtonState extends State<PlayButton> {
                 color: Color.fromARGB(255, 68, 159, 166),
               ),
         onPressed: () async {
-          setState(() {
-            isPlaying = !isPlaying;
-          });
-          if (isPlaying) {
-            if (!hasStarted) {
-              hasStarted = true;
-              playAudio(audioPlayer, AssetSource("audio/boom.mp3"));
-            } else {
-              audioPlayer.resume();
-            }
-          } else {
-            audioPlayer.pause();
+          switch (_PlayerState) {
+            case PlayerState.playing:
+              await audioPlayer.pause(); // FIXME: pause doesnt work properly :(
+              setState(() => _PlayerState = PlayerState.paused);
+              break;
+            case PlayerState.paused:
+              await audioPlayer.resume();
+              setState(() => _PlayerState = PlayerState.playing);
+              break;
+            case PlayerState.completed:
+            case PlayerState.stopped:
+            case PlayerState.disposed:
+              playAudio(
+                  audioPlayer,
+                  UrlSource(
+                      "https://onlinetestcase.com/wp-content/uploads/2023/06/100-KB-MP3.mp3")); // to change
+              setState(() => _PlayerState = PlayerState.playing);
+              break;
           }
         });
   }
