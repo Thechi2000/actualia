@@ -12,16 +12,20 @@ class AuthModel extends ChangeNotifier {
   StreamSubscription? authStateSub;
 
   bool get isSignedIn => user != null;
+  late bool isOnboardingRequired;
 
   AuthModel(SupabaseClient supabaseClient, this._googleSignIn) {
     _supabase = supabaseClient;
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
       print('Supabase onAuthStateChange new authState : ${authState.event}');
 
-      if (authState.event == AuthChangeEvent.signedIn) {
-        user = authState.session!.user;
-      } else if (authState.event == AuthChangeEvent.signedOut) {
-        user = null;
+      user = authState.session?.user;
+
+      if (user != null) {
+        print(user!.userMetadata);
+        final bool onboardingDone =
+            user!.userMetadata?['onboardingDone'] ?? false;
+        isOnboardingRequired = !onboardingDone;
       }
 
       notifyListeners();
@@ -79,10 +83,21 @@ class AuthModel extends ChangeNotifier {
   Future<bool> signInWithEmail(String email, String password) async {
     final res = await _supabase.auth
         .signInWithPassword(password: password, email: email);
-    return res.user != null;
+    if (res.user != null) {
+      // isOnboardingRequired = true; // always show onboarding with test (non-google) accounts
+      return true;
+    }
+    return false;
   }
 
   Future<bool> signInWithFakeAccount() async {
     return signInWithEmail("actualia@example.com", "actualia");
+  }
+
+  /// Sets a flag in user metadata to remember that the onboarding is done
+  Future<bool> setOnboardingIsDone() async {
+    await _supabase.auth
+        .updateUser(UserAttributes(data: {'onboardingDone': true}));
+    return true;
   }
 }
