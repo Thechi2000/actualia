@@ -20,6 +20,7 @@ class _PlayButtonState extends State<PlayButton> {
   @override
   Widget build(BuildContext context) {
     final AudioPlayer audioPlayer = AudioPlayer();
+
     return IconButton(
         icon: isPlaying
             ? const Icon(
@@ -32,20 +33,14 @@ class _PlayButtonState extends State<PlayButton> {
                 size: 40.0,
                 color: Color.fromARGB(255, 68, 159, 166),
               ),
-        onPressed: () {
-          Permission perm;
+        onPressed: () async {
           setState(() {
             isPlaying = !isPlaying;
           });
           if (isPlaying) {
             if (!hasStarted) {
               hasStarted = true;
-              playAudio(
-                  audioPlayer,
-                  //AssetSource("audio/boom.mp3"));
-                  UrlSource(
-                      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"));
-              //playAudio(audioPlayer, BytesSource(widget.source));
+              playAudio(audioPlayer, AssetSource("audio/boom.mp3"));
             } else {
               audioPlayer.resume();
             }
