@@ -131,6 +131,17 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
   FakeGotrueFetch get mockFetch => _mockFetch;
 
   @override
+  Session? get currentSession => Session(
+      accessToken: "",
+      tokenType: "",
+      user: const User(
+          id: "1234",
+          appMetadata: {},
+          userMetadata: {},
+          aud: "",
+          createdAt: ""));
+
+  @override
   User? get currentUser => const User(
       id: "1234",
       appMetadata: <String, dynamic>{},
@@ -193,7 +204,6 @@ class FakeGotrueFetch extends Fake implements GotrueFetch {
     GotrueRequestOptions? options,
   }) async {
     _userdb = User.fromJson(options!.body!);
-    debugPrint("user metadata should be updated ${_userdb?.userMetadata}");
     return userdb?.toJson();
   }
 }
