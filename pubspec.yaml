@@ -45,6 +45,7 @@ dependencies:
   country_list: ^0.0.5
   flutter_svg: ^2.0.10+1
   alarm: ^3.1.2
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
