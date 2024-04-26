@@ -163,38 +163,30 @@ class NewsViewModel extends ChangeNotifier {
   // Function to get the audio file from the database
   Future<Uint8List?> getAudioFile(News news) async {
     String audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
-    print("audio : $audio");
     try {
       // File download
       final response = await supabase.storage.from("audios").download(audio);
-      print("response : $response");
 
       if (response.isEmpty) {
         log('Audio file not found.', level: Level.WARNING.value);
-        print("Audio file not found.");
         return null;
       }
 
       log('Audio file downloaded successfully.', level: Level.INFO.value);
-      print("Audio file downloaded successfully.");
 
       final directory = await getApplicationDocumentsDirectory();
-      final transcriptsDirectory = Directory('${directory.path}/transcripts');
+      final transcriptsDirectory = Directory('${directory.path}/audios');
 
       if (!await transcriptsDirectory.exists()) {
         await transcriptsDirectory.create(recursive: true);
-        print('Directory created: ${transcriptsDirectory.path}');
       }
 
       final file = File('${transcriptsDirectory.path}/${news.transcriptID}');
-      print('Created empty file: ${file.path}');
       await file.writeAsBytes(response);
-      print('File written at: ${file.path}');
 
       return response;
     } catch (e) {
       log('Error downloading audio file: $e', level: Level.WARNING.value);
-      print("Error downloading audio file: $e");
       return null;
     }
   }

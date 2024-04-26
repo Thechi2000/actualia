@@ -55,7 +55,7 @@ class _PlayButtonState extends State<PlayButton> {
               playAudio(
                   audioPlayer,
                   DeviceFileSource(
-                      '/data/user/0/ch.epfl.swent.actualia/app_flutter/transcripts/$widget.transcriptId'));
+                      '/data/user/0/ch.epfl.swent.actualia/app_flutter/audios/$widget.transcriptId'));
               setState(() => _PlayerState = PlayerState.playing);
               break;
           }
@@ -66,7 +66,6 @@ class _PlayButtonState extends State<PlayButton> {
     try {
       await audioPlayer.play(source);
     } catch (e) {
-      print("Error playing audio: $e");
       log("Error playing audio: $e", level: Level.WARNING.value);
     }
   }
