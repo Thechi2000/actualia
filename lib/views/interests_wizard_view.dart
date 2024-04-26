@@ -117,8 +117,8 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
             Navigator.pop(context);
           } else {
             try {
-              ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
-              pvm.fetchNewsProviders();
+              // ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
+              // pvm.fetchNewsProviders();
 
               await Navigator.push(
                   context,

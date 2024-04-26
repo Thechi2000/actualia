@@ -26,6 +26,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    _vm = Provider.of<ProvidersViewModel>(context);
     Future.microtask(() async {
       await _vm.fetchNewsProviders();
     });
