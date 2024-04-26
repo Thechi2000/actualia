@@ -19,7 +19,12 @@ class AuthModel extends ChangeNotifier {
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
       print('Supabase onAuthStateChange new authState : ${authState.event}');
 
-      user = authState.session?.user;
+      if (authState.event == AuthChangeEvent.signedOut ||
+          authState.event == AuthChangeEvent.userDeleted) {
+        user = null;
+      } else {
+        user = _supabase.auth?.currentSession?.user;
+      }
 
       if (user != null) {
         print(user!.userMetadata);
