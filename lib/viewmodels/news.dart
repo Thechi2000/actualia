@@ -79,7 +79,6 @@ class NewsViewModel extends ChangeNotifier {
 
   Future<void> getNewsList() async {
     try {
-      getAudioFile("feur");
       var response = await fetchNewsList();
 
       if (response.isEmpty) {
@@ -94,6 +93,11 @@ class NewsViewModel extends ChangeNotifier {
           await generateAndGetNews();
           _newsList.insert(0, _news!);
         }
+      }
+      for (var news in _newsList) {
+        //if (news.audio != null) {
+        getAudioFile(news).whenComplete(() => notifyListeners());
+        //}
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
@@ -155,9 +159,9 @@ class NewsViewModel extends ChangeNotifier {
     }
   }
 
-  //Function to get the audio file from the database
-  Future<Uint8List?> getAudioFile(String audio) async {
-    audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
+  // Function to get the audio file from the database
+  Future<Uint8List?> getAudioFile(News news) async {
+    String audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
     print("audio : $audio");
     try {
       // File download
@@ -169,13 +173,15 @@ class NewsViewModel extends ChangeNotifier {
         print("Audio file not found.");
         return null;
       }
-      /*
-      final file = File(audio);
-      await file.writeAsBytes(response);
-      */
 
       log('Audio file downloaded successfully.', level: Level.INFO.value);
       print("Audio file downloaded successfully.");
+
+      final file = File('transcripts/${news.transcriptID}');
+      print('Created empty file: ${file.path}');
+      await file.writeAsBytes(response);
+      print('file path: ${file.path}');
+
       return response;
     } catch (e) {
       log('Error downloading audio file: $e', level: Level.WARNING.value);

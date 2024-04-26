@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/models/news.dart';
@@ -12,7 +10,6 @@ class NewsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String date = convertDate(news.date);
-    var source = Uint8List(1);
 
     return Center(
       child: Column(
@@ -29,7 +26,9 @@ class NewsText extends StatelessWidget {
               children: <Widget>[
                 Align(
                     alignment: Alignment.topLeft,
-                    child: PlayButton(source: source)),
+                    child: PlayButton(
+                      transcriptId: news.transcriptID,
+                    )),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Align(

@@ -1,13 +1,12 @@
 import 'dart:developer';
 import 'package:logging/logging.dart';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PlayButton extends StatefulWidget {
-  final Uint8List source;
-  const PlayButton({super.key, required this.source});
+  final int transcriptId;
+  const PlayButton({super.key, required this.transcriptId});
 
   @override
   State<PlayButton> createState() => _PlayButtonState();
@@ -53,10 +52,8 @@ class _PlayButtonState extends State<PlayButton> {
             case PlayerState.completed:
             case PlayerState.stopped:
             case PlayerState.disposed:
-              playAudio(
-                  audioPlayer,
-                  UrlSource(
-                      "https://onlinetestcase.com/wp-content/uploads/2023/06/100-KB-MP3.mp3")); // to change
+              playAudio(audioPlayer,
+                  DeviceFileSource('audio/$widget.transcriptId')); // to change
               setState(() => _PlayerState = PlayerState.playing);
               break;
           }
