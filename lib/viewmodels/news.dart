@@ -4,6 +4,7 @@ import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
@@ -177,10 +178,18 @@ class NewsViewModel extends ChangeNotifier {
       log('Audio file downloaded successfully.', level: Level.INFO.value);
       print("Audio file downloaded successfully.");
 
-      final file = File('transcripts/${news.transcriptID}');
+      final directory = await getApplicationDocumentsDirectory();
+      final transcriptsDirectory = Directory('${directory.path}/transcripts');
+
+      if (!await transcriptsDirectory.exists()) {
+        await transcriptsDirectory.create(recursive: true);
+        print('Directory created: ${transcriptsDirectory.path}');
+      }
+
+      final file = File('${transcriptsDirectory.path}/${news.transcriptID}');
       print('Created empty file: ${file.path}');
       await file.writeAsBytes(response);
-      print('file path: ${file.path}');
+      print('File written at: ${file.path}');
 
       return response;
     } catch (e) {

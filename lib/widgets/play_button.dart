@@ -52,8 +52,10 @@ class _PlayButtonState extends State<PlayButton> {
             case PlayerState.completed:
             case PlayerState.stopped:
             case PlayerState.disposed:
-              playAudio(audioPlayer,
-                  DeviceFileSource('audio/$widget.transcriptId')); // to change
+              playAudio(
+                  audioPlayer,
+                  DeviceFileSource(
+                      '/data/user/0/ch.epfl.swent.actualia/app_flutter/transcripts/$widget.transcriptId'));
               setState(() => _PlayerState = PlayerState.playing);
               break;
           }
