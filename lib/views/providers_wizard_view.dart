@@ -27,10 +27,6 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
   @override
   Widget build(BuildContext context) {
     _vm = Provider.of<ProvidersViewModel>(context);
-    Future.microtask(() async {
-      await _vm.fetchNewsProviders();
-    });
-
     _initialNewsProviders = _vm.providersToString(_vm.newsProviders);
     _newsProviders = _initialNewsProviders;
 
@@ -72,7 +68,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
       rOnPressed: () {
         _vm.setNewsProviders(_vm.stringToProviders(_newsProviders));
         _vm.pushNewsProviders();
-        Navigator.pop(context);
+        Navigator.pop(context); //todo popUntil
       },
     );
 

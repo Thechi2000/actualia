@@ -117,8 +117,9 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
             Navigator.pop(context);
           } else {
             try {
-              // ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
-              // pvm.fetchNewsProviders();
+              ProvidersViewModel pvm =
+                  Provider.of<ProvidersViewModel>(context, listen: false);
+              pvm.fetchNewsProviders();
 
               await Navigator.push(
                   context,
@@ -126,7 +127,6 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
                       builder: (builder) => const ProvidersWizardView(
                             isInitialOnboarding: true,
                           )));
-              Navigator.pop(context);
             } catch (e) {
               log("Error in provider wizard: $e");
             }
