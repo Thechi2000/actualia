@@ -180,7 +180,7 @@ class NewsListVM extends NewsViewModel {
         "id": -1,
         "audio": null,
         "transcript": {
-          "articles": [
+          "news": [
             {
               "transcript": "text",
               "source": {"name": "source"},
@@ -262,7 +262,7 @@ class NotTodayNewsListVM extends NewsViewModel {
         "title": "News",
         "id": -1,
         "audio": null,
-        "transcript": {"articles": []}
+        "transcript": {"news": []}
       }
     ]);
   }

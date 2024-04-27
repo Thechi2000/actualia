@@ -100,9 +100,9 @@ Deno.serve(async (request) => {
   // Generate a transcript from the news.
   console.log("Generating transcript from news");
   const transcript = news.length > 0 ? await generateTranscript(news) : {
-    totalArticles: 0,
+    totalNews: 0,
     totalNewsByLLM: 0,
-    articles: [],
+    news: [],
   };
 
   // Insert the transcript into the database.
@@ -128,7 +128,7 @@ Deno.serve(async (request) => {
 
 // Call OpenAI API for json generation
 async function generateTranscript(news: News[]): Promise<Transcript> {
-  const articlesToGenereate = news.reduce(
+  const newsToGenerate = news.reduce(
     (s, n) => `${s}${n.title}\n${n.description}\n\n`,
     "",
   );
@@ -144,7 +144,7 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
       },
       {
         "role": "user",
-        "content": articlesToGenereate,
+        "content": newsToGenerate,
       },
     ],
   });

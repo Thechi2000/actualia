@@ -46,8 +46,8 @@ export async function fetchNews(
     }
 
     if (topics.length === 0) {
-      console.log("No topics, setting defaults");
-      topics = ["Politics", "Technology"];
+      console.warn("No topics, skipping");
+      return [];
     }
 
     try {
@@ -161,13 +161,9 @@ export async function fetchNews(
   }
 
   if (Array.isArray(provider)) {
-    if (provider.length > 0) {
-      return (await Promise.all(
-        provider.map((p) => singleFetch(p, newsSettings)),
-      )).flat();
-    } else {
-      return await singleFetch({ type: "gnews" }, newsSettings);
-    }
+    return (await Promise.all(
+      provider.map((p) => singleFetch(p, newsSettings)),
+    )).flat();
   } else {
     return await singleFetch(provider, newsSettings);
   }
