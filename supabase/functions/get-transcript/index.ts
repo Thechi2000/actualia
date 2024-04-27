@@ -64,7 +64,7 @@ Deno.serve(async (request) => {
   const providersDB = await supabaseClient.from("news_providers").select("*")
     .in(
       "id",
-      interests["providers_id"],
+      interests["providers_id"] || [],
     );
   let providers = null;
   if (providersDB.error) {
@@ -77,7 +77,7 @@ Deno.serve(async (request) => {
 
   // Get the news.
   console.log(`Fetching news from ${providers.length} providers`);
-  const news = await fetchNews(providers, interests);
+  const news = await fetchNews(providers || [], interests);
 
   // Generate a transcript from the news.
   console.log("Generating transcript from news");

@@ -46,8 +46,8 @@ export async function fetchNews(
     }
 
     if (topics.length === 0) {
-      console.warn("No topics, skipping");
-      return [];
+      console.log("No topics, setting defaults");
+      topics = ["Politics", "Science"];
     }
 
     try {
@@ -73,7 +73,7 @@ export async function fetchNews(
             return [];
           }
 
-          console.log(JSON.stringify(news.articles))
+          console.log(JSON.stringify(news.articles));
           // Normalizes the output to the correct format.
           return news.articles.map((n) => ({
             ...n,
@@ -161,9 +161,13 @@ export async function fetchNews(
   }
 
   if (Array.isArray(provider)) {
-    return (await Promise.all(
-      provider.map((p) => singleFetch(p, newsSettings)),
-    )).flat();
+    if (provider.length > 0) {
+      return (await Promise.all(
+        provider.map((p) => singleFetch(p, newsSettings)),
+      )).flat();
+    } else {
+      return await singleFetch({ type: "gnews" }, newsSettings);
+    }
   } else {
     return await singleFetch(provider, newsSettings);
   }
