@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/viewmodels/providers.dart';
@@ -109,7 +109,6 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
             wantsCities: true,
             wantsCountries: true,
             wantsInterests: true,
-            onboardingNeeded: false,
           );
           newsSettingsModel?.pushSettings(toSend);
           //todo nav to main screen

@@ -5,6 +5,8 @@ import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/auth_model.dart';
+
 class ProvidersWizardView extends StatefulWidget {
   final bool isInitialOnboarding;
 
@@ -26,6 +28,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    AuthModel authModel = Provider.of<AuthModel>(context);
     _vm = Provider.of<ProvidersViewModel>(context);
     _initialNewsProviders = _vm.providersToString(_vm.newsProviders);
     _newsProviders = _initialNewsProviders;
@@ -65,10 +68,12 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
       },
       showRight: true,
       rText: "Finish",
-      rOnPressed: () {
+      rOnPressed: () async {
         _vm.setNewsProviders(_vm.stringToProviders(_newsProviders));
         _vm.pushNewsProviders();
-        Navigator.pop(context); //todo popUntil
+        await authModel.setOnboardingIsDone();
+        Navigator.popUntil(
+            context, (route) => !route.hasActiveRouteBelow); //todo popUntil
       },
     );
 
