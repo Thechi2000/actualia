@@ -64,7 +64,7 @@ class FakeFunctionsClient extends Fake implements FunctionsClient {
       {Map<String, String>? headers,
       Map<String, dynamic>? body,
       HttpMethod method = HttpMethod.post}) {
-    expect(functionName, equals('get-transcript'));
+    expect(functionName, equals('generate-transcript'));
     expect(body, isNull);
     expect(method, equals(HttpMethod.post));
 
@@ -269,7 +269,7 @@ class NotTodayNewsListVM extends NewsViewModel {
 }
 
 void main() {
-  test("get-transcript failure is reported", () async {
+  test("generate-transcript failure is reported", () async {
     NewsViewModel vm = NewsViewModel(FakeFailingSupabaseClient());
     bool hasThrown = false;
 

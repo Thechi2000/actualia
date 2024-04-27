@@ -143,7 +143,7 @@ class NewsViewModel extends ChangeNotifier {
   /// Invokes a cloud function to generate news transcripts.
   Future<void> invokeTranscriptFunction() async {
     try {
-      await supabase.functions.invoke('get-transcript');
+      await supabase.functions.invoke('generate-transcript');
       log("Cloud function 'transcript' invoked successfully.",
           level: Level.INFO.value);
     } catch (e) {
