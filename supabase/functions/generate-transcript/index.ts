@@ -9,7 +9,7 @@ interface Result {
   transcript: string;
 }
 
-interface NewsJSONLLM {
+interface NewsJsonLLM {
   totalNewsByLLM: string;
   news: Result[];
 }
@@ -25,34 +25,21 @@ Deno.serve(async (request) => {
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
 
-  const url = new URL(request.url);
-  const userIdProvided = url.searchParams.get("userId");
-  let supabaseClient;
-  let userId;
+  // Create a Supabase client with the user's token.
+  const authHeader = request.headers.get("Authorization")!;
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
 
-  if (userIdProvided) {
-    supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    );
-    userId = userIdProvided;
-  } else {
-    // Create a Supabase client with the user's token.
-    const authHeader = request.headers.get("Authorization")!;
-    supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } },
-    );
-
-    // Get the user from the token.
-    const user = await supabaseClient.auth.getUser();
-    if (user.error !== null) {
-      console.error(user.error);
-      return new Response("Authentication error", { status: 401 });
-    }
-    userId = user.data.user.id;
+  // Get the user from the token.
+  const user = await supabaseClient.auth.getUser();
+  if (user.error !== null) {
+    console.error(user.error);
+    return new Response("Authentication error", { status: 401 });
   }
+  const userId = user.data.user.id;
 
   console.log("We start the process for the user with ID:", userId);
 
@@ -77,7 +64,7 @@ Deno.serve(async (request) => {
   const providersDB = await supabaseClient.from("news_providers").select("*")
     .in(
       "id",
-      interests["providers_id"],
+      interests["providers_id"] || [],
     );
   let providers = null;
   if (providersDB.error) {
@@ -90,7 +77,7 @@ Deno.serve(async (request) => {
 
   // Get the news.
   console.log(`Fetching news from ${providers.length} providers`);
-  const news = await fetchNews(providers, interests);
+  const news = await fetchNews(providers || [], interests);
 
   // Generate a transcript from the news.
   console.log("Generating transcript from news");
@@ -123,54 +110,8 @@ Deno.serve(async (request) => {
 
 // Call OpenAI API for json generation
 async function generateTranscript(news: News[]): Promise<Transcript> {
-  // Concatenate the articles into a single string to pass them to LLM
-  function generateArticlesPrompt(news: News[]): string {
-    let result: string = "";
-    news.forEach((n: News) => {
-      result += `${n.title}\n${n.description}\n\n`;
-    });
-    return result;
-  }
-
-  const articlesToGenereate = generateArticlesPrompt(news);
-  console.log("Generating transcript from news", articlesToGenereate);
-
   const openai = new OpenAI();
-  const completion1 = await openai.chat.completions.create({
-    "model": "gpt-3.5-turbo",
-    "messages": [
-      {
-        "role": "system",
-        "content":
-          "You're a radio journalist writing a script to announce the day's news. The user gives you the news to announce. Your radio broadcast should only last 2-3 minutes, so try to find interesting transitions between the news items. Write the script.",
-      },
-      {
-        "role": "user",
-        "content": articlesToGenereate,
-      },
-    ],
-  });
-
-  const fullTranscript = completion1.choices[0].message.content;
-
-  function mergeJSON(json1: NewsJSONLLM, json2: News[]): Transcript {
-    const mergedData: Transcript = {
-      totalArticles: json2.length,
-      totalNewsByLLM: json1.totalNewsByLLM,
-      articles: [],
-    };
-
-    for (let i = 0; i < json2.length; i++) {
-      const article = json2[i];
-      const news = json1.news[i];
-      const mergedItem = { ...article, ...news };
-      mergedData.articles.push(mergedItem);
-    }
-
-    return mergedData;
-  }
-
-  const completion2 = await openai.chat.completions.create({
+  const completion = await openai.chat.completions.create({
     "model": "gpt-3.5-turbo",
     "response_format": {
       "type": "json_object",
@@ -179,17 +120,32 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
       {
         "role": "system",
         "content":
-          'You\'re an assistant trained to create JSON. You\'re given a text which is a radio chronicle about the news of the day. You\'re asked to recognize each news item and classify it in the JSON below. You should also be able to recognize the intro and conclusion. Don\'t leave out any words from the text. {"totalNewsByLLM":"Number of news you have recognized ","intro":"intro you have recognized","outro":"outro you have recognized","news":[{"transcript":"Content of the first news"},{"transcript":"Content of the second news"},{"transcript":"etc."}]}',
+          'You are a journalist who provide a transcript from a selection of article headlines that we give you. It\'s up \
+          to you to compose your own text according to these, and to make interesting transitions between transcript items \
+          (IMPORTANT). For example, you can use Also, On the other hand, etc. to do the transition between news. Create a \
+          valid JSON array from this news-cut transcript, as in the example here {"totalNewsByLLM":"The number of news you \
+          proceed (ex. 3 here)","news":[{"transcript":"The summary of the news 1"},{"transcript":"The summary of the news 2"},{"transcript":"etc."}]}',
       },
       {
         "role": "user",
-        "content": fullTranscript || "",
+        "content": news.reduce(
+          (s, n) => `${s}${n.title}\n${n.description}\n\n`,
+          "",
+        ),
       },
     ],
   });
 
-  const transcriptJSON = JSON.parse(
-    completion2.choices[0].message.content || "",
+  const transcriptJSON: NewsJsonLLM = JSON.parse(
+    completion.choices[0].message.content || "",
   );
-  return mergeJSON(transcriptJSON, news);
+
+  return {
+    totalArticles: news.length,
+    totalNewsByLLM: transcriptJSON.totalNewsByLLM,
+    articles: news.map((n, i) => ({
+      ...transcriptJSON.news[i],
+      ...n,
+    })),
+  };
 }
