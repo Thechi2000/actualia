@@ -88,7 +88,8 @@ class AuthModel extends ChangeNotifier {
     final res = await _supabase.auth
         .signInWithPassword(password: password, email: email);
     if (res.user != null) {
-      // isOnboardingRequired = true; // always show onboarding with test (non-google) accounts
+      isOnboardingRequired =
+          true; // always show onboarding with test (non-google) accounts
       return true;
     }
     return false;
