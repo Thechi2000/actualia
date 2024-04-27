@@ -47,7 +47,7 @@ export async function fetchNews(
 
     if (topics.length === 0) {
       console.log("No topics, setting defaults");
-      topics = ["Politics", "Science"];
+      topics = ["Politics", "Technology"];
     }
 
     try {
