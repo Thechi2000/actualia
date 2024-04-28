@@ -96,9 +96,7 @@ class NewsViewModel extends ChangeNotifier {
         }
       }
       for (var news in _newsList) {
-        //if (news.audio != null) {
         getAudioFile(news).whenComplete(() => notifyListeners());
-        //}
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
@@ -162,7 +160,8 @@ class NewsViewModel extends ChangeNotifier {
 
   // Function to get the audio file from the database
   Future<Uint8List?> getAudioFile(News news) async {
-    String audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
+    var audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
+    print("audio : $audio");
     try {
       // File download
       final response = await supabase.storage.from("audios").download(audio);

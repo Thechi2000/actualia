@@ -9,11 +9,20 @@ class PlayButton extends StatefulWidget {
   const PlayButton({super.key, required this.transcriptId});
 
   @override
-  State<PlayButton> createState() => _PlayButtonState();
+  State<PlayButton> createState() => PlayButtonState();
 }
 
-class _PlayButtonState extends State<PlayButton> {
-  PlayerState _PlayerState = PlayerState.completed;
+class PlayButtonState extends State<PlayButton> {
+  late PlayerState _playerState;
+  @override
+  void initState() {
+    super.initState();
+    _playerState = PlayerState.stopped;
+  }
+
+  PlayerState get playerState {
+    return _playerState;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +30,15 @@ class _PlayButtonState extends State<PlayButton> {
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.onPlayerComplete.listen((s) async {
       setState(() {
-        _PlayerState = PlayerState.completed;
+        _playerState = PlayerState.completed;
       });
       await audioPlayer.release();
     });
-    audioPlayer.onPlayerStateChanged.listen((s) => debugPrint("$s"));
+    audioPlayer.onPlayerStateChanged
+        .listen((s) => log("$s", level: Level.INFO.value));
 
     return IconButton(
-        icon: _PlayerState == PlayerState.playing
+        icon: _playerState == PlayerState.playing
             ? const Icon(
                 Icons.pause_circle_outline,
                 size: 40.0,
@@ -40,14 +50,14 @@ class _PlayButtonState extends State<PlayButton> {
                 color: Color.fromARGB(255, 68, 159, 166),
               ),
         onPressed: () async {
-          switch (_PlayerState) {
+          switch (_playerState) {
             case PlayerState.playing:
               await audioPlayer.pause(); // FIXME: pause doesnt work properly :(
-              setState(() => _PlayerState = PlayerState.paused);
+              setState(() => _playerState = PlayerState.paused);
               break;
             case PlayerState.paused:
               await audioPlayer.resume();
-              setState(() => _PlayerState = PlayerState.playing);
+              setState(() => _playerState = PlayerState.playing);
               break;
             case PlayerState.completed:
             case PlayerState.stopped:
@@ -56,7 +66,7 @@ class _PlayButtonState extends State<PlayButton> {
                   audioPlayer,
                   DeviceFileSource(
                       '/data/user/0/ch.epfl.swent.actualia/app_flutter/audios/$widget.transcriptId'));
-              setState(() => _PlayerState = PlayerState.playing);
+              setState(() => _playerState = PlayerState.playing);
               break;
           }
         });
