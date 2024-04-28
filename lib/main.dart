@@ -6,6 +6,7 @@ import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:actualia/views/wizard_view.dart';
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweGRkYmp5amRzY3Z1aHd1dHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTA5NTQzNDcsImV4cCI6MjAyNjUzMDM0N30.0vB8huUmdJIYp3M1nMeoixQBSAX_w2keY0JsYj2Gt8c',
   );
+  await Alarm.init();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
