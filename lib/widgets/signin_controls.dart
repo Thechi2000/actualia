@@ -48,6 +48,7 @@ class _SignInControls extends State<SignInControls> {
       Container(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
           child: TextButton(
+              key: const Key("signin-guest"),
               child: const Text(
                   style: TextStyle(
                     fontFamily: "EB Garamond",

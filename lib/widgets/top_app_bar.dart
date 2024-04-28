@@ -43,6 +43,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Profile button aligned to the right
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.grey),
+            key: const Key("profile"),
             onPressed: () {
               Navigator.push(
                   context,
