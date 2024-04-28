@@ -16,24 +16,29 @@ export interface NewsProvider {
 }
 
 export interface NewsSettings {
-  id: number;
-  created_at: string;
-  created_by: string;
-  interests: any;
-  wants_interests: boolean;
-  countries: any;
-  wants_countries: boolean;
-  cities: any;
-  wants_cities: boolean;
-  user_prompt: string;
-  providers_id: any;
+    id: number,
+    created_at: string;
+    created_by: string;
+    interests: any,
+    wants_interests: boolean,
+    countries: any,
+    wants_countries: boolean,
+    cities: any,
+    wants_cities: boolean,
+    user_prompt: string,
+    providers_id: any
 }
 
 export interface News {
   title: string;
   description: string;
-  date: Date;
-  link: string;
+  content: string;
+  publishedAt: Date;
+  url: string;
+  source: {
+    name: string;
+    url: string;
+  };
 }
 
 interface GNewsProvider {
