@@ -46,6 +46,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <service android:name="ch.epfl.swent.actualia.services.NotificationOnKillService" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -70,7 +72,5 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
   <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-
-  <service android:name="ch.epfl.swent.actualia.services.NotificationOnKillService" />
 
 </manifest>
