@@ -30,7 +30,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of<AuthModel>(context);
     _vm = Provider.of<ProvidersViewModel>(context);
-    _initialNewsProviders = _vm.providersToString(_vm.newsProviders);
+    _initialNewsProviders = _vm.providersToString(_vm.newsProviders!);
     _newsProviders = _initialNewsProviders;
 
     PreferredSizeWidget topBar = const PreferredSize(
@@ -71,9 +71,9 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
       rOnPressed: () async {
         _vm.setNewsProviders(_vm.stringToProviders(_newsProviders));
         _vm.pushNewsProviders();
-        // await authModel.setOnboardingIsDone();
-        Navigator.popUntil(
-            context, (route) => !route.hasActiveRouteBelow); //todo popUntil
+        await authModel.setOnboardingIsDone();
+        // Navigator.popUntil(
+        //     context, (route) => !route.hasActiveRouteBelow);
       },
     );
 

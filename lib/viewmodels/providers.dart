@@ -8,11 +8,13 @@ import '../models/providers.dart';
 
 class ProvidersViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
-  late List<NewsProvider> _newsProviders;
+  List<NewsProvider>? _newsProviders;
 
-  ProvidersViewModel(this.supabase);
+  ProvidersViewModel(this.supabase) {
+    fetchNewsProviders();
+  }
 
-  List<NewsProvider> get newsProviders => _newsProviders;
+  List<NewsProvider>? get newsProviders => _newsProviders;
   void setNewsProviders(List<NewsProvider> newsProviders) {
     _newsProviders = newsProviders;
   }
@@ -40,9 +42,9 @@ class ProvidersViewModel extends ChangeNotifier {
           .from('news_providers')
           .select()
           .eq("created_by", supabase.auth.currentUser!.id)
-          .single();
-      debugPrint("providers: ${res['providers']}");
-      final temp = List.from(jsonDecode(res['providers']));
+          .maybeSingle();
+      debugPrint("providers: ${res?['providers']}");
+      final temp = List.from(jsonDecode(res?['providers']));
       _newsProviders = temp.map((e) => NewsProvider.deserialize(e)!).toList();
       return true;
     } catch (e) {
@@ -56,11 +58,11 @@ class ProvidersViewModel extends ChangeNotifier {
 
   Future<bool> pushNewsProviders() async {
     try {
-      final List<dynamic> toPush =
-          _newsProviders.map((e) => e.serialize()).toList();
+      final List<dynamic>? toPush =
+          _newsProviders?.map((e) => e.serialize()).toList();
       await supabase.from("news_providers").upsert({
         "created_by": supabase.auth.currentUser!.id,
-        "providers": toPush,
+        "type": toPush,
       }, onConflict: "created_by");
       return true;
     } catch (e) {

@@ -57,13 +57,13 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);
-    late NewsSettingsViewModel newsSettings;
+    ProvidersViewModel pvm = Provider.of(context);
+    NewsSettingsViewModel newsSettings = Provider.of(context);
 
     Widget home;
     if (authModel.isSignedIn) {
-      newsSettings = Provider.of(context);
       if (authModel.isOnboardingRequired) {
-        if (newsSettings.settings == null) {
+        if (newsSettings.settings == null || pvm.newsProviders == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
           home = const InterestsWizardView(isInitialOnboarding: true);

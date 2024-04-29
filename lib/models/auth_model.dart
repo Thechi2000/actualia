@@ -87,12 +87,7 @@ class AuthModel extends ChangeNotifier {
   Future<bool> signInWithEmail(String email, String password) async {
     final res = await _supabase.auth
         .signInWithPassword(password: password, email: email);
-    if (res.user != null) {
-      isOnboardingRequired =
-          true; // always show onboarding with test (non-google) accounts
-      return true;
-    }
-    return false;
+    return res.user != null;
   }
 
   Future<bool> signInWithFakeAccount() async {

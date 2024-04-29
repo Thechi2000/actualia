@@ -1,8 +1,6 @@
 import 'dart:developer';
-import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
-import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -116,10 +114,6 @@ class _InterestsWizardViewState extends State<InterestsWizardView> {
             Navigator.pop(context);
           } else {
             try {
-              ProvidersViewModel pvm =
-                  Provider.of<ProvidersViewModel>(context, listen: false);
-              pvm.fetchNewsProviders();
-
               await Navigator.push(
                   context,
                   MaterialPageRoute(
