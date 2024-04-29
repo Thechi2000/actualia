@@ -1,5 +1,7 @@
 //coverage:ignore-file
 
+import 'dart:developer';
+
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/loading_view.dart';
@@ -10,6 +12,7 @@ import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:actualia/viewmodels/news.dart';

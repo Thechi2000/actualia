@@ -72,8 +72,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
         _vm.setNewsProviders(_vm.stringToProviders(_newsProviders));
         _vm.pushNewsProviders();
         await authModel.setOnboardingIsDone();
-        // Navigator.popUntil(
-        //     context, (route) => !route.hasActiveRouteBelow);
+        Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
       },
     );
 
