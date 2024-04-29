@@ -11,6 +11,10 @@ void main() {
         equals(GNewsProvider));
   });
 
+  test("GNews Provider has correct display name", () {
+    expect(GNewsProvider().displayName(), equals("Google News"));
+  });
+
   test("Correctly serializes RSS provider", () {
     expect(RSSFeedProvider(url: "https://rss.example.org").serialize(),
         equals({"type": "rss", "url": "https://rss.example.org"}));
@@ -21,6 +25,13 @@ void main() {
         {"type": "rss", "url": "https://rss.feed.org"});
     expect(provider.runtimeType, equals(RSSFeedProvider));
     expect((provider as RSSFeedProvider).url, equals("https://rss.feed.org"));
+  });
+
+  test("RSS Provider has correct display name", () {
+    expect(RSSFeedProvider(url: "https://rss.epfl.ch").displayName(),
+        equals("EPFL (RSS)"));
+    expect(RSSFeedProvider(url: "https://rss.feed.clic.ch/fr-FR").displayName(),
+        equals("CLIC (RSS)"));
   });
 
   test('Handles missing type entry', () {

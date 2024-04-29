@@ -9,7 +9,7 @@ interface Result {
   transcript: string;
 }
 
-interface NewsJSONLLM {
+interface NewsJsonLLM {
   totalNewsByLLM: string;
   news: Result[];
 }
@@ -41,11 +41,10 @@ Deno.serve(async (request) => {
   }
   const userId = user.data.user.id;
 
-  // const userId = "9d9d8c92-90d3-4702-9e38-0e821a2111a2";
-
   console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
+  console.log("Fetching user settings");
   const interestsDB = await supabaseClient.from("news_settings").select(
     "*",
   )
@@ -61,10 +60,11 @@ Deno.serve(async (request) => {
     interests = interestsDB.data[0];
   }
 
+  console.log("Fetching provider from the database");
   const providersDB = await supabaseClient.from("news_providers").select("*")
     .in(
       "id",
-      interests["providers_id"],
+      interests["providers_id"] || [],
     );
   let providers = null;
   if (providersDB.error) {
@@ -75,13 +75,23 @@ Deno.serve(async (request) => {
     providers = providersDB.data.map((p) => p.type);
   }
 
-  // Get the news from GNews.
-  const news = await fetchNews(providers, interests);
+  // Get the news.
+  console.log(`Fetching news from ${providers.length} providers`);
+  const news = await fetchNews(providers || [], interests);
 
   // Generate a transcript from the news.
-  const transcript = await generateTranscript(news);
+  console.log("Generating transcript from news");
+  const transcript = news.length > 0 ? await generateTranscript(news) : {
+    totalArticles: 0,
+    totalNewsByLLM: 0,
+    articles: [],
+  };
 
   // Insert the transcript into the database.
+  console.log(
+    "Inserting transcript in the database: ",
+    JSON.stringify(transcript),
+  );
   const { error } = await supabaseClient.from("news").insert({
     user: userId,
     title: "Hello! This is your daily news",
@@ -100,32 +110,6 @@ Deno.serve(async (request) => {
 
 // Call OpenAI API for json generation
 async function generateTranscript(news: News[]): Promise<Transcript> {
-  // Concatenate the articles into a single string to pass them to LLM
-  function generateArticlesPrompt(news: News[]): string {
-    let result: string = "";
-    news.forEach((n: News) => {
-      result += `${n.title}\n${n.description}\n\n`;
-    });
-    return result;
-  }
-
-  function mergeJSON(json1: NewsJSONLLM, json2: News[]): Transcript {
-    const mergedData: Transcript = {
-      totalArticles: json2.length,
-      totalNewsByLLM: json1.totalNewsByLLM,
-      articles: [],
-    };
-
-    for (let i = 0; i < json2.length; i++) {
-      const article = json2[i];
-      const news = json1.news[i];
-      const mergedItem = { ...article, ...news };
-      mergedData.articles.push(mergedItem);
-    }
-
-    return mergedData;
-  }
-
   const openai = new OpenAI();
   const completion = await openai.chat.completions.create({
     "model": "gpt-3.5-turbo",
@@ -136,17 +120,32 @@ async function generateTranscript(news: News[]): Promise<Transcript> {
       {
         "role": "system",
         "content":
-          'You are a journalist who provide a transcript from a selection of article headlines that we give you. It\'s up to you to compose your own text according to these, and to make interesting transitions between transcript items (IMPORTANT). For exemple, you can use Also, On the other hand, etc. to do the transition between news. Create a valid JSON array from this news-cut transcript, as in the example here {"totalNewsByLLM":"The number of news you proceed (ex. 3 here)","news":[{"transcript":"The summary of the news 1"},{"transcript":"The summary of the news 2"},{"transcript":"etc."}]}',
+          'You are a journalist who provide a transcript from a selection of article headlines that we give you. It\'s up \
+          to you to compose your own text according to these, and to make interesting transitions between transcript items \
+          (IMPORTANT). For example, you can use Also, On the other hand, etc. to do the transition between news. Create a \
+          valid JSON array from this news-cut transcript, as in the example here {"totalNewsByLLM":"The number of news you \
+          proceed (ex. 3 here)","news":[{"transcript":"The summary of the news 1"},{"transcript":"The summary of the news 2"},{"transcript":"etc."}]}',
       },
       {
         "role": "user",
-        "content": generateArticlesPrompt(news),
+        "content": news.reduce(
+          (s, n) => `${s}${n.title}\n${n.description}\n\n`,
+          "",
+        ),
       },
     ],
   });
 
-  const transcriptJSON = JSON.parse(
+  const transcriptJSON: NewsJsonLLM = JSON.parse(
     completion.choices[0].message.content || "",
   );
-  return mergeJSON(transcriptJSON, news);
+
+  return {
+    totalArticles: news.length,
+    totalNewsByLLM: transcriptJSON.totalNewsByLLM,
+    articles: news.map((n, i) => ({
+      ...transcriptJSON.news[i],
+      ...n,
+    })),
+  };
 }
