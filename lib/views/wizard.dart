@@ -78,33 +78,9 @@ class _WizardWidgetState extends State<WizardWidget> {
 
     switch (step) {
       case WizardStep.Interests:
-        return ListView(shrinkWrap: true, children: <Widget>[
-          const Text(
-              style: TextStyle(
-                  fontFamily: "Fira Code",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32.0),
-              textAlign: TextAlign.center,
-              "test"),
-          Container(
-              padding: const EdgeInsets.fromLTRB(0.0, 32.0, 0.0, 32.0),
-              child: Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  alignment: WrapAlignment.center,
-                  children: interests
-                      .map((e) => FilterChip(
-                          label: Text(e),
-                          onSelected: (v) => setState(() =>
-                              selectedInterests.contains(e)
-                                  ? selectedInterests.remove(e)
-                                  : selectedInterests.add(e)),
-                          selected: selectedInterests.contains(e)))
-                      .toList())),
-          FilledButton.tonal(
-              onPressed: () => nextStateOrDone(newsSettings, authModel),
-              child: const Text("Next"))
-        ]);
+        return WizardSelector(
+            items: interests,
+            onPressed: () => nextStateOrDone(newsSettings, authModel));
       case WizardStep.Cities:
         return ListView(shrinkWrap: true, children: <Widget>[
           const Text(
@@ -164,5 +140,66 @@ class _WizardWidgetState extends State<WizardWidget> {
       case WizardStep.OVER:
         return const Text("UNREACHABLE");
     }
+  }
+}
+
+class WizardSelector extends StatefulWidget {
+  final List<String> items;
+  final List<String> selectedItems;
+  final void Function() onPressed;
+
+  const WizardSelector(
+      {required this.items,
+      required this.onPressed,
+      this.selectedItems = const [],
+      super.key});
+
+  @override
+  State<WizardSelector> createState() => _WizardSelector();
+}
+
+class _WizardSelector extends State<WizardSelector> {
+  late List<String> _items;
+  late List<String> _selectedItems;
+  late final void Function() _onPressed;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = widget.items;
+    _selectedItems = widget.selectedItems;
+    _onPressed = widget.onPressed;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(shrinkWrap: true, children: <Widget>[
+      const Text(
+          style: TextStyle(
+              fontFamily: "Fira Code",
+              fontWeight: FontWeight.w700,
+              fontSize: 32.0),
+          textAlign: TextAlign.center,
+          "test"),
+      Container(
+          padding: const EdgeInsets.fromLTRB(0.0, 32.0, 0.0, 32.0),
+          child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              alignment: WrapAlignment.center,
+              children: _items
+                  .map((e) => FilterChip(
+                      label: Text(e),
+                      onSelected: (v) {
+                        setState(() {
+                          _selectedItems.contains(e)
+                              ? _selectedItems.remove(e)
+                              : _selectedItems.add(e);
+                        });
+                      },
+                      selected: _selectedItems.contains(e)))
+                  .toList())),
+      FilledButton.tonal(onPressed: _onPressed, child: const Text("Next"))
+    ]);
   }
 }
