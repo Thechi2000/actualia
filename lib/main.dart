@@ -5,6 +5,7 @@ import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
+import 'package:actualia/views/wizard.dart';
 import 'package:actualia/views/wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -62,7 +63,7 @@ class _AppState extends State<App> {
         if (newsSettings.settings == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
-          home = const WizardView(isInitialOnboarding: true);
+          home = Wizard(); // const WizardView(isInitialOnboarding: true);
         }
       } else {
         home = const NewsView();
