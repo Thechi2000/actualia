@@ -2,7 +2,7 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
-import 'package:actualia/views/wizard_view.dart';
+import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -142,8 +142,8 @@ void main() {
     await tester.pumpAndSettle();
 
     //check wizard is on screen
-    expect(find.byType(WizardView), findsOneWidget);
-    expect(find.byType(WizardNavigationButton), findsExactly(2));
+    expect(find.byType(InterestWizardView), findsOneWidget);
+    expect(find.byType(FilledButton), findsExactly(2));
     Finder finder = find.text("Cancel");
     expect(finder, findsOne);
 
@@ -152,7 +152,7 @@ void main() {
     await tester.pumpAndSettle();
 
     //check wizard not on screen anymore
-    expect(find.byType(WizardView), findsNothing);
+    expect(find.byType(InterestWizardView), findsNothing);
     expect(find.text("Interests"), findsOne);
   });
 }

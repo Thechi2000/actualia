@@ -1,4 +1,4 @@
-import 'package:actualia/views/wizard_view.dart';
+import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
@@ -90,9 +90,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const WizardView(
-                                  isInitialOnboarding: false,
-                                )));
+                            builder: (context) => const InterestWizardView()));
                     print("Click on Interests");
                   },
                   child: const Text('Interests'))),

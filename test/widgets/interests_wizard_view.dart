@@ -1,7 +1,7 @@
 import "package:actualia/models/auth_model.dart";
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/viewmodels/news_settings.dart";
-import "package:actualia/views/wizard_view.dart";
+import "package:actualia/views/interests_wizard_view.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:google_sign_in/google_sign_in.dart";
@@ -105,7 +105,7 @@ void main() {
     // Build our app and trigger a frame.
 
     await tester.pumpWidget(WizardWrapper(
-        const WizardView(),
+        const InterestWizardView(),
         MockNewsSettingsViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
@@ -129,7 +129,7 @@ void main() {
           wantsInterests: false,
         ),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     await tester.tap(find.byKey(const Key("interest-selector")));
@@ -155,7 +155,7 @@ void main() {
           wantsInterests: false,
         ),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     await tester.tap(find.byKey(const Key("city-selector")));
@@ -181,7 +181,7 @@ void main() {
           wantsInterests: false,
         ),
         null);
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     await tester.tap(find.byKey(const Key("country-selector")));
@@ -207,7 +207,7 @@ void main() {
     );
     final vm = ValidateVM(ns, ns);
 
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     final validateFinder = find.text("Validate");
@@ -222,7 +222,7 @@ void main() {
   testWidgets("Can validate", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
 
-    await tester.pumpWidget(WizardWrapper(const WizardView(), vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     final validateFinder = find.text("Validate");
@@ -236,9 +236,7 @@ void main() {
 
   testWidgets("Cancel present", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
-    await tester.pumpWidget(WizardWrapper(
-        const WizardView(isInitialOnboarding: false),
-        vm,
+    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text("Cancel"), findsOne);
