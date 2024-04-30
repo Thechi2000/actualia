@@ -25,9 +25,7 @@ class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 
 // END
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.key, super._googleSignIn) {
-    print("instantiated mockauth");
-  }
+  MockAuthModel(super.key, super._googleSignIn);
 
   @override
   User? get user => User(

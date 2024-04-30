@@ -16,8 +16,6 @@ class AuthModel extends ChangeNotifier {
   AuthModel(SupabaseClient supabaseClient, this._googleSignIn) {
     _supabase = supabaseClient;
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
-      print('Supabase onAuthStateChange new authState : ${authState.event}');
-
       if (authState.event == AuthChangeEvent.signedIn) {
         user = authState.session!.user;
       } else if (authState.event == AuthChangeEvent.signedOut) {
@@ -25,9 +23,7 @@ class AuthModel extends ChangeNotifier {
       }
 
       notifyListeners();
-    }, onError: (e) {
-      print('Supabase onAuthStateChange error : $e');
-    });
+    }, onError: (e) {});
   }
 
   @override
@@ -46,10 +42,6 @@ class AuthModel extends ChangeNotifier {
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 
-      if (idToken == null || accessToken == null) {
-        print('Missing ID Token or access token from Google OAuth.');
-      }
-
       final res = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken!,
@@ -58,7 +50,6 @@ class AuthModel extends ChangeNotifier {
 
       return res.user != null;
     } catch (error) {
-      print(error);
       return false;
     }
   }
@@ -71,7 +62,6 @@ class AuthModel extends ChangeNotifier {
       }
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }

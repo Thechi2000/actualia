@@ -61,10 +61,6 @@ class _ProfilePageState extends State<ProfilePageView> {
               child: OutlinedButton(
                   onPressed: () async {
                     Navigator.pop(context);
-                    print("Logout button pressed");
-                    if (await authModel.signOut()) {
-                      print("Logout successful !");
-                    }
                   },
                   style: OutlinedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 12),
@@ -93,7 +89,6 @@ class _ProfilePageState extends State<ProfilePageView> {
                             builder: (context) => const WizardView(
                                   isInitialOnboarding: false,
                                 )));
-                    print("Click on Interests");
                   },
                   child: const Text('Interests'))),
         ]),
@@ -115,9 +110,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    print("Click on sources");
-                  },
+                  onPressed: () {},
                   child: const Text('Sources'))),
         ]),
 
@@ -132,9 +125,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    print("Click on Alarm");
-                  },
+                  onPressed: () {},
                   child: const Text('Alarm'))),
         ]),
 
@@ -149,9 +140,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    print("Click on \"Manage Storage\"");
-                  },
+                  onPressed: () {},
                   child: const Text('Manage Storage'))),
         ]),
 
@@ -166,9 +155,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    print("Click on Narrator");
-                  },
+                  onPressed: () {},
                   child: const Text('Narrator Settings'))),
         ]),
 
@@ -183,9 +170,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    print("Click on Accessibility");
-                  },
+                  onPressed: () {},
                   child: const Text('Accessibility'))),
         ]),
 
@@ -201,7 +186,6 @@ class _ProfilePageState extends State<ProfilePageView> {
                     textStyle: const TextStyle(fontSize: 14),
                   ),
                   onPressed: () {
-                    print("Click on Done");
                     Navigator.pop(context);
                   },
                   child: const Text('Done',

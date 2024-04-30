@@ -35,10 +35,8 @@ class NewsSettingsViewModel extends ChangeNotifier {
           wantsCountries: res['wants_countries'],
           wantsInterests: res['wants_interests'],
           onboardingNeeded: false);
-      print("Settings updated");
       notifyListeners();
     } catch (e) {
-      print("Error fetching settings: $e");
       _settings = NewsSettings.defaults();
       return;
     }
@@ -58,7 +56,6 @@ class NewsSettingsViewModel extends ChangeNotifier {
       fetchSettings();
       return true;
     } catch (e) {
-      print("Error pushing settings: $e");
       return false;
     }
   }

@@ -83,7 +83,6 @@ class NewsText extends StatelessWidget {
                           //Note for source: Use the fields
                           //"source", "title", "date" and "content"
                           //from the paragraph.
-                          print("Source du paragraphe: ${paragraph.source}");
                           Navigator.push(
                               context,
                               MaterialPageRoute(
