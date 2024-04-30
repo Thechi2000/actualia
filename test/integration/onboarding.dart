@@ -57,15 +57,16 @@ class MockHttp extends BaseMockedHttpClient {
 void main() async {
   testWidgets('User can go through onboarding then inspect profile',
       (tester) async {
+    // Starts the app
     await tester.pumpWidget(AppWrapper(httpClient: MockHttp()));
 
+    // Login as guest
     final loginButton = find.byKey(const Key("signin-guest"));
-    // Verify the counter starts at 0.
     expect(loginButton, findsOneWidget);
-
     await tester.tap(loginButton);
     await tester.pumpAndSettle();
 
+    // Util function to select an interest entry from a given list.
     Future<void> selectEntry(String selector, String entry) async {
       final selectorButton = find.byKey(Key(selector));
       expect(selectorButton, findsOneWidget);
@@ -80,19 +81,24 @@ void main() async {
       expect(find.widgetWithText(DisplayList, entry), findsOneWidget);
     }
 
+    // Select a few interests.
     await selectEntry("country-selector", "Albania");
     await selectEntry("city-selector", "Lausanne");
     await selectEntry("interest-selector", "Gaming");
 
+    // Complete the onboarding.
     await tester.tap(find.text('Validate'));
     await tester.pump(Durations.long2);
 
+    // Open the profile view.
     await tester.tap(find.byKey(const Key('profile')));
     await tester.pumpAndSettle();
 
+    // Open the interests view.
     await tester.tap(find.text("Interests"));
     await tester.pumpAndSettle();
 
+    // Checks that the interests are correctly displayed.
     expect(find.widgetWithText(DisplayList, "Albania"), findsOneWidget);
     expect(find.widgetWithText(DisplayList, "Lausanne"), findsOneWidget);
     expect(find.widgetWithText(DisplayList, "Gaming"), findsOneWidget);
