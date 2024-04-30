@@ -40,18 +40,15 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         Provider.of<NewsSettingsViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
     final NewsSettings predefined = NewsSettings.defaults();
-    _selectedCountries = nsvm.settings!.countries;
-    _selectedCities = nsvm.settings!.cities;
-    _selectedInterests = nsvm.settings!.interests;
 
     Widget countriesSelector = WizardSelector(
       items: predefined.predefinedCountries,
+      selectedItems: nsvm.settings!.countries,
       onPressed: (selected) {
         setState(() {
           _selectedCountries = selected;
           _step = WizardStep.CITIES;
         });
-        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
       },
       title: "Select countries",
       isInitialOnboarding: auth.isOnboardingRequired,
@@ -60,6 +57,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
 
     Widget citiesSelector = WizardSelector(
       items: predefined.predefinedCities,
+      selectedItems: nsvm.settings!.cities,
       onPressed: (selected) {
         setState(() {
           _selectedCities = selected;
@@ -74,6 +72,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
 
     Widget interestsSelector = WizardSelector(
       items: predefined.predefinedInterests,
+      selectedItems: nsvm.settings!.interests,
       onPressed: (selected) async {
         setState(() {
           _selectedInterests = selected;
