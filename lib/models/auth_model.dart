@@ -88,6 +88,7 @@ class AuthModel extends ChangeNotifier {
   Future<bool> setOnboardingIsDone() async {
     await _supabase.auth
         .updateUser(UserAttributes(data: {'onboardingDone': true}));
+    isOnboardingRequired = false;
     return true;
   }
 }
