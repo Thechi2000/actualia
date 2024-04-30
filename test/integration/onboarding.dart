@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_wrapper.dart';
 
