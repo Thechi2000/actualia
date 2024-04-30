@@ -7,21 +7,23 @@ class LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: ListView(
+        shrinkWrap: true,
         children: <Widget>[
-          Text(
+          Align(
+              child: Text(
             text,
             style: const TextStyle(
               color: Colors.black,
-              fontSize: 22,
+              fontSize: 24,
               fontFamily: 'EB Garamond',
               fontWeight: FontWeight.w400,
               height: 1.2,
             ),
-          ),
+            textAlign: TextAlign.center,
+          )),
           const SizedBox(height: 16),
-          const CircularProgressIndicator(),
+          const Align(child: CircularProgressIndicator()),
         ],
       ),
     );
