@@ -18,7 +18,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           //Invisible box to center the title
-          const SizedBox(width: 10),
+          const SizedBox(width: 40, height: 40),
           // Central button acting as the application title
           Expanded(
             child: TextButton(
@@ -32,16 +32,16 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                 'ActualIA',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 22,
+                  fontSize: 24, // Medium
                   fontFamily: 'Fira Code',
                   fontWeight: FontWeight.w300,
-                  height: 0.06,
                 ),
               ),
             ),
           ),
           // Profile button aligned to the right
           IconButton(
+            iconSize: 28.0,
             icon: const Icon(Icons.account_circle, color: Colors.grey),
             onPressed: () {
               Navigator.push(
