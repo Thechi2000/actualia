@@ -19,12 +19,12 @@ class AppWrapper extends StatelessWidget {
     SharedPreferences.setMockInitialValues({});
 
     Supabase.initialize(
-      url: 'https://dpxddbjyjdscvuhwutwu.supabase.co',
-      anonKey:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweGRkYmp5amRzY3Z1aHd1dHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTA5NTQzNDcsImV4cCI6MjAyNjUzMDM0N30.0vB8huUmdJIYp3M1nMeoixQBSAX_w2keY0JsYj2Gt8c',
-      httpClient: httpClient,
-      debug: false,
-    );
+        url: 'https://dpxddbjyjdscvuhwutwu.supabase.co',
+        anonKey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweGRkYmp5amRzY3Z1aHd1dHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTA5NTQzNDcsImV4cCI6MjAyNjUzMDM0N30.0vB8huUmdJIYp3M1nMeoixQBSAX_w2keY0JsYj2Gt8c',
+        httpClient: httpClient,
+        debug: false,
+        authOptions: const FlutterAuthClientOptions(autoRefreshToken: false));
 
     return MultiProvider(
       providers: [
