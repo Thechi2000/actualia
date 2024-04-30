@@ -11,6 +11,18 @@ class ProfilePageView extends StatefulWidget {
   State<ProfilePageView> createState() => _ProfilePageState();
 }
 
+enum SettingsRows {
+  interests("Interests"),
+  sources("Sources"),
+  alarm("Alarm"),
+  storage("Storage"),
+  narrator("Narrator"),
+  accessibility("Accessibility");
+
+  const SettingsRows(this.name);
+  final String name;
+}
+
 class _ProfilePageState extends State<ProfilePageView> {
   ValueNotifier<bool> isInterestUnfold = ValueNotifier(false);
 
@@ -75,117 +87,26 @@ class _ProfilePageState extends State<ProfilePageView> {
 
         fullLine,
 
-        // User interests, initially folded but can be unfolded by clicking on "Interests"
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    // TODO 1 : Implement showig interests directly on this page
-                    //isInterestUnfold.value = !isInterestUnfold.value;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const InterestWizardView()));
-                    print("Click on Interests");
-                  },
-                  child: const Text('Interests'))),
-        ]),
-
-        // TODO 1 : Implement showig interests directly on this page
-        /*
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          getInterests(),
-        ]),
-        */
-        line,
-
-        // Sources from which the user wants to be inform
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    print("Click on sources");
-                  },
-                  child: const Text('Sources'))),
-        ]),
+        ListView(
+            children: SettingsRows.values
+                .map((e) =>
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: verticalPadding,
+                              horizontal: horizontalPadding),
+                          child: TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle: const TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                print("Click on Accessibility");
+                              },
+                              child: const Text('Accessibility'))),
+                    ]))
+                .toList()),
 
         line,
-
-        // Alarm manager
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    print("Click on Alarm");
-                  },
-                  child: const Text('Alarm'))),
-        ]),
-
-        line,
-
-        // Manage Storage
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    print("Click on \"Manage Storage\"");
-                  },
-                  child: const Text('Manage Storage'))),
-        ]),
-
-        line,
-
-        // Narrator (voice) settings
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    print("Click on Narrator");
-                  },
-                  child: const Text('Narrator Settings'))),
-        ]),
-
-        line,
-
-        // Accessibility
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: verticalPadding, horizontal: horizontalPadding),
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    print("Click on Accessibility");
-                  },
-                  child: const Text('Accessibility'))),
-        ]),
 
         fullLine,
 
