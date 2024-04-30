@@ -63,7 +63,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _selectedCities = selected;
           _step = WizardStep.INTERESTS;
         });
-        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
       },
       title: "Select cities",
       isInitialOnboarding: auth.isOnboardingRequired,
@@ -77,7 +76,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         setState(() {
           _selectedInterests = selected;
         });
-        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
         NewsSettings toSend = NewsSettings(
             cities: _selectedCities,
             countries: _selectedCountries,

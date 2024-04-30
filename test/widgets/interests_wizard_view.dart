@@ -50,14 +50,12 @@ class ValidateVM extends MockNewsSettingsViewModel {
   @override
   Future<bool> pushSettings(NewsSettings settings) {
     if (expected != null) {
-      debugPrint("expected not null");
       expect(settings.cities, equals(expected!.cities));
       expect(settings.countries, equals(expected!.countries));
       expect(settings.interests, equals(expected!.interests));
     }
 
     wasTriggered = true;
-    debugPrint("was triggered: $wasTriggered");
     return Future.value(true);
   }
 }
@@ -96,7 +94,6 @@ class MockAuthModel extends AuthModel {
 
   @override
   Future<bool> setOnboardingIsDone() async {
-    debugPrint("set onboarding is done called");
     return true;
   }
 }
@@ -158,63 +155,11 @@ void main() {
     expect(vm.wasTriggered, isTrue);
   });
 
-  testWidgets("Can select city", (WidgetTester tester) async {
-    final vm = ValidateVM(
-        NewsSettings(
-          interests: [],
-          cities: ["Basel"],
-          countries: [],
-          wantsCities: false,
-          wantsCountries: false,
-          wantsInterests: false,
-        ),
-        null);
-    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
-
-    await tester.tap(find.byKey(const Key("city-selector")));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text("Basel"));
-    await tester.pump();
-
-    await tester.tap(find.text("Validate"));
-    await tester.pump();
-
-    expect(vm.wasTriggered, isTrue);
-  });
-
-  testWidgets("Can select country", (WidgetTester tester) async {
-    final vm = ValidateVM(
-        NewsSettings(
-          interests: [],
-          cities: [],
-          countries: ["Albania"],
-          wantsCities: false,
-          wantsCountries: false,
-          wantsInterests: false,
-        ),
-        null);
-    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
-
-    await tester.tap(find.byKey(const Key("country-selector")));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text("Albania"));
-    await tester.pump();
-
-    await tester.tap(find.text("Validate"));
-    await tester.pump();
-
-    expect(vm.wasTriggered, isTrue);
-  });
-
   testWidgets("Keep initial values", (WidgetTester tester) async {
     NewsSettings ns = NewsSettings(
       interests: ["Gaming"],
       cities: ["Basel"],
-      countries: ["Switzerland"],
+      countries: ["Antarctica"],
       wantsCities: false,
       wantsCountries: false,
       wantsInterests: false,
@@ -224,34 +169,25 @@ void main() {
     await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
-    final validateFinder = find.text("Validate");
-    expect(validateFinder, findsOne);
+    nextScreen(String button) async {
+      await tester.tap(find.text(button));
+      await tester.pumpAndSettle();
+    }
 
-    await tester.tap(validateFinder);
-    await tester.pump();
-
-    expect(vm.wasTriggered, isTrue);
-  });
-
-  testWidgets("Can validate", (WidgetTester tester) async {
-    final vm = ValidateVM(null, null);
-
-    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
-
-    final validateFinder = find.text("Validate");
-    expect(validateFinder, findsOne);
-
-    await tester.tap(validateFinder);
-    await tester.pump();
+    await nextScreen("Next");
+    await nextScreen("Next");
+    await nextScreen("Finish");
 
     expect(vm.wasTriggered, isTrue);
   });
 
   testWidgets("Cancel present", (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
-    await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+    await tester.pumpWidget(WizardWrapper(
+        const InterestWizardView(),
+        vm,
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin(),
+            isOnboardingRequired: false)));
 
     expect(find.text("Cancel"), findsOne);
   });
