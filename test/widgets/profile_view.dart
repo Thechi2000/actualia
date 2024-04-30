@@ -25,7 +25,10 @@ class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 
 // END
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.key, super._googleSignIn) {
+  final bool isOnboardingRequired;
+
+  MockAuthModel(super.key, super._googleSignIn,
+      {this.isOnboardingRequired = false}) {
     print("instantiated mockauth");
   }
 

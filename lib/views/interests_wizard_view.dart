@@ -35,6 +35,11 @@ class _InterestWizardViewState extends State<InterestWizardView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final NewsSettingsViewModel nsvm =
         Provider.of<NewsSettingsViewModel>(context);
@@ -52,6 +57,9 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       },
       title: "Select countries",
       isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        Navigator.pop(context);
+      },
       key: const Key("countries-selector"),
     );
 
@@ -66,6 +74,11 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       },
       title: "Select cities",
       isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        setState(() {
+          _step = WizardStep.COUNTRIES;
+        });
+      },
       key: const Key("cities-selector"),
     );
 
@@ -85,15 +98,23 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             wantsInterests: true);
         try {
           await nsvm.pushSettings(toSend);
-          await auth.setOnboardingIsDone();
+          if (auth.isOnboardingRequired) {
+            await auth.setOnboardingIsDone();
+          } else {
+            Navigator.pop(context);
+          }
         } catch (e) {
-          debugPrint("error: $e");
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
       },
       title: "Select interests",
       buttonText: "Finish",
       isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        setState(() {
+          _step = WizardStep.CITIES;
+        });
+      },
       key: const Key("interests-selector"),
     );
 

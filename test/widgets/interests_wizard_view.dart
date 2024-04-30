@@ -181,7 +181,8 @@ void main() {
     expect(vm.wasTriggered, isTrue);
   });
 
-  testWidgets("Cancel present", (WidgetTester tester) async {
+  testWidgets("Cancel present and send to previous screen on tap",
+      (WidgetTester tester) async {
     final vm = ValidateVM(null, null);
     await tester.pumpWidget(WizardWrapper(
         const InterestWizardView(),
@@ -190,5 +191,12 @@ void main() {
             isOnboardingRequired: false)));
 
     expect(find.text("Cancel"), findsOne);
+    await tester.tap(find.text("Next"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Basel"));
+    expect(find.text("Cancel"), findsOne);
+    await tester.tap(find.text("Cancel"));
+    await tester.pumpAndSettle();
+    expect(find.text("Select countries"), findsOne);
   });
 }
