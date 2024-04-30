@@ -51,6 +51,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _selectedCountries = selected;
           _step = WizardStep.CITIES;
         });
+        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
       },
       title: "Select countries",
       isInitialOnboarding: auth.isOnboardingRequired,
@@ -64,6 +65,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _selectedCities = selected;
           _step = WizardStep.INTERESTS;
         });
+        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
       },
       title: "Select cities",
       isInitialOnboarding: auth.isOnboardingRequired,
@@ -76,6 +78,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         setState(() {
           _selectedInterests = selected;
         });
+        log("countries: $_selectedCountries, cities: $_selectedCities, interests: $_selectedInterests");
         NewsSettings toSend = NewsSettings(
             cities: _selectedCities,
             countries: _selectedCountries,
@@ -87,6 +90,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           await nsvm.pushSettings(toSend);
           await auth.setOnboardingIsDone();
         } catch (e) {
+          debugPrint("error: $e");
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
       },
@@ -97,21 +101,16 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     );
 
     Widget? body;
-    log("building wizard widget, step is :$_step, body should be null: $body",
-        name: "DEBUG", level: Level.WARNING.value);
     switch (_step) {
       case WizardStep.COUNTRIES:
         body = countriesSelector;
-        log("in country case", name: "DEBUG", level: Level.WARNING.value);
         break;
       case WizardStep.CITIES:
         // body = Text("test");
         body = citiesSelector;
-        log("in city case", name: "DEBUG", level: Level.WARNING.value);
         break;
       case WizardStep.INTERESTS:
         body = interestsSelector;
-        log("in interests case", name: "DEBUG", level: Level.WARNING.value);
         break;
     }
 

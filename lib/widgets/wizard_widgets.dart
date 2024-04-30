@@ -34,7 +34,6 @@ class _WizardSelector extends State<WizardSelector> {
   void initState() {
     super.initState();
     _items = widget.items;
-    log("items: $_items", name: "DEBUG", level: Level.WARNING.value);
     _selectedItems = widget.selectedItems.toList();
   }
 

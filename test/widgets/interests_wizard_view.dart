@@ -49,14 +49,15 @@ class ValidateVM extends MockNewsSettingsViewModel {
 
   @override
   Future<bool> pushSettings(NewsSettings settings) {
-    final expected = this.expected;
     if (expected != null) {
-      expect(settings.cities, equals(expected.cities));
-      expect(settings.countries, equals(expected.countries));
-      expect(settings.interests, equals(expected.interests));
+      debugPrint("expected not null");
+      expect(settings.cities, equals(expected!.cities));
+      expect(settings.countries, equals(expected!.countries));
+      expect(settings.interests, equals(expected!.interests));
     }
 
     wasTriggered = true;
+    debugPrint("was triggered: $wasTriggered");
     return Future.value(true);
   }
 }
@@ -88,10 +89,14 @@ class WizardWrapper extends StatelessWidget {
 }
 
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.supabaseClient, super.googleSignIn);
+  final bool isOnboardingRequired;
+
+  MockAuthModel(super.supabaseClient, super.googleSignIn,
+      {this.isOnboardingRequired = false});
 
   @override
   Future<bool> setOnboardingIsDone() async {
+    debugPrint("set onboarding is done called");
     return true;
   }
 }
@@ -101,29 +106,35 @@ class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 void main() {
   // The `BuildContext` does not include the provider
   // needed by Provider<AuthModel>, UI will test more specific parts
-  testWidgets("Has all correct inputs", (WidgetTester tester) async {
+  testWidgets("Correctly display each selector", (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
     await tester.pumpWidget(WizardWrapper(
         const InterestWizardView(),
         MockNewsSettingsViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin(),
+            isOnboardingRequired: true)));
 
-    expect(find.text("Select some interests"), findsOne);
-    expect(find.text("Interests"), findsOne);
-    expect(find.text("Select some countries"), findsOne);
-    expect(find.text("Country"), findsOne);
-    expect(find.text("Select some cities"), findsOne);
-    expect(find.text("City"), findsOne);
-    expect(find.text("Validate"), findsOne);
+    testSelector(Key selectorKey, String scrollUntil, String buttonText) async {
+      expect(find.byKey(selectorKey), findsOneWidget);
+      // await tester.dragUntilVisible(find.text("Chad"), find.byType(SingleChildScrollView), Offset(200, 50)); TODO find a way to test the scroll of a singleChildScrollView
+      expect(find.text(buttonText), findsOne);
+      await tester.tap(find.text(buttonText));
+      await tester.pumpAndSettle();
+    }
+
+    await testSelector(Key("countries-selector"), "Chad", "Next");
+    await testSelector(Key("cities-selector"), "Basel", "Next");
+    await testSelector(Key("interests-selector"), "Gaming", "Finish");
   });
 
-  testWidgets("Can select interest", (WidgetTester tester) async {
+  testWidgets("Can select countries, cities and interests and push them",
+      (WidgetTester tester) async {
     final vm = ValidateVM(
         NewsSettings(
           interests: ["Biology"],
-          cities: [],
-          countries: [],
+          cities: ["Basel"],
+          countries: ["Antarctica"],
           wantsCities: false,
           wantsCountries: false,
           wantsInterests: false,
@@ -132,14 +143,17 @@ void main() {
     await tester.pumpWidget(WizardWrapper(const InterestWizardView(), vm,
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
-    await tester.tap(find.byKey(const Key("interest-selector")));
-    await tester.pumpAndSettle();
+    select(Key selectorKey, String toSelect, String button) async {
+      expect(find.byKey(selectorKey), findsOneWidget);
+      expect(find.text(toSelect), findsOne);
+      await tester.tap(find.text(toSelect));
+      await tester.tap(find.text(button));
+      await tester.pumpAndSettle();
+    }
 
-    await tester.tap(find.text("Biology"));
-    await tester.pump();
-
-    await tester.tap(find.text("Validate"));
-    await tester.pump();
+    await select(Key("countries-selector"), "Antarctica", "Next");
+    await select(Key("cities-selector"), "Basel", "Next");
+    await select(Key("interests-selector"), "Biology", "Finish");
 
     expect(vm.wasTriggered, isTrue);
   });
