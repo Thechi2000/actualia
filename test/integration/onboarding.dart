@@ -18,6 +18,11 @@ class MockHttp extends BaseMockedHttpClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     return Future(() {
       var req = request as http.Request;
+      if (request.url.toString().startsWith(
+          "${BaseMockedHttpClient.baseUrl}/rest/v1/news?select=%2A")) {
+        return response([], 200, request);
+      }
+
       switch (req.url.toString()) {
         case "${BaseMockedHttpClient.baseUrl}/rest/v1/news_settings?on_conflict=created_by":
           var body = json.decode(req.body);

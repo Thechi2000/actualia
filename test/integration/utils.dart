@@ -57,7 +57,7 @@ class BaseMockedHttpClient extends Fake implements Client {
   http.StreamedResponse response(
       dynamic body, int statusCode, http.BaseRequest request) {
     var res = jsonEncode(body).codeUnits;
-    return http.StreamedResponse(Stream.fromIterable([res]), 200,
+    return http.StreamedResponse(Stream.fromIterable([res]), statusCode,
         request: request, contentLength: res.length);
   }
 
@@ -186,6 +186,15 @@ class BaseMockedHttpClient extends Fake implements Client {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
+    if (request.url.toString().startsWith(
+        "${BaseMockedHttpClient.baseUrl}/rest/v1/news?select=%2A")) {
+      return Future.value(response([], 200, request));
+    }
+    if (request.url.toString() ==
+        "${BaseMockedHttpClient.baseUrl}/functions/v1/generate-transcript") {
+      return Future.value(response("", 200, request));
+    }
+
     print(
         "Unmocked url fetched with `send`: ${request.url.toString()} - ${request is http.Request ? request.body : ""}");
     throw UnimplementedError();

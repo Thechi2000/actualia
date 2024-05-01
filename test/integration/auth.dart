@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/src/base_request.dart';
 import 'package:http/src/response.dart';
+import 'package:http/src/streamed_response.dart';
 
 import 'utils.dart';
 
