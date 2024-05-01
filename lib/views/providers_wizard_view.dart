@@ -68,8 +68,8 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           });
         },
         selectedItems: pvm.providersToString(savedRSSProviders),
-        onSelect: (url) {
-          setState(() {});
+        onSelect: (urlList) {
+          _selectedRssProviders = urlList;
         },
         onPressed: () async {
           List<NewsProvider> selected =

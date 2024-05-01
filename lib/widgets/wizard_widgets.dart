@@ -175,7 +175,7 @@ class RSSSelector extends StatefulWidget {
   final String buttonText;
   final bool isInitialOnboarding;
   final List<String> selectedItems;
-  final void Function(String) onSelect;
+  final void Function(List<String>) onSelect;
   final void Function() onPressed;
   final void Function()? onCancel;
 
@@ -194,12 +194,20 @@ class RSSSelector extends StatefulWidget {
 }
 
 class _RSSSelector extends State<RSSSelector> {
+  late TextEditingController _controller;
   List<String> _selectedItems = [];
 
   @override
   void initState() {
     super.initState();
     _selectedItems = widget.selectedItems.toList();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -208,7 +216,30 @@ class _RSSSelector extends State<RSSSelector> {
       title: widget.title,
     );
 
-    Widget selectUrl = const Text("TODO");
+    Widget selectUrl = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+            child: TextField(
+          controller: _controller,
+          onSubmitted: (String val) {
+            setState(() {
+              if (val.isNotEmpty && !_selectedItems.contains(val)) {
+                _selectedItems.add(val);
+              }
+              widget.onSelect(_selectedItems);
+            });
+          },
+        )),
+        IconButton(
+            onPressed: () {
+              setState(() {
+                _controller.clear();
+              });
+            },
+            icon: const Icon(Icons.close))
+      ],
+    );
 
     Widget displaySelected = Expanded(
         child: Container(
@@ -226,6 +257,7 @@ class _RSSSelector extends State<RSSSelector> {
                       });
                     },
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [Text(item), const Icon(Icons.close)],
                     ),
                   ))
