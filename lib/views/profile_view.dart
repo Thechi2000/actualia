@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
@@ -115,6 +119,8 @@ class _ProfilePageState extends State<ProfilePageView> {
                     textStyle: const TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
+                    log("providers (view is profile view): ${Provider.of<ProvidersViewModel>(context, listen: false).newsProviders}",
+                        name: "DEBUG", level: Level.WARNING.value);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

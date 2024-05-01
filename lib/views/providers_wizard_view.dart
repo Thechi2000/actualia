@@ -35,11 +35,14 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
     final AuthModel auth = Provider.of<AuthModel>(context);
     final List<String> predefined =
         pvm.providersToString(NewsProvider.predefinedProviders);
-    List<NewsProvider> savedPredefinedProviders = pvm.newsProviders ?? [];
-    savedPredefinedProviders
-        .removeWhere((p) => p.runtimeType == RSSFeedProvider);
-    List<NewsProvider> savedRSSProviders = pvm.newsProviders ?? [];
-    savedRSSProviders.removeWhere((p) => p.runtimeType != RSSFeedProvider);
+    List<NewsProvider> savedPredefinedProviders = pvm.newsProviders
+            ?.where((p) => p.runtimeType != RSSFeedProvider)
+            .toList() ??
+        [];
+    List<NewsProvider> savedRSSProviders = pvm.newsProviders
+            ?.where((p) => p.runtimeType == RSSFeedProvider)
+            .toList() ??
+        [];
     log("saved: ${pvm.newsProviders}, saved predefined: $savedPredefinedProviders, saved rss; $savedRSSProviders",
         name: "DEBUG", level: Level.WARNING.value);
 
