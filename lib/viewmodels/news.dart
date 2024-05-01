@@ -127,7 +127,7 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   News parseNews(dynamic response) {
-    List<dynamic> newsItems = response['transcript']['articles'];
+    List<dynamic> newsItems = response['transcript']['news'];
     List<Paragraph> paragraphs = newsItems.map((item) {
       return Paragraph(
           transcript: item['transcript'],
@@ -149,7 +149,7 @@ class NewsViewModel extends ChangeNotifier {
   /// Invokes a cloud function to generate news transcripts.
   Future<void> invokeTranscriptFunction() async {
     try {
-      await supabase.functions.invoke('get-transcript');
+      await supabase.functions.invoke('generate-transcript');
       log("Cloud function 'transcript' invoked successfully.",
           level: Level.INFO.value);
     } catch (e) {

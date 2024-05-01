@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:logging/logging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PlayButton extends StatefulWidget {
   final int transcriptId;
@@ -62,21 +64,37 @@ class PlayButtonState extends State<PlayButton> {
             case PlayerState.completed:
             case PlayerState.stopped:
             case PlayerState.disposed:
-              playAudio(
-                  audioPlayer,
-                  DeviceFileSource(
-                      '/data/user/0/ch.epfl.swent.actualia/app_flutter/audios/$widget.transcriptId'));
-              setState(() => _playerState = PlayerState.playing);
-              break;
+              Source? source = await getAudioSource(widget.transcriptId);
+              if (source != null) {
+                debugPrint("Foud audio file");
+                await playAudio(audioPlayer, source);
+                setState(() => _playerState = PlayerState.playing);
+                break;
+              }
           }
         });
   }
 
-  void playAudio(AudioPlayer audioPlayer, Source source) async {
+  Future<void> playAudio(AudioPlayer audioPlayer, Source source) async {
     try {
       await audioPlayer.play(source);
     } catch (e) {
       log("Error playing audio: $e", level: Level.WARNING.value);
+    }
+  }
+
+  Future<DeviceFileSource?> getAudioSource(int transcriptId) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/audios/$transcriptId}';
+    debugPrint("File path from audio player: $filePath");
+
+    final file = File(filePath);
+    if (await file.exists()) {
+      // Le fichier existe et peut être lu
+      return DeviceFileSource(filePath);
+    } else {
+      debugPrint('File does not exist');
+      return null;
     }
   }
 }
