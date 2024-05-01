@@ -123,17 +123,15 @@ class NewsViewModel extends ChangeNotifier {
   News parseNews(dynamic response) {
     List<dynamic> newsItems = response['transcript']['news'];
 
-    List<Paragraph> paragraphs = [];
-    for (dynamic item in newsItems) {
-      if (item['transcript'] != null) {
-        paragraphs.add(Paragraph(
+    List<Paragraph> paragraphs = newsItems
+        .where((item) => item['transcript'] != null)
+        .map((item) => Paragraph(
             transcript: item['transcript'],
             source: item['source']['name'],
             title: item['title'],
             date: item['publishedAt'],
-            content: item['content']));
-      }
-    }
+            content: item['content']))
+        .toList();
 
     return News(
       title: response['title'],
