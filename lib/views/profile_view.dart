@@ -61,6 +61,7 @@ class _ProfilePageState extends State<ProfilePageView> {
               child: OutlinedButton(
                   onPressed: () async {
                     Navigator.pop(context);
+                    await authModel.signOut();
                   },
                   style: OutlinedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 12),
