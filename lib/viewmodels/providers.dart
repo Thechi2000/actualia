@@ -41,11 +41,12 @@ class ProvidersViewModel extends ChangeNotifier {
       final res = await supabase
           .from('news_providers')
           .select()
-          .eq("created_by", supabase.auth.currentUser!.id)
-          .maybeSingle();
-      debugPrint("providers: ${res?['providers']}");
-      final temp = List.from(jsonDecode(res?['providers']));
+          .eq("created_by", supabase.auth.currentUser!.id);
+
+      debugPrint("fetch res: $res");
+      final temp = res.map((m) => jsonDecode(m["type"]));
       _newsProviders = temp.map((e) => NewsProvider.deserialize(e)!).toList();
+      debugPrint("providers decoded: $_newsProviders");
       return true;
     } catch (e) {
       log("Error when fetching news providers: $e",

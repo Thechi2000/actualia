@@ -27,22 +27,20 @@ class FakePostgrestFilterBuilder<T> extends Fake
 }
 
 class FakeQueryBuilder extends Fake implements SupabaseQueryBuilder {
-  final Map<String, dynamic>? tableContent;
-  final String tableName;
+  final Table? table;
   final FakeDB? db;
 
-  FakeQueryBuilder(
-      {this.tableContent = const {}, this.tableName = "", this.db});
+  FakeQueryBuilder({this.table, this.db});
 
   @override
   PostgrestFilterBuilder upsert(Object values,
       {String? onConflict,
       bool ignoreDuplicates = false,
       bool defaultToNull = true}) {
-    Map<String, dynamic> newTableContent = tableContent!;
-    newTableContent.addAll(values as Map<String, dynamic>);
-    db?.setTable(tableName: tableName, tableContent: newTableContent);
-    return FakePostgrestFilterBuilder(newTableContent);
+    Table newTable = table!;
+    newTable.addAll(values as Table);
+    db?.setProvidersTable(table: newTable);
+    return FakePostgrestFilterBuilder(newTable);
   }
 
   @override
@@ -62,21 +60,55 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
       createdAt: "createdAt");
 }
 
+typedef Row = List<Map<String, dynamic>>;
+typedef Table = List<Row>;
+
 class FakeDB extends Fake implements SupabaseClient {
-  Map<String, Map<String, dynamic>> _tables;
+  Table _providersTables;
 
-  FakeDB([this._tables = const <String, Map<String, dynamic>>{}]);
+  FakeDB([this._providersTables = const []]);
 
-  Map get tables => _tables;
-  void setTable(
-          {Map<String, dynamic> tableContent = const {},
-          String tableName = ""}) =>
-      _tables[tableName] = tableContent;
+  Table get providersTable => _providersTables;
+  void setProvidersTable({required Table table}) => _providersTables = table;
+
+  void addRow(Row row) {
+    _providersTables.add(row);
+  }
+
+  Table? getRows({String? column, Object? equal}) {
+    if (column == null) {
+      return _providersTables;
+    } else if (equal != null) {
+      bool columnExist = false;
+      for (var m in _providersTables[0]) {
+        if (m.containsKey(column)) {
+          columnExist = true;
+        }
+      }
+      if (!columnExist) {
+        debugPrint("$column does not exist in table");
+        return null;
+      }
+      List<List<Map<String, dynamic>>> res = [];
+      for (var row in _providersTables) {
+        for (var m in row) {
+          if (m.containsKey(column) && m[column] == equal) {
+            res.add(row);
+          }
+        }
+      }
+      return res;
+    } else {
+      debugPrint(
+          "If column not null, then equal should not be null, equal is: $equal");
+      return null;
+    }
+  }
 
   @override
   SupabaseQueryBuilder from(String table) {
     return FakeQueryBuilder(
-        tableName: table, tableContent: _tables[table], db: this);
+        tableName: table, tableContent: _providersTables, db: this);
   }
 
   @override
@@ -86,36 +118,28 @@ class FakeDB extends Fake implements SupabaseClient {
 }
 
 void main() {
-  test("push work as intended", () async {
-    List<NewsProvider> toPush = [
-      GNewsProvider(),
-      RSSFeedProvider(url: "https://dummy.dummy.com")
-    ];
-    FakeDB db = FakeDB({"news_providers": {}});
-    ProvidersViewModel vm = ProvidersViewModel(db);
-    vm.setNewsProviders(toPush);
-    await vm.pushNewsProviders();
-
-    expect(db.tables["news_providers"]["providers"], [
-      {"type": "gnews"},
-      {"type": "rss", "url": "https://dummy.dummy.com"}
-    ]);
-  });
-
-  //todo le fake est pas assez élaborer pour gerer le fetch sans throw d'erreur
-  // test("fetch work as intended", () async {
-  //   FakeDB db = FakeDB({
-  //     "news_providers": {
-  //       "created_by": "1234",
-  //       "providers": [
-  //         {"type": "rss", "url": "https://dummy.com"},
-  //         {"type": "gnews"}
-  //       ]
-  //     }
-  //   });
+  // test("push work as intended", () async {
+  //   List<NewsProvider> toPush = [
+  //     GNewsProvider(),
+  //     RSSFeedProvider(url: "https://dummy.dummy.com")
+  //   ];
+  //   FakeDB db = FakeDB({"news_providers": {}});
   //   ProvidersViewModel vm = ProvidersViewModel(db);
-  //   await vm.fetchNewsProviders();
-  //   List<NewsProvider> received = vm.newsProviders;
-  //   expect(received, [RSSFeedProvider(url: "https://dummy.com"), GNewsProvider()]);
+  //   vm.setNewsProviders(toPush);
+  //   await vm.pushNewsProviders();
+  //
+  //   expect(db.tables["news_providers"]["providers"], [
+  //     {"type": "gnews"},
+  //     {"type": "rss", "url": "https://dummy.dummy.com"}
+  //   ]);
   // });
+
+  test("fetch work as intended", () async {
+    FakeDB providersDb = FakeDB();
+    ProvidersViewModel vm = ProvidersViewModel(providersDb);
+    await vm.fetchNewsProviders();
+    List<NewsProvider> received = vm.newsProviders;
+    expect(
+        received, [RSSFeedProvider(url: "https://dummy.com"), GNewsProvider()]);
+  });
 }
