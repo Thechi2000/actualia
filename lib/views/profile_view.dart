@@ -1,4 +1,5 @@
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
@@ -114,6 +115,10 @@ class _ProfilePageState extends State<ProfilePageView> {
                     textStyle: const TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProvidersWizardView()));
                     print("Click on sources");
                   },
                   child: const Text('Sources'))),

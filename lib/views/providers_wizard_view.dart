@@ -40,6 +40,8 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
         .removeWhere((p) => p.runtimeType == RSSFeedProvider);
     List<NewsProvider> savedRSSProviders = pvm.newsProviders ?? [];
     savedRSSProviders.removeWhere((p) => p.runtimeType != RSSFeedProvider);
+    log("saved: ${pvm.newsProviders}, saved predefined: $savedPredefinedProviders, saved rss; $savedRSSProviders",
+        name: "DEBUG", level: Level.WARNING.value);
 
     Widget predefinedProvidersSelector = WizardSelector(
       items: predefined,
@@ -74,8 +76,6 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
         onPressed: () async {
           List<NewsProvider> selected =
               pvm.stringToProviders(_selectedPredefinedProviders);
-          log("selected type: ${selected.runtimeType}",
-              name: "DEBUG", level: Level.WARNING.value);
           for (var url in _selectedRssProviders ?? []) {
             selected.add(RSSFeedProvider(url: url));
           }

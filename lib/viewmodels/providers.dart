@@ -26,11 +26,11 @@ class ProvidersViewModel extends ChangeNotifier {
   List<NewsProvider> stringToProviders(List<String> names) {
     return names.map((e) {
       switch (e) {
-        case "gnews":
-          return GNewsProvider();
+        case "Google News":
+          return GNewsProvider() as NewsProvider;
         default:
           log("Unknown provider name: $e", level: Level.WARNING.value);
-          return GNewsProvider();
+          return GNewsProvider() as NewsProvider;
       }
     }).toList();
   }
@@ -44,6 +44,8 @@ class ProvidersViewModel extends ChangeNotifier {
 
       _newsProviders =
           res.map((m) => NewsProvider.deserialize(m["type"])!).toList();
+      log("fetch result: $_newsProviders",
+          name: "DEBUG", level: Level.WARNING.value);
       return true;
     } catch (e) {
       log("Error when fetching news providers: $e",
