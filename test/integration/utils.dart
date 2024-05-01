@@ -147,7 +147,8 @@ class BaseMockedHttpClient extends Fake implements Client {
               }),
               200);
         default:
-          print("Unmocked url fetched with `post`: ${url.toString()}");
+          print(
+              "Unmocked url fetched with `post`: ${url.toString()} - ${body.toString()}");
       }
       throw UnimplementedError(url.toString());
     });
@@ -156,21 +157,24 @@ class BaseMockedHttpClient extends Fake implements Client {
   @override
   Future<http.Response> patch(Uri url,
       {Map<String, String>? headers, Object? body, Encoding? encoding}) {
-    print("Unmocked url fetched with `patch`: ${url.toString()}");
+    print(
+        "Unmocked url fetched with `patch`: ${url.toString()} - ${body.toString()}");
     throw UnimplementedError();
   }
 
   @override
   Future<http.Response> delete(Uri url,
       {Map<String, String>? headers, Object? body, Encoding? encoding}) {
-    print("Unmocked url fetched with `delete`: ${url.toString()}");
+    print(
+        "Unmocked url fetched with `delete`: ${url.toString()} - ${body.toString()}");
     throw UnimplementedError();
   }
 
   @override
   Future<http.Response> put(Uri url,
       {Map<String, String>? headers, Object? body, Encoding? encoding}) {
-    print("Unmocked url fetched with `put`: ${url.toString()}");
+    print(
+        "Unmocked url fetched with `put`: ${url.toString()} - ${body.toString()}");
     throw UnimplementedError();
   }
 
