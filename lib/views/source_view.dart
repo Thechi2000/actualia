@@ -28,7 +28,7 @@ class _SourceViewState extends State<SourceView> {
   @override
   void initState() {
     super.initState();
-    //init _article, _title, _date and _newsPaper using widget.source
+    // init _article, _title, _date and _newsPaper using widget.source
     _article = widget.article;
     _title = widget.title;
     _date = widget.date;
