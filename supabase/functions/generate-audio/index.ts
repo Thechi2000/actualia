@@ -14,13 +14,15 @@ Deno.serve(async (req) => {
   let voiceWanted = url.searchParams.get("voiceWanted");
 
   if (!transcriptId) {
-    return new Response("Missing 'transcriptId' parameter", { status: 400 });
+    console.error("Missing 'transcriptId' parameter");
+    return new Response("Missing 'transcriptId' parameter", { status: 405 });
   }
 
   if (
     voiceWanted &&
     !["echo", "alloy", "fable", "onyx", "nova", "shimmer"].includes(voiceWanted)
   ) {
+    console.error("Invalid 'voiceWanted' parameter");
     return new Response(
       "Invalid 'voiceWanted' parameter. Must be one of 'echo', 'alloy', 'fable', 'onyx', 'nova', or 'shimmer'",
       { status: 400 },
