@@ -107,8 +107,9 @@ void main() {
     expect(find.text('Logout'), findsOne);
 
     testButton(String text) async {
-      await tester.scrollUntilVisible(find.text(text), 1);
-      await tester.tap(find.text(text));
+      await tester.dragUntilVisible(
+          find.text(text), find.byType(ListView), Offset.fromDirection(90.0));
+      await tester.tap(find.text(findRichText: true, text));
       await tester.pump();
     }
 
@@ -119,8 +120,8 @@ void main() {
     await testInterestButton();
     await testButton('Sources');
     await testButton('Alarm');
-    await testButton('Manage Storage');
-    await testButton('Narrator Settings');
+    await testButton('Storage');
+    await testButton('Narrator');
     await testButton('Accessibility');
     await testButton('Done');
   });
@@ -131,7 +132,7 @@ void main() {
         MockNewsSettingsViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
-    expect(find.text("Hey, test.test@epfl.ch !"), findsOne);
+    expect(find.text("test.test@epfl.ch"), findsOne);
   });
 
   testWidgets("Interests button work as intended", (tester) async {

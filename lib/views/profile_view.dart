@@ -34,6 +34,19 @@ class _ProfilePageState extends State<ProfilePageView> {
     });
   }
 
+  void handleRowTap(SettingsRows e) {
+    switch (e.name) {
+      case "Interests":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const InterestWizardView()));
+      default:
+        debugPrint("Click on ${e.name}");
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of<AuthModel>(context);
@@ -107,7 +120,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                         row.name),
                     titleAlignment: ListTileTitleAlignment.center,
                     onTap: () {
-                      debugPrint("Click on ${row.name}"); // TODO: make Toast
+                      handleRowTap(row);
                     });
               },
             )),
