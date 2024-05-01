@@ -1,131 +1,142 @@
 import 'dart:developer';
+import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
-import 'package:actualia/views/providers_wizard_view.dart';
+import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+
 import '../widgets/wizard_widgets.dart';
 
-class InterestsWizardView extends StatefulWidget {
-  final bool isInitialOnboarding;
+// TO REPLACE interests_wizard_view.dart
+// sorry Leander
 
-  const InterestsWizardView({this.isInitialOnboarding = false, super.key});
+class InterestWizardView extends StatefulWidget {
+  const InterestWizardView({super.key});
 
   @override
-  State<StatefulWidget> createState() => _InterestsWizardViewState();
+  State<InterestWizardView> createState() => _InterestWizardViewState();
 }
 
-class _InterestsWizardViewState extends State<InterestsWizardView> {
-  List<String> _cities = [];
-  List<String> _countries = [];
-  List<String> _interests = [];
+enum WizardStep { COUNTRIES, CITIES, INTERESTS }
+
+class _InterestWizardViewState extends State<InterestWizardView> {
+  late List<String> _selectedInterests;
+  late List<String> _selectedCountries;
+  late List<String> _selectedCities;
+  late WizardStep _step;
+
+  @override
+  void initState() {
+    super.initState();
+    _step = WizardStep.COUNTRIES;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    NewsSettingsViewModel? newsSettingsModel;
-    NewsSettings newsSettingsDefault = NewsSettings.defaults();
-    NewsSettings? fromDB;
+    final NewsSettingsViewModel nsvm =
+        Provider.of<NewsSettingsViewModel>(context);
+    final AuthModel auth = Provider.of<AuthModel>(context);
+    final NewsSettings predefined = NewsSettings.defaults();
 
-    newsSettingsModel = Provider.of<NewsSettingsViewModel>(context);
-    fromDB = newsSettingsModel.settings;
-
-    if (fromDB!.countries.isNotEmpty) {
-      _countries = fromDB.countries;
-    }
-    if (fromDB.cities.isNotEmpty) {
-      _cities = fromDB.cities;
-    }
-    if (fromDB.interests.isNotEmpty) {
-      _interests = fromDB.interests;
-    }
-
-    PreferredSizeWidget appBar = const PreferredSize(
-        preferredSize: Size.fromHeight(120.0),
-        child: WizardTopBar(
-          text: "Tell us more about your interests",
-        ));
-
-    Widget body = Container(
-      margin: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      child: ListView(
-        /// temp mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          //each formField is an entry in the wizard
-          SelectorWithInstruction(
-            (value) {
-              setState(() {
-                _countries = value;
-              });
-            },
-            "Select some countries",
-            newsSettingsDefault.predefinedCountries,
-            "Country",
-            selectedItems: _countries,
-            key: const Key("country-selector"),
-          ),
-          SelectorWithInstruction(
-            (value) {
-              setState(() {
-                _cities = value;
-              });
-            },
-            "Select some cities",
-            newsSettingsDefault.predefinedCities,
-            "City",
-            selectedItems: _cities,
-            key: const Key("city-selector"),
-          ),
-          SelectorWithInstruction(
-            (value) {
-              setState(() {
-                _interests = value;
-              });
-            },
-            "Select some interests",
-            newsSettingsDefault.predefinedInterests,
-            "Interests",
-            selectedItems: _interests,
-            key: const Key("interest-selector"),
-          )
-        ],
-      ),
+    Widget countriesSelector = WizardSelector(
+      items: predefined.predefinedCountries,
+      selectedItems: nsvm.settings!.countries,
+      onPressed: (selected) {
+        setState(() {
+          _selectedCountries = selected;
+          _step = WizardStep.CITIES;
+        });
+      },
+      title: "Select countries",
+      isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        Navigator.pop(context);
+      },
+      key: const Key("countries-selector"),
     );
 
-    Widget bottomBar = WizardNavigationBottomBar(
-        showLeft: !widget.isInitialOnboarding,
-        lText: 'Cancel',
-        lOnPressed: () {
-          Navigator.pop(context);
-        },
-        showRight: true,
-        rText: 'Validate',
-        rOnPressed: () async {
-          NewsSettings toSend = NewsSettings(
-            cities: _cities,
-            countries: _countries,
-            interests: _interests,
+    Widget citiesSelector = WizardSelector(
+      items: predefined.predefinedCities,
+      selectedItems: nsvm.settings!.cities,
+      onPressed: (selected) {
+        setState(() {
+          _selectedCities = selected;
+          _step = WizardStep.INTERESTS;
+        });
+      },
+      title: "Select cities",
+      isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        setState(() {
+          _step = WizardStep.COUNTRIES;
+        });
+      },
+      key: const Key("cities-selector"),
+    );
+
+    Widget interestsSelector = WizardSelector(
+      items: predefined.predefinedInterests,
+      selectedItems: nsvm.settings!.interests,
+      onPressed: (selected) async {
+        setState(() {
+          _selectedInterests = selected;
+        });
+        NewsSettings toSend = NewsSettings(
+            cities: _selectedCities,
+            countries: _selectedCountries,
+            interests: _selectedInterests,
             wantsCities: true,
             wantsCountries: true,
-            wantsInterests: true,
-          );
-          newsSettingsModel?.pushSettings(toSend);
-          //todo nav to main screen
-          if (!widget.isInitialOnboarding) {
-            Navigator.pop(context);
+            wantsInterests: true);
+        try {
+          await nsvm.pushSettings(toSend);
+          if (auth.isOnboardingRequired) {
+            await auth.setOnboardingIsDone();
           } else {
-            try {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (builder) => const ProvidersWizardView(
-                            isInitialOnboarding: true,
-                          )));
-            } catch (e) {
-              log("Error in provider wizard: $e");
-            }
+            Navigator.pop(context);
           }
+        } catch (e) {
+          log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
+        }
+      },
+      title: "Select interests",
+      buttonText: "Finish",
+      isInitialOnboarding: auth.isOnboardingRequired,
+      onCancel: () {
+        setState(() {
+          _step = WizardStep.CITIES;
         });
+      },
+      key: const Key("interests-selector"),
+    );
 
-    return Scaffold(appBar: appBar, body: body, bottomNavigationBar: bottomBar);
+    Widget? body;
+    switch (_step) {
+      case WizardStep.COUNTRIES:
+        body = countriesSelector;
+        break;
+      case WizardStep.CITIES:
+        // body = Text("test");
+        body = citiesSelector;
+        break;
+      case WizardStep.INTERESTS:
+        body = interestsSelector;
+        break;
+    }
+
+    return Scaffold(
+        appBar: const TopAppBar(),
+        body: Container(
+          padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
+          alignment: Alignment.topCenter,
+          child: body,
+        ));
   }
 }

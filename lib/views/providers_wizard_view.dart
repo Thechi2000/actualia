@@ -17,10 +17,6 @@ class ProvidersWizardView extends StatefulWidget {
 }
 
 class _ProvidersWizardView extends State<ProvidersWizardView> {
-  List<String> _newsProviders = [];
-  late List<String> _initialNewsProviders;
-  late ProvidersViewModel _vm;
-
   @override
   void initState() {
     super.initState();
@@ -28,62 +24,6 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
 
   @override
   Widget build(BuildContext context) {
-    AuthModel authModel = Provider.of<AuthModel>(context);
-    _vm = Provider.of<ProvidersViewModel>(context);
-    _initialNewsProviders = _vm.providersToString(_vm.newsProviders!);
-    _newsProviders = _initialNewsProviders;
-
-    PreferredSizeWidget topBar = const PreferredSize(
-        preferredSize: Size.fromHeight(120.0),
-        child: WizardTopBar(
-          text: "Select the sources that interests you",
-        ));
-
-    Widget body = Container(
-        margin: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-        child: Column(
-          children: [
-            SelectorWithInstruction(
-              (value) {
-                setState(() {
-                  _newsProviders = value;
-                });
-              },
-              "Select predefined sources",
-              _vm.providersToString(NewsProvider.predefinedProviders),
-              "Predefined sources",
-              selectedItems: _newsProviders,
-            ),
-          ],
-        ));
-
-    Widget bottomBar = WizardNavigationBottomBar(
-      showLeft: !widget.isInitialOnboarding,
-      lText: "Cancel",
-      lOnPressed: () {
-        setState(() {
-          _newsProviders = _initialNewsProviders;
-        });
-        Navigator.pop(context);
-      },
-      showRight: true,
-      rText: "Finish",
-      rOnPressed: () async {
-        _vm.setNewsProviders(_vm.stringToProviders(_newsProviders));
-        _vm.pushNewsProviders();
-        await authModel.setOnboardingIsDone();
-        Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
-      },
-    );
-
-    Widget screen = _vm.newsProviders == null
-        ? const LoadingView(text: "fetching your sources...")
-        : Scaffold(
-            appBar: topBar,
-            body: body,
-            bottomNavigationBar: bottomBar,
-          );
-
-    return screen;
+    return const Text("TODO");
   }
 }

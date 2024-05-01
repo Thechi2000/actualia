@@ -9,10 +9,8 @@ import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
-import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:actualia/viewmodels/news.dart';
@@ -69,7 +67,8 @@ class _AppState extends State<App> {
         if (newsSettings.settings == null || pvm.newsProviders == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
-          home = const InterestsWizardView(isInitialOnboarding: true);
+          home =
+              const InterestWizardView(); // const WizardView(isInitialOnboarding: true);
         }
       } else {
         home = const NewsView();

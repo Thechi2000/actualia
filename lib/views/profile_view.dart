@@ -90,9 +90,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const InterestsWizardView(
-                                  isInitialOnboarding: false,
-                                )));
+                            builder: (context) => const InterestWizardView()));
                     print("Click on Interests");
                   },
                   child: const Text('Interests'))),

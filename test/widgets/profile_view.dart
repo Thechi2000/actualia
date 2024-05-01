@@ -25,7 +25,10 @@ class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 
 // END
 class MockAuthModel extends AuthModel {
-  MockAuthModel(super.key, super._googleSignIn) {
+  final bool isOnboardingRequired;
+
+  MockAuthModel(super.key, super._googleSignIn,
+      {this.isOnboardingRequired = false}) {
     print("instantiated mockauth");
   }
 
@@ -142,8 +145,8 @@ void main() {
     await tester.pumpAndSettle();
 
     //check wizard is on screen
-    expect(find.byType(InterestsWizardView), findsOneWidget);
-    expect(find.byType(WizardNavigationButton), findsExactly(2));
+    expect(find.byType(InterestWizardView), findsOneWidget);
+    expect(find.byType(FilledButton), findsExactly(2));
     Finder finder = find.text("Cancel");
     expect(finder, findsOne);
 
@@ -152,7 +155,7 @@ void main() {
     await tester.pumpAndSettle();
 
     //check wizard not on screen anymore
-    expect(find.byType(InterestsWizardView), findsNothing);
+    expect(find.byType(InterestWizardView), findsNothing);
     expect(find.text("Interests"), findsOne);
   });
 }
