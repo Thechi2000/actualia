@@ -183,6 +183,13 @@ class BaseMockedHttpClient extends Fake implements Client {
     print("Unmocked url fetched with `read`: ${url.toString()}");
     throw UnimplementedError();
   }
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    print(
+        "Unmocked url fetched with `send`: ${request.url.toString()} - ${request is http.Request ? request.body : ""}");
+    throw UnimplementedError();
+  }
 }
 
 // Each test file must have a name.
