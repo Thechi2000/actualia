@@ -74,9 +74,9 @@ Deno.serve(async (req) => {
     const transcript = transcripts[i];
 
     // Call the "generate-transcript" edge function
-    const generateTranscriptResponse = await supabaseClient.rpc(
+    const generateTranscriptResponse = await supabaseClient.functions.invoke(
       "generate-transcript",
-      { userId: transcript.created_by },
+      { body: { userId: transcript.created_by } },
     );
 
     if (generateTranscriptResponse.error) {
@@ -90,9 +90,10 @@ Deno.serve(async (req) => {
     console.log(generateTranscriptResponse);
 
     // Call the "generate-audio" edge function
-    const generateAudioResponse = await supabaseClient.rpc("generate-audio", {
-      transcriptId: generateTranscriptResponse.data.id,
-    });
+    const generateAudioResponse = await supabaseClient.functions.invoke(
+      "generate-audio",
+      { body: { transcriptId: generateTranscriptResponse.data.id } },
+    );
 
     if (generateAudioResponse.error) {
       console.error(
