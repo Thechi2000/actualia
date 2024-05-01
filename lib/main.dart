@@ -1,7 +1,9 @@
 //coverage:ignore-file
 
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/views/loading_view.dart';
+import 'package:actualia/views/news_alert_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
@@ -34,6 +36,8 @@ Future<void> main() async {
           create: (context) => NewsViewModel(Supabase.instance.client)),
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
+      ChangeNotifierProvider(
+          create: (context) => AlarmsViewModel(Supabase.instance.client)),
     ],
     child: const App(),
   ));
@@ -47,6 +51,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final _navKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -55,10 +61,18 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);
+    AlarmsViewModel alarmsModel = Provider.of(context);
     late NewsSettingsViewModel newsSettings;
 
     Widget home;
-    if (authModel.isSignedIn) {
+    if (alarmsModel.isAlarmRinging) {
+      print("On affiche l'alerte !");
+      home = const Scaffold(
+        body: NewsAlertView(),
+      );
+      Future.microtask(
+          () => {_navKey.currentState?.popUntil((r) => r.isFirst)});
+    } else if (authModel.isSignedIn) {
       newsSettings = Provider.of(context);
       if (authModel.isOnboardingRequired) {
         if (newsSettings.settings == null) {
@@ -76,11 +90,13 @@ class _AppState extends State<App> {
     }
 
     return MaterialApp(
-        title: 'ActualIA',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
-          useMaterial3: true,
-        ),
-        home: home);
+      title: 'ActualIA',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
+        useMaterial3: true,
+      ),
+      home: home,
+      navigatorKey: _navKey,
+    );
   }
 }

@@ -3,7 +3,8 @@
         android:label="actualia"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="false"        
+        android:usesCleartextTraffic="false"
+        android:enableOnBackInvokedCallback="true"        
         android:allowBackup="false"> <!-- qtztz: set cleartext as false as
                                           required by sonarcloud -->
         <activity

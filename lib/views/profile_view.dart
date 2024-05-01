@@ -1,4 +1,7 @@
+import 'package:actualia/viewmodels/alarms.dart';
+import 'package:actualia/views/news_alert_setup_view.dart';
 import 'package:actualia/views/wizard_view.dart';
+import 'package:actualia/models/alarms.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
@@ -132,8 +135,12 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     print("Click on Alarm");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NewsAlertSetupView()));
                   },
                   child: const Text('Alarm'))),
         ]),
@@ -149,7 +156,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     print("Click on \"Manage Storage\"");
                   },
                   child: const Text('Manage Storage'))),
