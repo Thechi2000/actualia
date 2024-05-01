@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:logging/logging.dart';
-
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,6 +28,11 @@ class PlayButtonState extends State<PlayButton> {
   @override
   Widget build(BuildContext context) {
     final AudioPlayer audioPlayer = AudioPlayer();
+    audioPlayer.onLog.listen(
+      (String message) => debugPrint("AudioPlayer log: $message"),
+      onError: (Object e, [StackTrace? stackTrace]) =>
+          debugPrint("AudioPlayer error: $e, trace  : $stackTrace"),
+    );
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.onPlayerComplete.listen((s) async {
       setState(() {
@@ -54,8 +58,16 @@ class PlayButtonState extends State<PlayButton> {
         onPressed: () async {
           switch (_playerState) {
             case PlayerState.playing:
-              await audioPlayer.pause(); // FIXME: pause doesnt work properly :(
+              //TODO: Fix pause
+              try {
+                await audioPlayer.pause();
+              } catch (e) {
+                log("Error pausing audio: $e", level: Level.WARNING.value);
+                debugPrint("Error pausing audio: $e");
+              }
+
               setState(() => _playerState = PlayerState.paused);
+              debugPrint("Player state: $_playerState");
               break;
             case PlayerState.paused:
               await audioPlayer.resume();
@@ -85,11 +97,12 @@ class PlayButtonState extends State<PlayButton> {
 
   Future<DeviceFileSource?> getAudioSource(int transcriptId) async {
     final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/audios/$transcriptId}';
+    final filePath = '${directory.path}/audios/$transcriptId.mp3';
     debugPrint("File path from audio player: $filePath");
 
     final file = File(filePath);
     if (await file.exists()) {
+      debugPrint("File exists");
       // Le fichier existe et peut être lu
       return DeviceFileSource(filePath);
     } else {

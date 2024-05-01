@@ -161,8 +161,11 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   // Function to get the audio file from the database
-  Future<Uint8List?> getAudioFile(News news) async {
+  Future<void> getAudioFile(News news) async {
+    //var audio = news.audio;
+    //TODO: Remove this line and uncomment the above line
     var audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
+    audio ??= await generateAudio(news.transcriptID);
     print("audio : $audio");
     try {
       // File download
@@ -170,7 +173,7 @@ class NewsViewModel extends ChangeNotifier {
 
       if (response.isEmpty) {
         log('Audio file not found.', level: Level.WARNING.value);
-        return null;
+        return;
       }
 
       log('Audio file downloaded successfully.', level: Level.INFO.value);
@@ -182,13 +185,33 @@ class NewsViewModel extends ChangeNotifier {
         await transcriptsDirectory.create(recursive: true);
       }
 
-      final file = File('${transcriptsDirectory.path}/${news.transcriptID}');
+      final file =
+          File('${transcriptsDirectory.path}/${news.transcriptID}.mp3');
+      debugPrint("File path: ${file.path}");
       await file.writeAsBytes(response);
-
-      return response;
+      debugPrint("File exists ? ${await file.exists()}");
     } catch (e) {
       log('Error downloading audio file: $e', level: Level.WARNING.value);
-      return null;
+      debugPrint("Error downloading audio file: $e");
+    }
+  }
+
+  //TODO: Fix this function, call doesn't work
+  Future<String> generateAudio(int transcriptId) async {
+    try {
+      debugPrint("transcriptId : $transcriptId");
+      final audio = await supabase.functions
+          .invoke('generate-audio', body: {"transcriptId": transcriptId});
+      log("Cloud function 'audio' invoked successfully.",
+          level: Level.INFO.value);
+      debugPrint("audio : ${audio.status}");
+      debugPrint("audio.data : ${audio.data}");
+      return audio.data;
+    } catch (e) {
+      log("Error invoking audio cloud function: $e",
+          level: Level.WARNING.value);
+      debugPrint("Error invoking audio cloud function: ${e.toString()}");
+      throw Exception("Failed to invoke audio function");
     }
   }
 
