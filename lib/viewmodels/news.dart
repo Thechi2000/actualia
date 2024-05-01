@@ -122,14 +122,18 @@ class NewsViewModel extends ChangeNotifier {
 
   News parseNews(dynamic response) {
     List<dynamic> newsItems = response['transcript']['news'];
-    List<Paragraph> paragraphs = newsItems.map((item) {
-      return Paragraph(
-          transcript: item['transcript'],
-          source: item['source']['name'],
-          title: item['title'],
-          date: item['publishedAt'],
-          content: item['content']);
-    }).toList();
+
+    List<Paragraph> paragraphs = [];
+    for (dynamic item in newsItems) {
+      if (item['transcript'] != null) {
+        paragraphs.add(Paragraph(
+            transcript: item['transcript'],
+            source: item['source']['name'],
+            title: item['title'],
+            date: item['publishedAt'],
+            content: item['content']));
+      }
+    }
 
     return News(
       title: response['title'],
