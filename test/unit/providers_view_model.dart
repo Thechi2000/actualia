@@ -1,52 +1,85 @@
+import 'dart:async';
 import 'package:actualia/models/providers.dart';
 import 'package:actualia/viewmodels/providers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FakePostgrestFilterBuilder<T> extends Fake
     implements PostgrestFilterBuilder<T> {
-  final Map<String, dynamic> selection;
+  final FakeDB providerDB;
+  final T? selection;
 
-  FakePostgrestFilterBuilder([this.selection = const {}]);
+  FakePostgrestFilterBuilder({required this.providerDB, this.selection});
+
+  @override
+  Future<Table> then<Table>(FutureOr<Table> Function(T t) func,
+      {Function? onError}) async {
+    try {
+      return func(selection as T);
+    } catch (e) {
+      debugPrint("[ERROR] in then: $e");
+      return Future.value(null);
+    }
+  }
 
   @override
   FakePostgrestFilterBuilder<T> eq(String field, Object val) {
-    Map<String, dynamic> newSelection = selection;
-    newSelection
-        .removeWhere((key, value) => key == field && value == val as dynamic);
-    debugPrint("bob eq");
-    return FakePostgrestFilterBuilder<T>(newSelection);
+    T newSelection = (selection == null
+        ? providerDB.getRows(column: field, equal: val) ?? []
+        : providerDB.getRowsFromTable(
+                table: selection! as Table, col: field, equal: val) ??
+            []) as T;
+    if (newSelection == []) {
+      debugPrint(
+          "No row matching the parameter $field and $val has been found, or parameter are invalid");
+    }
+    return FakePostgrestFilterBuilder<T>(
+        providerDB: providerDB, selection: newSelection);
   }
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() {
-    debugPrint("bob single");
-    return FakePostgrestFilterBuilder(selection);
+    if (selection == null) {
+      debugPrint("Nothing to select from");
+      return FakePostgrestFilterBuilder(providerDB: providerDB);
+    } else if ((selection! as Table).length > 1) {
+      debugPrint("More than one element in selection");
+      return FakePostgrestFilterBuilder(providerDB: providerDB);
+    } else {
+      return FakePostgrestFilterBuilder(providerDB: providerDB);
+    }
   }
 }
 
 class FakeQueryBuilder extends Fake implements SupabaseQueryBuilder {
-  final Table? table;
-  final FakeDB? db;
+  final Table table;
+  final FakeDB db;
 
-  FakeQueryBuilder({this.table, this.db});
+  FakeQueryBuilder({required this.table, required this.db});
 
   @override
   PostgrestFilterBuilder upsert(Object values,
       {String? onConflict,
       bool ignoreDuplicates = false,
       bool defaultToNull = true}) {
-    Table newTable = table!;
-    newTable.addAll(values as Table);
-    db?.setProvidersTable(table: newTable);
-    return FakePostgrestFilterBuilder(newTable);
+    Table newTable = table.toList();
+    Table val;
+    try {
+      val = values as Table;
+    } catch (e) {
+      val = [values as Row];
+    }
+    newTable.addAll(val);
+    db.setProvidersTable(table: newTable);
+    return FakePostgrestFilterBuilder(providerDB: db);
   }
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> select([String s = ""]) {
-    return FakePostgrestFilterBuilder<List<Map<String, dynamic>>>(
-        tableContent!);
+  PostgrestFilterBuilder<Table> select([String s = ""]) {
+    return FakePostgrestFilterBuilder<Table>(providerDB: db, selection: table);
   }
 }
 
@@ -60,7 +93,7 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
       createdAt: "createdAt");
 }
 
-typedef Row = List<Map<String, dynamic>>;
+typedef Row = Map<String, dynamic>;
 typedef Table = List<Row>;
 
 class FakeDB extends Fake implements SupabaseClient {
@@ -75,26 +108,23 @@ class FakeDB extends Fake implements SupabaseClient {
     _providersTables.add(row);
   }
 
+  Table? getRowsFromTable({required Table table, String? col, Object? equal}) {
+    return FakeDB(table).getRows(column: col, equal: equal);
+  }
+
   Table? getRows({String? column, Object? equal}) {
     if (column == null) {
       return _providersTables;
     } else if (equal != null) {
-      bool columnExist = false;
-      for (var m in _providersTables[0]) {
-        if (m.containsKey(column)) {
-          columnExist = true;
-        }
-      }
+      bool columnExist = providersTable[0].containsKey(column);
       if (!columnExist) {
         debugPrint("$column does not exist in table");
         return null;
       }
-      List<List<Map<String, dynamic>>> res = [];
+      Table res = [];
       for (var row in _providersTables) {
-        for (var m in row) {
-          if (m.containsKey(column) && m[column] == equal) {
-            res.add(row);
-          }
+        if (row.containsKey(column) && row[column] == equal) {
+          res.add(row);
         }
       }
       return res;
@@ -107,8 +137,7 @@ class FakeDB extends Fake implements SupabaseClient {
 
   @override
   SupabaseQueryBuilder from(String table) {
-    return FakeQueryBuilder(
-        tableName: table, tableContent: _providersTables, db: this);
+    return FakeQueryBuilder(table: _providersTables, db: this);
   }
 
   @override
@@ -118,28 +147,145 @@ class FakeDB extends Fake implements SupabaseClient {
 }
 
 void main() {
-  // test("push work as intended", () async {
-  //   List<NewsProvider> toPush = [
-  //     GNewsProvider(),
-  //     RSSFeedProvider(url: "https://dummy.dummy.com")
-  //   ];
-  //   FakeDB db = FakeDB({"news_providers": {}});
-  //   ProvidersViewModel vm = ProvidersViewModel(db);
-  //   vm.setNewsProviders(toPush);
-  //   await vm.pushNewsProviders();
-  //
-  //   expect(db.tables["news_providers"]["providers"], [
-  //     {"type": "gnews"},
-  //     {"type": "rss", "url": "https://dummy.dummy.com"}
-  //   ]);
-  // });
+  test("push work as intended for one row and empty db", () async {
+    List<NewsProvider> toPush = [RSSFeedProvider(url: "https://dummy.com")];
+    FakeDB db = FakeDB();
+    ProvidersViewModel vm = ProvidersViewModel(db);
+    vm.setNewsProviders(toPush);
+    await vm.pushNewsProviders();
 
-  test("fetch work as intended", () async {
+    expect(
+        db.providersTable,
+        equals([
+          {
+            "created_by": "1234",
+            "type": {"type": "rss", "url": "https://dummy.com"}
+          }
+        ]));
+  });
+
+  test("push work as intended for one row and non empty db", () async {
+    List<NewsProvider> toPush = [RSSFeedProvider(url: "https://dummy.com")];
+    FakeDB db = FakeDB([
+      {
+        "created_by": "1234",
+        "type": {"type": "gnews"}
+      },
+      {
+        "created_by": "4321",
+        "type": {"type": "rss", "url": "dummy"}
+      },
+    ]);
+    ProvidersViewModel vm = ProvidersViewModel(db);
+    vm.setNewsProviders(toPush);
+    await vm.pushNewsProviders();
+
+    expect(
+        db.providersTable,
+        equals([
+          {
+            "created_by": "1234",
+            "type": {"type": "gnews"}
+          },
+          {
+            "created_by": "4321",
+            "type": {"type": "rss", "url": "dummy"}
+          },
+          {
+            "created_by": "1234",
+            "type": {"type": "rss", "url": "https://dummy.com"}
+          }
+        ]));
+  });
+
+  test("push work as intended for multiple row", () async {
+    List<NewsProvider> toPush = [
+      RSSFeedProvider(url: "https://dummy.com"),
+      GNewsProvider(),
+      RSSFeedProvider(url: "https://dummy2.com")
+    ];
+    FakeDB db = FakeDB();
+    ProvidersViewModel vm = ProvidersViewModel(db);
+    vm.setNewsProviders(toPush);
+    await vm.pushNewsProviders();
+
+    expect(
+        db.providersTable,
+        equals([
+          {
+            "created_by": "1234",
+            "type": {"type": "rss", "url": "https://dummy.com"}
+          },
+          {
+            "created_by": "1234",
+            "type": {"type": "gnews"}
+          },
+          {
+            "created_by": "1234",
+            "type": {"type": "rss", "url": "https://dummy2.com"}
+          }
+        ]));
+  });
+
+  test("fetch work as intended for one row", () async {
+    FakeDB providersDb = FakeDB([
+      {
+        "created_by": "1234",
+        "type": {"type": "gnews"}
+      }
+    ]);
+    ProvidersViewModel vm = ProvidersViewModel(providersDb);
+    await vm.fetchNewsProviders();
+    List<NewsProvider>? received = vm.newsProviders;
+    expect(received.runtimeType, equals(List<NewsProvider>));
+    expect(received!.length, equals(1));
+    expect(received[0].runtimeType, equals(GNewsProvider));
+  });
+
+  test("fetch work as intended for empty providers", () async {
     FakeDB providersDb = FakeDB();
     ProvidersViewModel vm = ProvidersViewModel(providersDb);
     await vm.fetchNewsProviders();
-    List<NewsProvider> received = vm.newsProviders;
-    expect(
-        received, [RSSFeedProvider(url: "https://dummy.com"), GNewsProvider()]);
+    List<NewsProvider>? res = vm.newsProviders;
+    expect(res!.length, equals(0));
+    expect(res, equals([]));
+  });
+
+  test("fetch work as intended when user has no provider registered", () async {
+    FakeDB providersDb = FakeDB([
+      {
+        "created_by": "4321",
+        "type": {"type": "gnews"}
+      }
+    ]);
+    ProvidersViewModel vm = ProvidersViewModel(providersDb);
+    await vm.fetchNewsProviders();
+    List<NewsProvider>? res = vm.newsProviders;
+    expect(res!.length, equals(0));
+    expect(res, equals([]));
+  });
+
+  test("fetch work as intended when user has multiple providers", () async {
+    FakeDB providersDb = FakeDB([
+      {
+        "created_by": "1234",
+        "type": {"type": "gnews"}
+      },
+      {
+        "created_by": "1234",
+        "type": {"type": "rss", "url": "https://dummy.com"}
+      },
+      {
+        "created_by": "4321",
+        "type": {"type": "rss", "url": "dummy2"}
+      },
+    ]);
+    ProvidersViewModel vm = ProvidersViewModel(providersDb);
+    await vm.fetchNewsProviders();
+    List<NewsProvider>? received = vm.newsProviders;
+    expect(received.runtimeType, equals(List<NewsProvider>));
+    expect(received!.length, equals(2));
+    expect(received[0].runtimeType, equals(GNewsProvider));
+    expect(received[1].runtimeType, equals(RSSFeedProvider));
   });
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -98,7 +99,10 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         try {
           await nsvm.pushSettings(toSend);
           if (auth.isOnboardingRequired) {
-            await auth.setOnboardingIsDone();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ProvidersWizardView()));
           } else {
             Navigator.pop(context);
           }
@@ -107,7 +111,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         }
       },
       title: "Select interests",
-      buttonText: "Finish",
+      buttonText: "Next",
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {
@@ -131,12 +135,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         break;
     }
 
-    return Scaffold(
-        appBar: const TopAppBar(),
-        body: Container(
-          padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
-          alignment: Alignment.topCenter,
-          child: body,
-        ));
+    return WizardScaffold(body: body);
   }
 }

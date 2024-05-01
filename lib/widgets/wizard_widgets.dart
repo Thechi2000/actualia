@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -38,17 +39,11 @@ class _WizardSelector extends State<WizardSelector> {
 
   @override
   Widget build(BuildContext context) {
-    Widget title = Text(
-        style: const TextStyle(
-            fontFamily: "Fira Code",
-            fontWeight: FontWeight.w700,
-            fontSize: 32.0),
-        textAlign: TextAlign.center,
-        widget.title);
+    Widget title = WizardSelectorTitle(title: widget.title);
 
     Widget body = Expanded(
         child: Container(
-            padding: const EdgeInsets.fromLTRB(0.0, 32.0, 0.0, 32.0),
+            padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 24.0),
             child: SingleChildScrollView(
                 child: Wrap(
                     spacing: 8.0,
@@ -105,6 +100,23 @@ class WizardTopBar extends StatelessWidget {
   }
 }
 
+class WizardSelectorTitle extends StatelessWidget {
+  final String title;
+
+  const WizardSelectorTitle({this.title = "default title", super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+        style: const TextStyle(
+            fontFamily: "Fira Code",
+            fontWeight: FontWeight.w700,
+            fontSize: 32.0),
+        textAlign: TextAlign.center,
+        title);
+  }
+}
+
 class WizardNavigationBottomBar extends StatelessWidget {
   final bool showCancel;
   final bool showRight;
@@ -134,5 +146,106 @@ class WizardNavigationBottomBar extends StatelessWidget {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [cancel, right]);
+  }
+}
+
+class WizardScaffold extends StatelessWidget {
+  final PreferredSizeWidget topBar;
+  final Widget body;
+
+  const WizardScaffold(
+      {this.topBar = const TopAppBar(),
+      this.body = const Text("unimplemented"),
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: topBar,
+        body: Container(
+          padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
+          alignment: Alignment.topCenter,
+          child: body,
+        ));
+  }
+}
+
+class RSSSelector extends StatefulWidget {
+  final String title;
+  final String buttonText;
+  final bool isInitialOnboarding;
+  final List<String> selectedItems;
+  final void Function(String) onSelect;
+  final void Function() onPressed;
+  final void Function()? onCancel;
+
+  const RSSSelector(
+      {required this.onSelect,
+      required this.onPressed,
+      this.title = "Default",
+      this.buttonText = "Next",
+      this.isInitialOnboarding = false,
+      this.onCancel,
+      this.selectedItems = const [],
+      super.key});
+
+  @override
+  State<RSSSelector> createState() => _RSSSelector();
+}
+
+class _RSSSelector extends State<RSSSelector> {
+  List<String> _selectedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedItems = widget.selectedItems.toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget title = WizardSelectorTitle(
+      title: widget.title,
+    );
+
+    Widget selectUrl = const Text("TODO");
+
+    Widget displaySelected = Expanded(
+        child: Container(
+      padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 24.0),
+      child: SingleChildScrollView(
+        child: Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          alignment: WrapAlignment.center,
+          children: _selectedItems
+              .map((item) => OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedItems.remove(item);
+                      });
+                    },
+                    child: Row(
+                      children: [Text(item), const Icon(Icons.close)],
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
+    ));
+
+    Widget bottom = WizardNavigationBottomBar(
+      showCancel: !widget.isInitialOnboarding,
+      onCancel: widget.onCancel,
+      showRight: true,
+      rText: widget.buttonText,
+      rOnPressed: () {
+        widget.onPressed();
+      },
+    );
+
+    return Column(
+      children: [title, selectUrl, displaySelected, bottom],
+    );
   }
 }

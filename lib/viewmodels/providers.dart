@@ -36,23 +36,19 @@ class ProvidersViewModel extends ChangeNotifier {
   }
 
   Future<bool> fetchNewsProviders() async {
-    //todo fix
     try {
       final res = await supabase
           .from('news_providers')
           .select()
           .eq("created_by", supabase.auth.currentUser!.id);
 
-      debugPrint("fetch res: $res");
-      final temp = res.map((m) => jsonDecode(m["type"]));
-      _newsProviders = temp.map((e) => NewsProvider.deserialize(e)!).toList();
-      debugPrint("providers decoded: $_newsProviders");
+      _newsProviders =
+          res.map((m) => NewsProvider.deserialize(m["type"])!).toList();
       return true;
     } catch (e) {
       log("Error when fetching news providers: $e",
           name: "ERROR", level: Level.WARNING.value);
       _newsProviders = [];
-      debugPrint("_newsProviders initialized: $_newsProviders");
       return false;
     }
   }
@@ -61,10 +57,12 @@ class ProvidersViewModel extends ChangeNotifier {
     try {
       final List<dynamic>? toPush =
           _newsProviders?.map((e) => e.serialize()).toList();
-      await supabase.from("news_providers").upsert({
-        "created_by": supabase.auth.currentUser!.id,
-        "type": toPush,
-      }, onConflict: "created_by");
+      for (var p in toPush!) {
+        await supabase.from("news_providers").upsert({
+          "created_by": supabase.auth.currentUser!.id,
+          "type": p,
+        });
+      }
       return true;
     } catch (e) {
       log("Error when pushing news providers: $e",
