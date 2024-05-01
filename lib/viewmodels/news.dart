@@ -47,6 +47,9 @@ class NewsViewModel extends ChangeNotifier {
 
   /// Fetches news for the specified date from the database.
   Future<void> fetchNews(DateTime date) async {
+    // Converts time to UTC to match Supabase's instances.
+    date = date.toUtc();
+
     String dayStart =
         DateTime(date.year, date.month, date.day).toIso8601String();
     String nextDayStart =
@@ -135,7 +138,8 @@ class NewsViewModel extends ChangeNotifier {
 
     return News(
       title: response['title'],
-      date: response['date'],
+      // Dates are stored in UTC timezone in the database.
+      date: DateTime.parse(response['date']).toLocal().toIso8601String(),
       transcriptID: response['id'],
       audio: response['audio'],
       paragraphs: paragraphs,
