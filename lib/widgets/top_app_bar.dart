@@ -28,6 +28,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         IconButton(
+          key: const Key("profile"),
           visualDensity: const VisualDensity(horizontal: 4),
           iconSize: 28.0,
           icon: const Icon(Icons.account_circle, color: THEME_GREY),
