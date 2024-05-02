@@ -14,6 +14,8 @@ class PlayButton extends StatefulWidget {
 }
 
 class PlayButtonState extends State<PlayButton> {
+  final AudioPlayer audioPlayer = AudioPlayer();
+
   late PlayerState _playerState;
   @override
   void initState() {
@@ -28,7 +30,6 @@ class PlayButtonState extends State<PlayButton> {
   @override
   Widget build(BuildContext context) {
     final newsViewModel = Provider.of<NewsViewModel>(context);
-    final AudioPlayer audioPlayer = AudioPlayer();
     audioPlayer.onLog.listen(
       (String message) => debugPrint("AudioPlayer log: $message"),
       onError: (Object e, [StackTrace? stackTrace]) =>
