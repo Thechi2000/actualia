@@ -30,11 +30,6 @@ class PlayButtonState extends State<PlayButton> {
   @override
   Widget build(BuildContext context) {
     final newsViewModel = Provider.of<NewsViewModel>(context);
-    audioPlayer.onLog.listen(
-      (String message) => debugPrint("AudioPlayer log: $message"),
-      onError: (Object e, [StackTrace? stackTrace]) =>
-          debugPrint("AudioPlayer error: $e, trace  : $stackTrace"),
-    );
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.onPlayerComplete.listen((s) async {
       setState(() {
@@ -60,16 +55,8 @@ class PlayButtonState extends State<PlayButton> {
         onPressed: () async {
           switch (_playerState) {
             case PlayerState.playing:
-              //TODO: Fix pause
-              try {
-                await audioPlayer.pause();
-              } catch (e) {
-                log("Error pausing audio: $e", level: Level.WARNING.value);
-                debugPrint("Error pausing audio: $e");
-              }
-
+              await audioPlayer.pause();
               setState(() => _playerState = PlayerState.paused);
-              debugPrint("Player state: $_playerState");
               break;
             case PlayerState.paused:
               await audioPlayer.resume();
