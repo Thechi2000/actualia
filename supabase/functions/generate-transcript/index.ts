@@ -61,7 +61,5 @@ Deno.serve(async (request) => {
     userId = user.data.user.id;
   }
 
-  await generateTranscript(userId, supabaseClient);
-
-  return new Response();
+  return await generateTranscript(userId, supabaseClient);
 });
