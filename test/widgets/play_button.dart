@@ -25,18 +25,17 @@ class NewsWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "ActualIA",
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: MultiProvider(
-          providers: [
-            ChangeNotifierProvider<NewsViewModel>(create: (context) => _model)
-          ],
-          child: _child,
-        ));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NewsViewModel>(create: (context) => _model)
+        ],
+        child: MaterialApp(
+            title: "ActualIA",
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: _child));
   }
 }
 

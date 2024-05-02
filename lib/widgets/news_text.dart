@@ -1,3 +1,4 @@
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/source_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/models/news.dart';
@@ -9,130 +10,121 @@ class NewsText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String date = convertDate(news.date);
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: <Widget>[
+        NewsDateTitle(news: news),
+        ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(
+              UNIT_PADDING * 3, UNIT_PADDING, UNIT_PADDING * 3, 0),
+          physics: const NeverScrollableScrollPhysics(),
+          children: news.paragraphs
+              .map((paragraph) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => SourceView(
+                                  article: paragraph.content,
+                                  title: paragraph.title,
+                                  date: paragraph.date.substring(0, 10),
+                                  newsPaper: paragraph.source)));
+                    },
+                    child: Text(
+                      '${paragraph.transcript}\n',
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                  ))
+              .toList(),
+        ),
+        const Divider(
+          height: UNIT_PADDING * 2,
+          thickness: 0.5,
+          indent: UNIT_PADDING * 3,
+          endIndent: UNIT_PADDING * 3,
+          color: THEME_GREY,
+        )
+      ],
+    );
+  }
+}
+
+class NewsDateTitle extends StatelessWidget {
+  final News news;
+
+  const NewsDateTitle({super.key, required this.news});
+
+  @override
+  Widget build(BuildContext context) {
+    String parseDateTime(String dateString) {
+      DateTime dateTime = DateTime.parse(dateString);
+      List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      List<String> months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      String suffix;
+      if (dateTime.day == 1 || dateTime.day == 21 || dateTime.day == 31) {
+        suffix = "st";
+      } else if (dateTime.day == 2 || dateTime.day == 22) {
+        suffix = "nd";
+      } else if (dateTime.day == 3 || dateTime.day == 23) {
+        suffix = "rd";
+      } else {
+        suffix = "th";
+      }
+      return "${weekDays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}$suffix, ${dateTime.year}";
+    }
+
     Widget playButton = news.transcriptId == -1
         ? const SizedBox(width: 40, height: 40)
         : PlayButton(transcriptId: news.transcriptId);
 
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+    return ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         children: <Widget>[
           Padding(
-            //Box containing the title, date and play button
-            padding: const EdgeInsets.fromLTRB(30.0, 0.0, 80.0, 0.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Align(
-                    alignment: Alignment.topLeft,
-                    child: playButton), //Play button
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          date,
-                          style: const TextStyle(
-                            color: Color(0xFFC8C8C8),
-                            fontSize: 8,
-                            fontFamily: 'Fira Code',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          news.title,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                            fontFamily: 'EB Garamond',
-                            fontWeight: FontWeight.w400,
-                            height: 1.2,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
+            padding: const EdgeInsets.fromLTRB(
+                UNIT_PADDING * 4.5, UNIT_PADDING * 2, UNIT_PADDING * 4.5, 0),
+            child: Text(
+              parseDateTime(news.date),
+              style: Theme.of(context)
+                  .textTheme
+                  .displaySmall!
+                  .copyWith(color: THEME_GREY, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(width: UNIT_PADDING),
+              Align(alignment: Alignment.topLeft, child: playButton),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(right: UNIT_PADDING * 4.5),
+                child: Text(
+                  news.title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(height: 1.2),
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(64.0, 20.0, 64.0, 0.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: news.paragraphs
-                  .map((paragraph) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) => SourceView(
-                                      article: paragraph.content,
-                                      title: paragraph.title,
-                                      date: convertDate(paragraph.date),
-                                      newsPaper: paragraph.source)));
-                        },
-                        child: Text(
-                          '${paragraph.transcript}\n',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontFamily: 'Fira Code',
-                            fontWeight: FontWeight.w300,
-                            decoration: TextDecoration.none,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-          const Divider(
-            height: 60,
-            thickness: 0.5,
-            indent: 64.0,
-            endIndent: 64.0,
-            color: Color(0xFFC8C8C8),
+              ))
+            ],
           )
-        ],
-      ),
-    );
-  }
-
-  static String convertDate(String date) {
-    DateTime dateTime = DateTime.parse(date);
-    List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    List<String> months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-    String suffix;
-    if (dateTime.day == 1 || dateTime.day == 21 || dateTime.day == 31) {
-      suffix = "st";
-    } else if (dateTime.day == 2 || dateTime.day == 22) {
-      suffix = "nd";
-    } else if (dateTime.day == 3 || dateTime.day == 23) {
-      suffix = "rd";
-    } else {
-      suffix = "th";
-    }
-    return "${weekDays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}$suffix, ${dateTime.year}";
+        ]);
   }
 }

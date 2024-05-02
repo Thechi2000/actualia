@@ -1,10 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class PlayButton extends StatefulWidget {
