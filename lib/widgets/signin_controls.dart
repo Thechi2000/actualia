@@ -46,12 +46,14 @@ class _SignInControls extends State<SignInControls> {
           Container(
               padding: const EdgeInsets.symmetric(vertical: UNIT_PADDING / 2),
               child: TextButton(
-                  child: Text(
-                      style: Theme.of(context).textTheme.titleSmall,
-                      "Sign in as guest"),
-                  onPressed: () async {
-                    await authModel.signInWithFakeAccount();
-                  })),
+                onPressed: () async {
+                  await authModel.signInWithFakeAccount();
+                },
+                key: const Key("signin-guest"),
+                child: Text(
+                    style: Theme.of(context).textTheme.titleSmall,
+                    "Sign in as guest"),
+              )),
           if (_error != null) ...<Widget>[
             Text(
               _error!,
