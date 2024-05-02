@@ -219,6 +219,9 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   Future<Source?> getAudioSource(int transcriptId) async {
+    if (transcriptId == -1) {
+      return null;
+    }
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/audios/$transcriptId.mp3';
 
