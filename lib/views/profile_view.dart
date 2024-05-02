@@ -119,8 +119,6 @@ class _ProfilePageState extends State<ProfilePageView> {
                     textStyle: const TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    log("providers (view is profile view): ${Provider.of<ProvidersViewModel>(context, listen: false).newsProviders}",
-                        name: "DEBUG", level: Level.WARNING.value);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

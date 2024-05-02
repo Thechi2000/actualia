@@ -128,6 +128,8 @@ class MockAuthModel extends AuthModel {
   }
 }
 
+class FakeGoogleSignin extends Fake implements GoogleSignIn {}
+
 void main() {
   // The `BuildContext` does not include the provider
   // needed by Provider<AuthModel>, UI will test more specific parts
@@ -261,8 +263,11 @@ void main() {
     expect(find.byType(TopAppBar), findsOneWidget);
     expect(find.text("Enter url for the RSS source of your choice"), findsOne);
     expect(find.byType(TextField), findsOneWidget);
-    await tester.enterText(find.byType(TextField), "test");
+    await tester.enterText(find.byType(TextField), "https://test.com");
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    expect(find.text(RSSFeedProvider(url: "https://test.com").displayName()),
+        findsOne);
+    expect(find.byType(WizardNavigationBottomBar), findsOneWidget);
   });
 }
-
-class FakeGoogleSignin extends Fake implements GoogleSignIn {}

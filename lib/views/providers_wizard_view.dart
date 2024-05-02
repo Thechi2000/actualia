@@ -43,8 +43,6 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             ?.where((p) => p.runtimeType == RSSFeedProvider)
             .toList() ??
         [];
-    log("saved: ${pvm.newsProviders}, saved predefined: $savedPredefinedProviders, saved rss; $savedRSSProviders",
-        name: "DEBUG", level: Level.WARNING.value);
 
     Widget predefinedProvidersSelector = WizardSelector(
       items: predefined,
