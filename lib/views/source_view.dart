@@ -46,8 +46,8 @@ class _SourceViewState extends State<SourceView> {
       ),
       body: Container(
           padding: const EdgeInsets.all(UNIT_PADDING * 3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Center(
+              child: ListView(
             children: <Widget>[
               ListView(
                   shrinkWrap: true,
@@ -62,7 +62,7 @@ class _SourceViewState extends State<SourceView> {
                   ]),
               ScrollableText(text: _article)
             ],
-          )),
+          ))),
     );
   }
 }
