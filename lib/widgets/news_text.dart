@@ -10,6 +10,9 @@ class NewsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String date = convertDate(news.date);
+    Widget playButton = news.transcriptId == -1
+        ? const SizedBox(width: 40, height: 40)
+        : PlayButton(transcriptId: news.transcriptId);
 
     return Center(
       child: Column(
@@ -18,17 +21,13 @@ class NewsText extends StatelessWidget {
         children: <Widget>[
           Padding(
             //Box containing the title, date and play button
-            //NB : The alignment will change after we add the button to play the audio
-            //Note for audio : Use the transcriptID and audio fields from the news.
             padding: const EdgeInsets.fromLTRB(30.0, 0.0, 80.0, 0.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Align(
                     alignment: Alignment.topLeft,
-                    child: PlayButton(
-                      transcriptId: news.transcriptID,
-                    )),
+                    child: playButton), //Play button
                 const SizedBox(width: 10),
                 Expanded(
                   child: Align(

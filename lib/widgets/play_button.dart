@@ -78,7 +78,6 @@ class PlayButtonState extends State<PlayButton> {
             case PlayerState.disposed:
               Source? source = await getAudioSource(widget.transcriptId);
               if (source != null) {
-                debugPrint("Foud audio file");
                 await playAudio(audioPlayer, source);
                 setState(() => _playerState = PlayerState.playing);
                 break;
@@ -98,15 +97,12 @@ class PlayButtonState extends State<PlayButton> {
   Future<DeviceFileSource?> getAudioSource(int transcriptId) async {
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/audios/$transcriptId.mp3';
-    debugPrint("File path from audio player: $filePath");
 
     final file = File(filePath);
     if (await file.exists()) {
-      debugPrint("File exists");
-      // Le fichier existe et peut être lu
       return DeviceFileSource(filePath);
     } else {
-      debugPrint('File does not exist');
+      log("Can't find audio file at $filePath", level: Level.WARNING.value);
       return null;
     }
   }

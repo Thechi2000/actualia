@@ -95,12 +95,15 @@ class NewsViewModel extends ChangeNotifier {
           _newsList.insert(0, _news!);
         }
       }
+
       for (var news in _newsList) {
         getAudioFile(news).whenComplete(() => notifyListeners());
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
       _newsList = [];
+      setNewsError(DateTime.now(), "Error fetching news list",
+          "Got the following error : ${e.toString()}");
     }
     notifyListeners();
   }
@@ -142,7 +145,7 @@ class NewsViewModel extends ChangeNotifier {
     return News(
       title: response['title'],
       date: response['date'],
-      transcriptID: response['id'],
+      transcriptId: response['id'],
       audio: response['audio'],
       paragraphs: paragraphs,
     );
@@ -162,11 +165,11 @@ class NewsViewModel extends ChangeNotifier {
 
   // Function to get the audio file from the database
   Future<void> getAudioFile(News news) async {
-    //var audio = news.audio;
-    //TODO: Remove this line and uncomment the above line
-    var audio = '9863869a-d0e7-4462-8738-a32395e86e87/15.mp3';
-    audio ??= await generateAudio(news.transcriptID);
-    print("audio : $audio");
+    var audio = news.audio;
+    if (news.transcriptId == -1) {
+      return;
+    }
+    audio ??= await generateAudio(news.transcriptId);
     try {
       // File download
       final response = await supabase.storage.from("audios").download(audio);
@@ -186,31 +189,24 @@ class NewsViewModel extends ChangeNotifier {
       }
 
       final file =
-          File('${transcriptsDirectory.path}/${news.transcriptID}.mp3');
-      debugPrint("File path: ${file.path}");
+          File('${transcriptsDirectory.path}/${news.transcriptId}.mp3');
       await file.writeAsBytes(response);
-      debugPrint("File exists ? ${await file.exists()}");
     } catch (e) {
       log('Error downloading audio file: $e', level: Level.WARNING.value);
-      debugPrint("Error downloading audio file: $e");
     }
   }
 
-  //TODO: Fix this function, call doesn't work
   Future<String> generateAudio(int transcriptId) async {
     try {
-      debugPrint("transcriptId : $transcriptId");
       final audio = await supabase.functions
           .invoke('generate-audio', body: {"transcriptId": transcriptId});
+
       log("Cloud function 'audio' invoked successfully.",
           level: Level.INFO.value);
-      debugPrint("audio : ${audio.status}");
-      debugPrint("audio.data : ${audio.data}");
       return audio.data;
     } catch (e) {
       log("Error invoking audio cloud function: $e",
           level: Level.WARNING.value);
-      debugPrint("Error invoking audio cloud function: ${e.toString()}");
       throw Exception("Failed to invoke audio function");
     }
   }
@@ -220,7 +216,7 @@ class NewsViewModel extends ChangeNotifier {
     _news = News(
       date: date.toString().substring(0, 10),
       title: title,
-      transcriptID: -1,
+      transcriptId: -1,
       audio: null,
       paragraphs: [
         Paragraph(

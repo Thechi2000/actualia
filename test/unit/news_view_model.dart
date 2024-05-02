@@ -85,7 +85,7 @@ class AlreadyExistingNewsVM extends NewsViewModel {
     setNews(News(
         date: DateTime.now().toIso8601String(),
         title: "News",
-        transcriptID: -1,
+        transcriptId: -1,
         audio: null,
         paragraphs: [
           Paragraph(
@@ -115,7 +115,7 @@ class NonExistingNewsVM extends NewsViewModel {
       setNews(News(
           date: DateTime.now().toIso8601String(),
           title: "News",
-          transcriptID: -1,
+          transcriptId: -1,
           audio: null,
           paragraphs: [
             Paragraph(
@@ -158,7 +158,7 @@ class NewsListVM extends NewsViewModel {
     setNews(News(
         date: DateTime.now().toIso8601String(),
         title: "News",
-        transcriptID: -1,
+        transcriptId: -1,
         audio: null,
         paragraphs: [
           Paragraph(
