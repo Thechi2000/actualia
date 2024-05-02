@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:actualia/models/providers.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -258,7 +259,10 @@ class _RSSSelector extends State<RSSSelector> {
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(item), const Icon(Icons.close)],
+                      children: [
+                        Text(RSSFeedProvider(url: item).displayName()),
+                        const Icon(Icons.close)
+                      ],
                     ),
                   ))
               .toList(),
