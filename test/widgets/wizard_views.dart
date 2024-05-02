@@ -190,7 +190,7 @@ void main() {
 
     await select(Key("countries-selector"), "Antarctica", "Next");
     await select(Key("cities-selector"), "Basel", "Next");
-    await select(Key("interests-selector"), "Biology", "Next");
+    await select(Key("interests-selector"), "Biology", "Finish");
 
     expect(vm.wasTriggered, isTrue);
   });
@@ -220,7 +220,7 @@ void main() {
 
     await nextScreen("Next");
     await nextScreen("Next");
-    await nextScreen("Next");
+    await nextScreen("Finish");
 
     expect(vm.wasTriggered, isTrue);
   });
