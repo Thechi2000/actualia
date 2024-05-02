@@ -120,9 +120,9 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await testSelector(Key("countries-selector"), "Chad", "Next");
-    await testSelector(Key("cities-selector"), "Basel", "Next");
-    await testSelector(Key("interests-selector"), "Gaming", "Finish");
+    await testSelector(const Key("countries-selector"), "Chad", "Next");
+    await testSelector(const Key("cities-selector"), "Basel", "Next");
+    await testSelector(const Key("interests-selector"), "Gaming", "Finish");
   });
 
   testWidgets("Can select countries, cities and interests and push them",
@@ -148,9 +148,9 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await select(Key("countries-selector"), "Antarctica", "Next");
-    await select(Key("cities-selector"), "Basel", "Next");
-    await select(Key("interests-selector"), "Biology", "Finish");
+    await select(const Key("countries-selector"), "Antarctica", "Next");
+    await select(const Key("cities-selector"), "Basel", "Next");
+    await select(const Key("interests-selector"), "Biology", "Finish");
 
     expect(vm.wasTriggered, isTrue);
   });

@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthModel extends ChangeNotifier {
@@ -31,7 +32,9 @@ class AuthModel extends ChangeNotifier {
       }
 
       notifyListeners();
-    }, onError: (e) {});
+    }, onError: (e) {
+      log('Supabase onAuthStateChange error : $e', level: Level.WARNING.value);
+    });
   }
 
   @override
@@ -51,7 +54,8 @@ class AuthModel extends ChangeNotifier {
       final idToken = googleAuth.idToken;
 
       if (idToken == null || accessToken == null) {
-        print('Missing ID Token or access token from Google OAuth.');
+        log('Missing ID Token or access token from Google OAuth.',
+            level: Level.WARNING.value);
       }
 
       final res = await _supabase.auth.signInWithIdToken(
@@ -61,7 +65,8 @@ class AuthModel extends ChangeNotifier {
       );
 
       return res.user != null;
-    } catch (error) {
+    } catch (e) {
+      log("Google Sign-In failed: $e", level: Level.WARNING.value);
       return false;
     }
   }
@@ -74,6 +79,7 @@ class AuthModel extends ChangeNotifier {
       }
       return true;
     } catch (e) {
+      log("Sign-Out failed: $e", level: Level.WARNING.value);
       return false;
     }
   }

@@ -3,7 +3,6 @@ import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
-import 'package:actualia/viewmodels/news_settings.dart';
 
 class ProfilePageView extends StatefulWidget {
   const ProfilePageView({super.key});
@@ -13,12 +12,12 @@ class ProfilePageView extends StatefulWidget {
 }
 
 enum SettingsRows {
-  interests("Interests"),
-  sources("Sources"),
-  alarm("Alarm"),
-  storage("Storage"),
-  narrator("Narrator"),
-  accessibility("Accessibility");
+  INTERESTS("Interests"),
+  SOURCES("Sources"),
+  ALARM("Alarm"),
+  STORAGE("Storage"),
+  NARRATOR("Narrator"),
+  ACCESSIBILITY("Accessibility");
 
   const SettingsRows(this.name);
   final String name;
@@ -117,7 +116,6 @@ class _ProfilePageState extends State<ProfilePageView> {
                     textStyle: Theme.of(context).textTheme.bodyMedium, // Small
                   ),
                   onPressed: () {
-                    print("Click on Done");
                     Navigator.pop(context);
                   },
                   child: const Text('Done'))),

@@ -3,7 +3,6 @@ import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
-import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,13 +17,14 @@ class FakeSupabaseClient extends Fake implements SupabaseClient {
 
 class FakeGotrue extends Fake implements GoTrueClient {
   @override
-  Stream<AuthState> get onAuthStateChange => Stream.empty();
+  Stream<AuthState> get onAuthStateChange => const Stream.empty();
 }
 
 class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 
 // END
 class MockAuthModel extends AuthModel {
+  @override
   final bool isOnboardingRequired;
 
   MockAuthModel(super.key, super._googleSignIn,
