@@ -1,6 +1,5 @@
-import 'dart:developer';
+import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
@@ -39,20 +38,17 @@ class _WizardSelector extends State<WizardSelector> {
   @override
   Widget build(BuildContext context) {
     Widget title = Text(
-        style: const TextStyle(
-            fontFamily: "Fira Code",
-            fontWeight: FontWeight.w700,
-            fontSize: 32.0),
+        style: Theme.of(context).textTheme.titleLarge,
         textAlign: TextAlign.center,
         widget.title);
 
     Widget body = Expanded(
         child: Container(
-            padding: const EdgeInsets.fromLTRB(0.0, 32.0, 0.0, 32.0),
+            padding: const EdgeInsets.symmetric(vertical: UNIT_PADDING * 2),
             child: SingleChildScrollView(
                 child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
+                    spacing: UNIT_PADDING / 2,
+                    runSpacing: UNIT_PADDING / 2.5,
                     alignment: WrapAlignment.center,
                     children: _items
                         .map((e) => FilterChip(

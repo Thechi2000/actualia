@@ -1,3 +1,4 @@
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,15 +51,8 @@ class _ProfilePageState extends State<ProfilePageView> {
   @override
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of<AuthModel>(context);
-    NewsSettingsViewModel newsSettings =
-        Provider.of<NewsSettingsViewModel>(context);
 
     String? _username = authModel.user?.email;
-    List<String> _interests = newsSettings.settings?.interests ?? [];
-
-    debugPrint("[ from PROFILEPAGEVIEW ] view called and instanciated");
-
-    double unitPadding = 16.0;
 
     Widget profilePage = Center(
         child: ListView(
@@ -67,29 +61,20 @@ class _ProfilePageState extends State<ProfilePageView> {
       children: <Widget>[
         // Username display
         Container(
-            padding: EdgeInsets.symmetric(
-                vertical: unitPadding / 2, horizontal: unitPadding + 16.0),
+            padding: const EdgeInsets.symmetric(
+                vertical: UNIT_PADDING / 2, horizontal: UNIT_PADDING + 16.0),
             alignment: Alignment.centerLeft,
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
-                      style: TextStyle(
-                          fontFamily: "Fira Code",
-                          fontSize: 36.0, // Large
-                          fontWeight: FontWeight.w600), // SettingsTitle => H1?
-                      "Hello!"),
+                  Text(style: Theme.of(context).textTheme.titleLarge, "Hello!"),
                   Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: unitPadding,
-                        horizontal: 1.5 * unitPadding,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: UNIT_PADDING,
+                        horizontal: 1.5 * UNIT_PADDING,
                       ),
                       child: Text(
-                          style: const TextStyle(
-                              fontFamily: "Fira Code",
-                              fontSize: 16.0, // Small
-                              color: Color(0xFF818181),
-                              fontWeight: FontWeight.w300), // H2?
+                          style: Theme.of(context).textTheme.bodyMedium,
                           _username ?? "Unknown User")),
                   FilledButton.tonal(
                     onPressed: () async {
@@ -104,8 +89,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                 ])),
 
         Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding: const EdgeInsets.all(UNIT_PADDING),
             child: ListView.separated(
               itemCount: SettingsRows.values.length,
               shrinkWrap: true,
@@ -115,8 +99,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                 return ListTile(
                     dense: true,
                     title: Text(
-                        style: const TextStyle(
-                            fontFamily: "Fira Code", fontSize: 16.0),
+                        style: Theme.of(context).textTheme.displaySmall,
                         row.name),
                     titleAlignment: ListTileTitleAlignment.center,
                     onTap: () {
@@ -128,11 +111,10 @@ class _ProfilePageState extends State<ProfilePageView> {
         // Redirection to home page
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Container(
-              padding: EdgeInsets.symmetric(horizontal: unitPadding),
+              padding: const EdgeInsets.symmetric(horizontal: UNIT_PADDING),
               child: TextButton(
                   style: TextButton.styleFrom(
-                    textStyle: const TextStyle(
-                        fontSize: 16.0, fontFamily: "Fira Code"), // Small
+                    textStyle: Theme.of(context).textTheme.bodyMedium, // Small
                   ),
                   onPressed: () {
                     print("Click on Done");
@@ -145,7 +127,8 @@ class _ProfilePageState extends State<ProfilePageView> {
 
     return Material(
       child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 96, 16, 16),
+          padding: const EdgeInsets.fromLTRB(
+              UNIT_PADDING, 6 * UNIT_PADDING, UNIT_PADDING, UNIT_PADDING),
           child: profilePage),
     );
   }

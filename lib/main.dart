@@ -74,6 +74,6 @@ class _AppState extends State<App> {
       );
     }
 
-    return MaterialApp(title: 'ActualIA', theme: actualIATheme, home: home);
+    return MaterialApp(title: 'ActualIA', theme: ACTUALIA_THEME, home: home);
   }
 }
