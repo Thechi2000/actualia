@@ -81,18 +81,14 @@ Deno.serve(async (req) => {
       supabaseClient,
     );
 
-    console.log(generateTranscriptResponse);
-
     const transcriptId = (await (generateTranscriptResponse.json()))["id"];
 
     // Call the "generate-audio" edge function
-    const generateAudioResponse = await generateAudio(
+    await generateAudio(
       transcriptId,
       "echo",
       supabaseClient,
     );
-
-    console.log(generateAudioResponse);
   }
 
   console.log("Transcripts & audios generated");
