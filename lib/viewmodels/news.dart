@@ -2,10 +2,11 @@ import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
-  late final supabase;
+  late final SupabaseClient supabase;
   News? _news;
   News? get news => _news;
   List<News> _newsList = [];
