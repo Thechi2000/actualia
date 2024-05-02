@@ -301,29 +301,56 @@ void main() {
     expect(pvm.newsProviders?.contains(google), equals(false));
   });
 
-  // testWidgets(
-  //     "Providers wizard: Can select predefined providers and rss providers and push them",
-  //         (WidgetTester tester) async {
-  //
-  //       ProvidersViewModel pvm = MockProvidersViewModel();
-  //       await tester.pumpWidget(WizardWrapper(
-  //           wizard: const ProvidersWizardView(),
-  //           nsvm: MockNewsSettingsViewModel(),
-  //           pvm: pvm,
-  //           auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
-  //
-  //       await tester.tap(find.text("Google News"));
-  //       await tester.tap(find.text("Next"));
-  //       await tester.pump();
-  //
-  //       String url = "https://dummy.com";
-  //       await tester.enterText(find.byType(TextField), url);
-  //       await tester.testTextInput.receiveAction(TextInputAction.done);
-  //       await tester.pumpAndSettle();
-  //       expect(find.text(RSSFeedProvider(url: url).displayName()), findsOne);
-  //       await tester.tap(find.text("Finish"));
-  //
-  //       expect(pvm.providersToString(pvm.newsProviders!).contains(GNewsProvider().displayName()), isTrue);
-  //       expect(pvm.providersToString(pvm.newsProviders!).contains(RSSFeedProvider(url: url).displayName()), isTrue);
-  //     });
+  testWidgets(
+      "Providers wizard: Can select predefined providers and rss providers and push them",
+      (WidgetTester tester) async {
+    ProvidersViewModel pvm = MockProvidersViewModel();
+    await tester.pumpWidget(WizardWrapper(
+        wizard: const ProvidersWizardView(),
+        nsvm: MockNewsSettingsViewModel(),
+        pvm: pvm,
+        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+
+    await tester.tap(find.text("Google News"));
+    await tester.tap(find.text("Next"));
+    await tester.pump();
+
+    String url = "https://dummy.com";
+    await tester.enterText(find.byType(TextField), url);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    expect(find.text(RSSFeedProvider(url: url).displayName()), findsOne);
+    await tester.tap(find.text("Finish"));
+
+    expect(
+        pvm
+            .providersToString(pvm.newsProviders!)
+            .contains(GNewsProvider().displayName()),
+        isTrue);
+    expect(
+        pvm
+            .providersToString(pvm.newsProviders!)
+            .contains(RSSFeedProvider(url: url).displayName()),
+        isTrue);
+  });
+
+  testWidgets(
+      "Interests wizard: Cancel present and send to previous screen on tap",
+      (tester) async {
+    await tester.pumpWidget(WizardWrapper(
+        wizard: const ProvidersWizardView(),
+        nsvm: MockNewsSettingsViewModel(),
+        pvm: MockProvidersViewModel(),
+        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin(),
+            isOnboardingRequired: false)));
+
+    expect(find.text("Cancel"), findsOne);
+    await tester.tap(find.text("Next"));
+    await tester.pump();
+    expect(find.byType(RSSSelector), findsOne);
+    expect(find.text("Cancel"), findsOne);
+    await tester.tap(find.text("Cancel"));
+    await tester.pump();
+    expect(find.byType(WizardSelector), findsOne);
+  });
 }

@@ -1,8 +1,11 @@
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
+import 'package:actualia/models/providers.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -68,12 +71,31 @@ class MockNewsSettingsViewModel extends NewsSettingsViewModel {
 
 // End
 
+class MockProvidersViewModel extends ProvidersViewModel {
+  MockProvidersViewModel({List<NewsProvider> init = const []})
+      : super(FakeSupabaseClient()) {
+    super.setNewsProviders(init);
+  }
+
+  @override
+  Future<bool> fetchNewsProviders() async {
+    return true;
+  }
+
+  @override
+  Future<bool> pushNewsProviders() async {
+    return true;
+  }
+}
+
 class ProfilePageWrapper extends StatelessWidget {
   late final Widget _child;
   late final NewsSettingsViewModel _newsSettingsModel;
+  final ProvidersViewModel pvm;
   late final AuthModel _authModel;
 
-  ProfilePageWrapper(this._child, this._newsSettingsModel, this._authModel,
+  ProfilePageWrapper(
+      this._child, this._newsSettingsModel, this.pvm, this._authModel,
       {super.key});
 
   @override
@@ -82,7 +104,8 @@ class ProfilePageWrapper extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<NewsSettingsViewModel>(
               create: (context) => _newsSettingsModel),
-          ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
+          ChangeNotifierProvider<AuthModel>(create: (context) => _authModel),
+          ChangeNotifierProvider<ProvidersViewModel>(create: (context) => pvm)
         ],
         child: MaterialApp(
           title: "ActualIA",
@@ -102,6 +125,7 @@ void main() {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
+        MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text('Logout'), findsOne);
@@ -125,6 +149,7 @@ void main() {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
+        MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text("Hey, test.test@epfl.ch !"), findsOne);
@@ -134,6 +159,7 @@ void main() {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
+        MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
     expect(find.text("Interests"), findsOne);
@@ -155,5 +181,41 @@ void main() {
     expect(find.text("Interests"), findsOne);
   });
 
-  testWidgets("Sources button work as intended", (tester) async {});
+  testWidgets(
+      "Sources button work as intended and provider wizard is correctly displayed",
+      (tester) async {
+    NewsProvider google = GNewsProvider();
+    String url = "https://dummy.com";
+    NewsProvider rss = RSSFeedProvider(url: url);
+    ProvidersViewModel pvm = MockProvidersViewModel(init: [google, rss]);
+    await tester.pumpWidget(ProfilePageWrapper(
+        const ProfilePageView(),
+        MockNewsSettingsViewModel(),
+        pvm,
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+
+    await tester.tap(find.text("Sources"));
+    await tester.pumpAndSettle();
+
+    //check provider wizard on screen
+    expect(find.byType(ProvidersWizardView), findsOneWidget);
+    await tester.tap(find.text("Next"));
+    await tester.pump();
+
+    expect(find.byType(RSSSelector), findsOneWidget);
+    String url2 = "https://test.com";
+    await tester.enterText(find.byType(TextField), url2);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    expect(find.text(rss.displayName()), findsOne);
+    await tester.tap(find.text("Finish"));
+    await tester.pump();
+
+    expect(find.byType(ProfilePageView), findsOne);
+    List<String> providers = pvm.providersToString(pvm.newsProviders!);
+    expect(providers.contains(google.displayName()), isTrue);
+    expect(providers.contains(rss.displayName()), isTrue);
+    expect(
+        providers.contains(RSSFeedProvider(url: url2).displayName()), isTrue);
+  });
 }
