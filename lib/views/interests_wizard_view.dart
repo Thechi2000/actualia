@@ -98,7 +98,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           if (auth.isOnboardingRequired) {
             await auth.setOnboardingIsDone();
           } else {
-            Navigator.pop(context);
+            if (context.mounted) Navigator.pop(context);
           }
         } catch (e) {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
