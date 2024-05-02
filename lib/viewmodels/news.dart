@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:actualia/models/news.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -208,6 +209,19 @@ class NewsViewModel extends ChangeNotifier {
       log("Error invoking audio cloud function: $e",
           level: Level.WARNING.value);
       throw Exception("Failed to invoke audio function");
+    }
+  }
+
+  Future<Source?> getAudioSource(int transcriptId) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/audios/$transcriptId.mp3';
+
+    final file = File(filePath);
+    if (await file.exists()) {
+      return DeviceFileSource(filePath);
+    } else {
+      log("Can't find audio file at $filePath", level: Level.WARNING.value);
+      return null;
     }
   }
 

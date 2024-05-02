@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:actualia/viewmodels/news.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class PlayButton extends StatefulWidget {
   final int transcriptId;
@@ -27,6 +29,7 @@ class PlayButtonState extends State<PlayButton> {
 
   @override
   Widget build(BuildContext context) {
+    final newsViewModel = Provider.of<NewsViewModel>(context);
     final AudioPlayer audioPlayer = AudioPlayer();
     audioPlayer.onLog.listen(
       (String message) => debugPrint("AudioPlayer log: $message"),
@@ -76,7 +79,8 @@ class PlayButtonState extends State<PlayButton> {
             case PlayerState.completed:
             case PlayerState.stopped:
             case PlayerState.disposed:
-              Source? source = await getAudioSource(widget.transcriptId);
+              Source? source =
+                  await newsViewModel.getAudioSource(widget.transcriptId);
               if (source != null) {
                 await playAudio(audioPlayer, source);
                 setState(() => _playerState = PlayerState.playing);
@@ -91,19 +95,6 @@ class PlayButtonState extends State<PlayButton> {
       await audioPlayer.play(source);
     } catch (e) {
       log("Error playing audio: $e", level: Level.WARNING.value);
-    }
-  }
-
-  Future<DeviceFileSource?> getAudioSource(int transcriptId) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/audios/$transcriptId.mp3';
-
-    final file = File(filePath);
-    if (await file.exists()) {
-      return DeviceFileSource(filePath);
-    } else {
-      log("Can't find audio file at $filePath", level: Level.WARNING.value);
-      return null;
     }
   }
 }
