@@ -1,9 +1,8 @@
 //coverage:ignore-file
 
-import 'dart:developer';
-
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/viewmodels/providers.dart';
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
@@ -67,8 +66,7 @@ class _AppState extends State<App> {
         if (newsSettings.settings == null || pvm.newsProviders == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
-          home =
-              const InterestWizardView(); // const WizardView(isInitialOnboarding: true);
+          home = const InterestWizardView();
         }
       } else {
         home = const NewsView();
@@ -79,12 +77,6 @@ class _AppState extends State<App> {
       );
     }
 
-    return MaterialApp(
-        title: 'ActualIA',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5EDCE4)),
-          useMaterial3: true,
-        ),
-        home: home);
+    return MaterialApp(title: 'ActualIA', theme: ACTUALIA_THEME, home: home);
   }
 }

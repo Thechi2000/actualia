@@ -2,10 +2,11 @@ import 'dart:developer';
 import 'package:actualia/models/news.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
-  late final supabase;
+  late final SupabaseClient supabase;
   News? _news;
   News? get news => _news;
   List<News> _newsList = [];
@@ -121,15 +122,17 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   News parseNews(dynamic response) {
-    List<dynamic> newsItems = response['transcript']['articles'];
-    List<Paragraph> paragraphs = newsItems.map((item) {
-      return Paragraph(
-          transcript: item['transcript'],
-          source: item['source']['name'],
-          title: item['title'],
-          date: item['publishedAt'],
-          content: item['content']);
-    }).toList();
+    List<dynamic> newsItems = response['transcript']['news'];
+
+    List<Paragraph> paragraphs = newsItems
+        .where((item) => item['transcript'] != null)
+        .map((item) => Paragraph(
+            transcript: item['transcript'],
+            source: item['source']['name'],
+            title: item['title'],
+            date: item['publishedAt'],
+            content: item['content']))
+        .toList();
 
     return News(
       title: response['title'],
@@ -143,7 +146,7 @@ class NewsViewModel extends ChangeNotifier {
   /// Invokes a cloud function to generate news transcripts.
   Future<void> invokeTranscriptFunction() async {
     try {
-      await supabase.functions.invoke('get-transcript');
+      await supabase.functions.invoke('generate-transcript');
       log("Cloud function 'transcript' invoked successfully.",
           level: Level.INFO.value);
     } catch (e) {

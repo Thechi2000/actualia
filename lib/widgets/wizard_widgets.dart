@@ -1,8 +1,7 @@
-import 'dart:developer';
 import 'package:actualia/models/providers.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
+import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
@@ -47,8 +46,8 @@ class _WizardSelector extends State<WizardSelector> {
             padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 24.0),
             child: SingleChildScrollView(
                 child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
+                    spacing: UNIT_PADDING / 2,
+                    runSpacing: UNIT_PADDING / 2.5,
                     alignment: WrapAlignment.center,
                     children: _items
                         .map((e) => FilterChip(
@@ -141,7 +140,8 @@ class WizardNavigationBottomBar extends StatelessWidget {
       right = FilledButton.tonal(onPressed: rOnPressed, child: Text(rText));
     }
     if (showCancel) {
-      cancel = FilledButton.tonal(onPressed: onCancel, child: Text("Cancel"));
+      cancel =
+          FilledButton.tonal(onPressed: onCancel, child: const Text("Cancel"));
     }
 
     return Row(

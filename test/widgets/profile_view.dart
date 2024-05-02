@@ -21,13 +21,14 @@ class FakeSupabaseClient extends Fake implements SupabaseClient {
 
 class FakeGotrue extends Fake implements GoTrueClient {
   @override
-  Stream<AuthState> get onAuthStateChange => Stream.empty();
+  Stream<AuthState> get onAuthStateChange => const Stream.empty();
 }
 
 class FakeGoogleSignin extends Fake implements GoogleSignIn {}
 
 // END
 class MockAuthModel extends AuthModel {
+  @override
   final bool isOnboardingRequired;
 
   MockAuthModel(super.key, super._googleSignIn,
@@ -131,16 +132,17 @@ void main() {
     expect(find.text('Logout'), findsOne);
 
     testButton(String text) async {
-      await tester.scrollUntilVisible(find.text(text), 1);
-      await tester.tap(find.text(text));
+      await tester.dragUntilVisible(
+          find.text(text), find.byType(ListView), Offset.fromDirection(90.0));
+      await tester.tap(find.text(findRichText: true, text));
       await tester.pump();
     }
 
     expect(find.text("Interests"), findsOne);
     expect(find.text("Sources"), findsOne);
     await testButton('Alarm');
-    await testButton('Manage Storage');
-    await testButton('Narrator Settings');
+    await testButton('Storage');
+    await testButton('Narrator');
     await testButton('Accessibility');
     await testButton('Done');
   });
@@ -152,7 +154,7 @@ void main() {
         MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
 
-    expect(find.text("Hey, test.test@epfl.ch !"), findsOne);
+    expect(find.text("test.test@epfl.ch"), findsOne);
   });
 
   testWidgets("Interests button work as intended", (tester) async {

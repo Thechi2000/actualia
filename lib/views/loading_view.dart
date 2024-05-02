@@ -13,13 +13,7 @@ class LoadingView extends StatelessWidget {
           Align(
               child: Text(
             text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 24,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
-              height: 1.2,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           )),
           const SizedBox(height: 16),

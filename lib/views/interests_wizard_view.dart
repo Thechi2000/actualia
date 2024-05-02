@@ -6,11 +6,7 @@ import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-
 import '../widgets/wizard_widgets.dart';
-
-// TO REPLACE interests_wizard_view.dart
-// sorry Leander
 
 class InterestWizardView extends StatefulWidget {
   const InterestWizardView({super.key});
@@ -103,7 +99,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
                 MaterialPageRoute(
                     builder: (context) => const ProvidersWizardView()));
           } else {
-            Navigator.pop(context);
+            if (context.mounted) Navigator.pop(context);
           }
         } catch (e) {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
@@ -126,7 +122,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         body = countriesSelector;
         break;
       case WizardStep.CITIES:
-        // body = Text("test");
         body = citiesSelector;
         break;
       case WizardStep.INTERESTS:
