@@ -5,28 +5,34 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.42.4";
 import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { assertHasEnv } from "../util.ts";
+import {
+  isIn,
+  isNumber,
+  nullable,
+  required,
+  validate,
+} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+
+const bodySchema = {
+  transcriptId: [required, isNumber],
+  voiceWanted: [
+    isIn(["echo", "alloy", "fable", "onyx", "nova", "shimmer"]),
+    nullable,
+  ],
+};
 
 Deno.serve(async (req) => {
   assertHasEnv("OPENAI_API_KEY");
 
-  const url = new URL(req.url);
-  const transcriptId = url.searchParams.get("transcriptId");
-  let voiceWanted = url.searchParams.get("voiceWanted");
-
-  if (!transcriptId) {
-    return new Response("Missing 'transcriptId' parameter", { status: 400 });
+  const body = await req.json();
+  const [passes, errors] = await validate(body, bodySchema);
+  if (!passes) {
+    console.log(`Invalid body: ${JSON.stringify(errors)}`);
+    return new Response(JSON.stringify({ errors }), { status: 400 });
   }
 
-  if (
-    voiceWanted &&
-    !["echo", "alloy", "fable", "onyx", "nova", "shimmer"].includes(voiceWanted)
-  ) {
-    return new Response(
-      "Invalid 'voiceWanted' parameter. Must be one of 'echo', 'alloy', 'fable', 'onyx', 'nova', or 'shimmer'",
-      { status: 400 },
-    );
-  }
-  voiceWanted = voiceWanted || "echo";
+  const transcriptId: number = body.transcriptId;
+  const voiceWanted: string = body.voiceWanted || "echo";
 
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
