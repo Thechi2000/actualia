@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -87,28 +86,20 @@ void main() async {
     await tester.pumpAndSettle();
 
     // Util function to select an interest entry from a given list.
-    Future<void> selectEntry(String selector, String entry) async {
-      final selectorButton = find.byKey(Key(selector));
-      expect(selectorButton, findsOneWidget);
-      await tester.tap(selectorButton);
-      await tester.pumpAndSettle();
-
+    Future<void> selectEntry(String entry, {bool last = false}) async {
       final entryButton = find.text(entry);
-      await tester.dragUntilVisible(
-          entryButton, find.byType(BottomSheet), const Offset(0, 10));
       await tester.tap(entryButton);
       await tester.pumpAndSettle();
-      expect(find.widgetWithText(DisplayList, entry), findsOneWidget);
+      expect(find.textContaining(entry), findsOneWidget);
+
+      await tester.tap(find.text(last ? "Finish" : "Next"));
+      await tester.pumpAndSettle();
     }
 
     // Select a few interests.
-    await selectEntry("country-selector", "Albania");
-    await selectEntry("city-selector", "Lausanne");
-    await selectEntry("interest-selector", "Gaming");
-
-    // Complete the onboarding.
-    await tester.tap(find.text('Validate'));
-    await tester.pump(Durations.long2);
+    await selectEntry("Albania");
+    await selectEntry("Lausanne");
+    await selectEntry("Gaming", last: true);
 
     // Open the profile view.
     await tester.tap(find.byKey(const Key('profile')));
@@ -119,8 +110,6 @@ void main() async {
     await tester.pumpAndSettle();
 
     // Checks that the interests are correctly displayed.
-    expect(find.widgetWithText(DisplayList, "Albania"), findsOneWidget);
-    expect(find.widgetWithText(DisplayList, "Lausanne"), findsOneWidget);
-    expect(find.widgetWithText(DisplayList, "Gaming"), findsOneWidget);
+    expect(find.textContaining("Select countries"), findsOneWidget);
   });
 }

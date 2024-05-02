@@ -1,12 +1,13 @@
 import 'dart:async';
-
+import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthModel extends ChangeNotifier {
   late final GoogleSignIn _googleSignIn;
-  late final _supabase;
+  late final SupabaseClient _supabase;
 
   User? user;
   StreamSubscription? authStateSub;
@@ -21,7 +22,7 @@ class AuthModel extends ChangeNotifier {
           authState.event == AuthChangeEvent.userDeleted) {
         user = null;
       } else {
-        user = _supabase.auth?.currentSession?.user;
+        user = _supabase.auth.currentSession?.user;
       }
 
       if (user != null) {
@@ -31,7 +32,9 @@ class AuthModel extends ChangeNotifier {
       }
 
       notifyListeners();
-    }, onError: (e) {});
+    }, onError: (e) {
+      log('Supabase onAuthStateChange error : $e', level: Level.WARNING.value);
+    });
   }
 
   @override
@@ -50,6 +53,11 @@ class AuthModel extends ChangeNotifier {
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 
+      if (idToken == null || accessToken == null) {
+        log('Missing ID Token or access token from Google OAuth.',
+            level: Level.WARNING.value);
+      }
+
       final res = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken!,
@@ -57,7 +65,8 @@ class AuthModel extends ChangeNotifier {
       );
 
       return res.user != null;
-    } catch (error) {
+    } catch (e) {
+      log("Google Sign-In failed: $e", level: Level.WARNING.value);
       return false;
     }
   }
@@ -70,6 +79,7 @@ class AuthModel extends ChangeNotifier {
       }
       return true;
     } catch (e) {
+      log("Sign-Out failed: $e", level: Level.WARNING.value);
       return false;
     }
   }
@@ -88,7 +98,6 @@ class AuthModel extends ChangeNotifier {
   Future<bool> setOnboardingIsDone() async {
     await _supabase.auth
         .updateUser(UserAttributes(data: {'onboardingDone': true}));
-    isOnboardingRequired = false;
     return true;
   }
 }

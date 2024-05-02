@@ -17,11 +17,38 @@ class MockHttp extends BaseMockedHttpClient {
       {Map<String, String>? headers, Object? body, Encoding? encoding}) {
     return Future(() {
       switch (url.toString()) {
-        case "https://dpxddbjyjdscvuhwutwu.supabase.co/auth/v1/logout?scope=local":
+        case "${BaseMockedHttpClient.baseUrl}/auth/v1/logout?scope=local":
           return Response("", 204);
       }
 
       return super.post(url, headers: headers, body: body, encoding: encoding);
+    });
+  }
+
+  @override
+  Future<StreamedResponse> send(BaseRequest request) {
+    return Future(() {
+      switch (request.url.toString()) {
+        case "${BaseMockedHttpClient.baseUrl}/rest/v1/news_settings?select=%2A&created_by=eq.${BaseMockedHttpClient.uuid}":
+          return response([
+            {
+              "id": 345,
+              "created_at": "2024-04-30T14:39:28.189469+00:00",
+              "created_by": "0448dda0-d373-4b73-8a04-7507af0b2d6c",
+              "interests": "[\"Gaming\"]",
+              "wants_interests": true,
+              "countries": "[\"Albania\"]",
+              "wants_countries": true,
+              "cities": "[\"Lausanne\"]",
+              "wants_cities": true,
+              "user_prompt": null,
+              "providers_id": null,
+              "voice_wanted": null
+            }
+          ], 200, request);
+      }
+
+      return super.send(request);
     });
   }
 }
