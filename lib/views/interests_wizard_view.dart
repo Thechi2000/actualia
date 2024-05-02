@@ -106,7 +106,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         }
       },
       title: "Select interests",
-      buttonText: "Next",
+      buttonText: auth.isOnboardingRequired ? "Next" : "Finish",
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {
