@@ -23,7 +23,10 @@ interface Transcript {
   news: (News & Result)[];
 }
 
-export async function generateTranscript(userId: string, supabaseClient: any) {
+export async function generateTranscript(
+  userId: string,
+  supabaseClient: any,
+) {
   console.log("We start the process for the user with ID:", userId);
 
   // Get the user's interests.
@@ -75,17 +78,18 @@ export async function generateTranscript(userId: string, supabaseClient: any) {
     "Inserting transcript in the database: ",
     JSON.stringify(transcript),
   );
-  const { error } = await supabaseClient.from("news").insert({
-    user: userId,
-    title: "Hello! This is your daily news",
-    transcript: transcript,
-  });
+  const { data: transcriptRow, error } = await supabaseClient.from("news")
+    .insert({
+      user: userId,
+      title: "Hello! This is your daily news",
+      transcript: transcript,
+    }).select().single();
   if (error) {
     console.error(error);
   }
 
   // return transcript
-  return new Response(JSON.stringify(transcript), {
+  return new Response(JSON.stringify(transcriptRow), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status: 200,
   });

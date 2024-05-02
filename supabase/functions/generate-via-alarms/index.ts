@@ -1,5 +1,7 @@
 // This function is called periodically to generate a new transcript & audio via alarms.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.42.4";
+import { generateTranscript } from "../_shared/generate-transcript.ts";
+import { generateAudio } from "../_shared/generate-audio.ts";
 
 Deno.serve(async (req) => {
   // We get the timestamp of the request.
@@ -74,34 +76,21 @@ Deno.serve(async (req) => {
     const transcript = transcripts[i];
 
     // Call the "generate-transcript" edge function
-    const generateTranscriptResponse = await supabaseClient.functions.invoke(
-      "generate-transcript",
-      { body: { userId: transcript.created_by } },
+    const generateTranscriptResponse = await generateTranscript(
+      transcript.created_by,
+      supabaseClient,
     );
-
-    if (generateTranscriptResponse.error) {
-      console.error(
-        "Error generating transcript:",
-        generateTranscriptResponse.error.message,
-      );
-      return new Response("Error generating transcript", { status: 500 });
-    }
 
     console.log(generateTranscriptResponse);
 
-    // Call the "generate-audio" edge function
-    const generateAudioResponse = await supabaseClient.functions.invoke(
-      "generate-audio",
-      { body: { transcriptId: generateTranscriptResponse.data.id } },
-    );
+    const transcriptId = (await (generateTranscriptResponse.json()))["id"];
 
-    if (generateAudioResponse.error) {
-      console.error(
-        "Error generating audio:",
-        generateAudioResponse.error.message,
-      );
-      return new Response("Error generating audio", { status: 500 });
-    }
+    // Call the "generate-audio" edge function
+    const generateAudioResponse = await generateAudio(
+      transcriptId,
+      "echo",
+      supabaseClient,
+    );
 
     console.log(generateAudioResponse);
   }
