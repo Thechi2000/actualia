@@ -40,8 +40,7 @@ class _SourceViewState extends State<SourceView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopAppBar(
-        enableReturnButton:
-            true, // TODO: this causes a visual bug in the TopBar. Refactor required!
+        enableReturnButton: true,
         onPressed: () => {Navigator.pop(context)},
       ),
       body: Container(

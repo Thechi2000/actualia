@@ -1,3 +1,4 @@
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:flutter/material.dart';
 
@@ -14,40 +15,29 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          //Invisible box to center the title
-          const SizedBox(width: 40, height: 40),
-          // Central button acting as the application title
-          Expanded(
-            child: TextButton(
-              onPressed: () {
-                // Action for the title button
-              },
-              style: TextButton.styleFrom(
-                alignment: Alignment.center,
-              ),
-              child: Text(
-                'ActualIA',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-            ),
-          ),
-          // Profile button aligned to the right
-          IconButton(
-            iconSize: 28.0,
-            icon: const Icon(Icons.account_circle, color: Colors.grey),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (builder) => const ProfilePageView()));
-            },
-          ),
-        ],
-      ),
       centerTitle: true,
+      title: Container(
+        padding: const EdgeInsets.symmetric(vertical: UNIT_PADDING),
+        child: TextButton(
+          onPressed: () {
+            // Action for the title button
+          },
+          child: Text('ActualIA',
+              style: Theme.of(context).textTheme.displayMedium),
+        ),
+      ),
+      actions: <Widget>[
+        IconButton(
+          iconSize: 28.0,
+          icon: const Icon(Icons.account_circle, color: THEME_GREY),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (builder) => const ProfilePageView()));
+          },
+        ),
+      ],
     );
   }
 
