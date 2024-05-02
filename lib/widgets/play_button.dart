@@ -80,8 +80,7 @@ class PlayButtonState extends State<PlayButton> {
               Source? source =
                   await newsViewModel.getAudioSource(widget.transcriptId);
               if (source != null) {
-                // We don't await since it will block until the audio is completed.
-                playAudio(audioPlayer, source);
+                await playAudio(audioPlayer, source);
                 setState(() => _playerState = PlayerState.playing);
                 break;
               }
@@ -91,7 +90,9 @@ class PlayButtonState extends State<PlayButton> {
 
   Future<void> playAudio(AudioPlayer audioPlayer, Source source) async {
     try {
-      await audioPlayer.play(source);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await audioPlayer.play(source);
+      });
     } catch (e) {
       log("Error playing audio: $e", level: Level.WARNING.value);
     }
