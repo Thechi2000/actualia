@@ -33,7 +33,6 @@ interface Transcript {
 
 const bodySchema = {
   userId: [
-    required,
     isString,
     match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
   ],
@@ -44,17 +43,21 @@ Deno.serve(async (request) => {
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
 
-  const body = await request.json();
-  const [passes, errors] = await validate(body, bodySchema);
-  if (!passes) {
-    console.log(`Invalid body: ${JSON.stringify(errors)}`);
-    return new Response(JSON.stringify({ errors }), { status: 400 });
-  }
+  let userId: string = "";
+  try {
+    const body = await request.json();
+    const [passes, errors] = await validate(body, bodySchema);
+    if (!passes) {
+      console.log(`Invalid body: ${JSON.stringify(errors)}`);
+      return new Response(JSON.stringify({ errors }), { status: 400 });
+    }
 
-  let userId: string = body.userId;
+    userId = body.userId;
+  } catch (_) {}
+
   let supabaseClient;
 
-  if (userId) {
+  if (userId !== "") {
     supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
