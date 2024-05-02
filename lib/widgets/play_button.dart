@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +46,12 @@ class PlayButtonState extends State<PlayButton> {
             ? const Icon(
                 Icons.pause_circle_outline,
                 size: 40.0,
-                color: Color.fromARGB(255, 68, 159, 166),
+                color: THEME_BUTTON,
               )
             : const Icon(
                 Icons.play_circle_outline,
                 size: 40.0,
-                color: Color.fromARGB(255, 68, 159, 166),
+                color: THEME_BUTTON,
               ),
         onPressed: () async {
           switch (_playerState) {

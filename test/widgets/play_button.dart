@@ -40,12 +40,7 @@ class NewsWrapper extends StatelessWidget {
 }
 
 void main() {
-  // The `BuildContext` does not include the provider
-  // needed by Provider<AuthModel>, UI will test more specific parts
   testWidgets('testPlayButton', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    // await tester.pumpWidget(const App());
-
     const int dummyTranscriptID = 0;
 
     await tester.pumpWidget(NewsWrapper(

@@ -173,11 +173,16 @@ class NewsViewModel extends ChangeNotifier {
   // Function to get the audio file from the database
   Future<void> getAudioFile(News news) async {
     var audio = news.audio;
+
+    // Check for valid transcriptId
     if (news.transcriptId == -1) {
       return;
     }
-    audio ??= await generateAudio(news.transcriptId);
+
     try {
+      // Generate audio if not present
+      audio ??= await generateAudio(news.transcriptId);
+
       // File download
       final response = await supabase.storage.from("audios").download(audio);
 

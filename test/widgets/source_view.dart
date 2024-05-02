@@ -27,7 +27,7 @@ void main() {
         "facilisis sem. In massa urna, rutrum eu turpis a";
     const String title = "lorem ipsum dolor sit amet, consectetur";
     const String newsPaper = "https://dummy.com";
-    const String date = "1111-11-11";
+    const String date = "1970-01-01";
 
     //init SourceView
     await tester.pumpWidget(MaterialApp(
