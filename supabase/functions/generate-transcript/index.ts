@@ -4,6 +4,12 @@ import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { fetchNews } from "../providers.ts";
 import { News } from "../model.ts";
+import {
+  isString,
+  match,
+  required,
+  validate,
+} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 
 interface Result {
   transcript: string;
@@ -25,22 +31,34 @@ interface Transcript {
   news: (News & Result)[];
 }
 
+const bodySchema = {
+  userId: [
+    required,
+    isString,
+    match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
+  ],
+};
+
 Deno.serve(async (request) => {
   // Check that the required environment variables are available.
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
 
-  const url = new URL(request.url);
-  const userIdProvided = url.searchParams.get("userId");
-  let supabaseClient;
-  let userId;
+  const body = await request.json();
+  const [passes, errors] = await validate(body, bodySchema);
+  if (!passes) {
+    console.log(`Invalid body: ${JSON.stringify(errors)}`);
+    return new Response(JSON.stringify({ errors }), { status: 400 });
+  }
 
-  if (userIdProvided) {
+  let userId: string = body.userId;
+  let supabaseClient;
+
+  if (userId) {
     supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
-    userId = userIdProvided;
   } else {
     // Create a Supabase client with the user's token.
     const authHeader = request.headers.get("Authorization")!;
