@@ -3,7 +3,6 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
-import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';

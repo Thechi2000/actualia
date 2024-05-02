@@ -70,11 +70,15 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             _step = WizardStep.PREDEFINED;
           });
         },
-        selectedItems: pvm.providersToString(savedRSSProviders),
+        selectedItems: pvm.rssToUrl(savedRSSProviders),
         onSelect: (urlList) {
           _selectedRssProviders = urlList;
         },
         onPressed: () async {
+          if ((_selectedRssProviders?.isEmpty ?? true) &&
+              savedRSSProviders.isNotEmpty) {
+            _selectedRssProviders = pvm.providersToString(savedRSSProviders);
+          }
           List<NewsProvider> selected =
               pvm.stringToProviders(_selectedPredefinedProviders);
           for (var url in _selectedRssProviders ?? []) {

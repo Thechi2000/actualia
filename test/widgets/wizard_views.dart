@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:actualia/models/auth_model.dart";
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/models/providers.dart";
@@ -245,7 +247,7 @@ void main() {
   });
 
   testWidgets(
-      "Providers wizard: correctly display each selector when no saved values",
+      "Providers wizard: correctly display each selector whith no saved values",
       (WidgetTester tester) async {
     await tester.pumpWidget(WizardWrapper(
         wizard: const ProvidersWizardView(),
@@ -270,4 +272,58 @@ void main() {
         findsOne);
     expect(find.byType(WizardNavigationBottomBar), findsOneWidget);
   });
+
+  testWidgets(
+      "Providers wizard: correctly display each selector with saved value",
+      (WidgetTester tester) async {
+    NewsProvider google = GNewsProvider();
+    String dummyUrl = "http://dummy.com";
+    String testUrl = "http://test.com";
+    NewsProvider rssDummy = RSSFeedProvider(url: dummyUrl);
+    NewsProvider rssTest = RSSFeedProvider(url: testUrl);
+
+    ProvidersViewModel pvm =
+        MockProvidersViewModel(init: [google, rssTest, rssDummy]);
+    await tester.pumpWidget(WizardWrapper(
+        wizard: const ProvidersWizardView(),
+        nsvm: MockNewsSettingsViewModel(),
+        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        pvm: pvm));
+
+    await tester.tap(find.text("Google News"));
+    await tester.tap(find.text("Next"));
+    await tester.pump();
+
+    expect(find.text(rssTest.displayName()), findsOne);
+    expect(find.text(rssDummy.displayName()), findsOne);
+
+    await tester.tap(find.text("Finish"));
+    expect(pvm.newsProviders?.contains(google), equals(false));
+  });
+
+  // testWidgets(
+  //     "Providers wizard: Can select predefined providers and rss providers and push them",
+  //         (WidgetTester tester) async {
+  //
+  //       ProvidersViewModel pvm = MockProvidersViewModel();
+  //       await tester.pumpWidget(WizardWrapper(
+  //           wizard: const ProvidersWizardView(),
+  //           nsvm: MockNewsSettingsViewModel(),
+  //           pvm: pvm,
+  //           auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+  //
+  //       await tester.tap(find.text("Google News"));
+  //       await tester.tap(find.text("Next"));
+  //       await tester.pump();
+  //
+  //       String url = "https://dummy.com";
+  //       await tester.enterText(find.byType(TextField), url);
+  //       await tester.testTextInput.receiveAction(TextInputAction.done);
+  //       await tester.pumpAndSettle();
+  //       expect(find.text(RSSFeedProvider(url: url).displayName()), findsOne);
+  //       await tester.tap(find.text("Finish"));
+  //
+  //       expect(pvm.providersToString(pvm.newsProviders!).contains(GNewsProvider().displayName()), isTrue);
+  //       expect(pvm.providersToString(pvm.newsProviders!).contains(RSSFeedProvider(url: url).displayName()), isTrue);
+  //     });
 }

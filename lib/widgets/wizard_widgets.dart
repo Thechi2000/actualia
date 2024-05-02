@@ -226,7 +226,7 @@ class _RSSSelector extends State<RSSSelector> {
           onSubmitted: (String val) {
             setState(() {
               if (val.isNotEmpty && !_selectedItems.contains(val)) {
-                _selectedItems.add(RSSFeedProvider(url: val).displayName());
+                _selectedItems.add(val);
               }
               widget.onSelect(_selectedItems);
             });
@@ -259,7 +259,10 @@ class _RSSSelector extends State<RSSSelector> {
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(item), const Icon(Icons.close)],
+                      children: [
+                        Text(RSSFeedProvider(url: item).displayName()),
+                        const Icon(Icons.close)
+                      ],
                     ),
                   ))
               .toList(),

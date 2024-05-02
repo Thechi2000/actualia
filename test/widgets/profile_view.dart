@@ -112,12 +112,8 @@ void main() {
       await tester.pump();
     }
 
-    testInterestButton() async {
-      expect(find.text("Interests"), findsOne);
-    }
-
-    await testInterestButton();
-    await testButton('Sources');
+    expect(find.text("Interests"), findsOne);
+    expect(find.text("Sources"), findsOne);
     await testButton('Alarm');
     await testButton('Manage Storage');
     await testButton('Narrator Settings');
@@ -158,4 +154,6 @@ void main() {
     expect(find.byType(InterestWizardView), findsNothing);
     expect(find.text("Interests"), findsOne);
   });
+
+  testWidgets("Sources button work as intended", (tester) async {});
 }

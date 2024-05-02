@@ -23,6 +23,10 @@ class ProvidersViewModel extends ChangeNotifier {
     return providers.map((e) => e.displayName()).toList();
   }
 
+  List<String> rssToUrl(List<NewsProvider> providers) {
+    return providers.map((e) => (e as RSSFeedProvider).url).toList();
+  }
+
   List<NewsProvider> stringToProviders(List<String> names) {
     return names.map((e) {
       switch (e) {
