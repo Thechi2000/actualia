@@ -80,7 +80,8 @@ class PlayButtonState extends State<PlayButton> {
               Source? source =
                   await newsViewModel.getAudioSource(widget.transcriptId);
               if (source != null) {
-                await playAudio(audioPlayer, source);
+                // We don't await since it will block until the audio is completed.
+                playAudio(audioPlayer, source);
                 setState(() => _playerState = PlayerState.playing);
                 break;
               }
