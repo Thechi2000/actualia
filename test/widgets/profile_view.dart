@@ -40,6 +40,7 @@ class MockAuthModel extends AuthModel {
         createdAt: DateTime.now().toIso8601String(),
       );
 
+  @override
   Future<bool> signInWithGoogle() async {
     return Future.value(true);
   }

@@ -259,7 +259,7 @@ packages:
     source: hosted
     version: "0.12.4"
   gotrue:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: gotrue
       sha256: c9c984f088320a5c5e87c7a34571e3de3982cca4cbd8b978e59d36baf748edfb
