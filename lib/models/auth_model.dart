@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthModel extends ChangeNotifier {
   late final GoogleSignIn _googleSignIn;
-  late final _supabase;
+  late final SupabaseClient _supabase;
 
   User? user;
   StreamSubscription? authStateSub;
@@ -17,13 +17,11 @@ class AuthModel extends ChangeNotifier {
   AuthModel(SupabaseClient supabaseClient, this._googleSignIn) {
     _supabase = supabaseClient;
     authStateSub = _supabase.auth.onAuthStateChange.listen((authState) {
-      print('Supabase onAuthStateChange new authState : ${authState.event}');
-
       if (authState.event == AuthChangeEvent.signedOut ||
           authState.event == AuthChangeEvent.userDeleted) {
         user = null;
       } else {
-        user = _supabase.auth?.currentSession?.user;
+        user = _supabase.auth.currentSession?.user;
       }
 
       if (user != null) {
@@ -33,9 +31,7 @@ class AuthModel extends ChangeNotifier {
       }
 
       notifyListeners();
-    }, onError: (e) {
-      print('Supabase onAuthStateChange error : $e');
-    });
+    }, onError: (e) {});
   }
 
   @override
@@ -66,7 +62,6 @@ class AuthModel extends ChangeNotifier {
 
       return res.user != null;
     } catch (error) {
-      print(error);
       return false;
     }
   }
@@ -79,7 +74,6 @@ class AuthModel extends ChangeNotifier {
       }
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }

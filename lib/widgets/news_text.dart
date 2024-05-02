@@ -79,11 +79,6 @@ class NewsText extends StatelessWidget {
               children: news.paragraphs
                   .map((paragraph) => GestureDetector(
                         onTap: () {
-                          //TODO: Action for the source button
-                          //Note for source: Use the fields
-                          //"source", "title", "date" and "content"
-                          //from the paragraph.
-                          print("Source du paragraphe: ${paragraph.source}");
                           Navigator.push(
                               context,
                               MaterialPageRoute(
