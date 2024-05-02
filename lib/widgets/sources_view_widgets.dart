@@ -1,3 +1,4 @@
+import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
 
 class ScrollableText extends StatelessWidget {
@@ -25,7 +26,7 @@ class SourceOrigin extends StatelessWidget {
         style: Theme.of(context)
             .textTheme
             .displaySmall
-            ?.copyWith(color: const Color(0xFF818181)),
+            ?.copyWith(color: THEME_GREY),
         "$origin, $date");
   }
 }
@@ -37,6 +38,6 @@ class SourceTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(style: Theme.of(context).textTheme.titleLarge, title);
+    return Text(style: Theme.of(context).textTheme.titleMedium, title);
   }
 }

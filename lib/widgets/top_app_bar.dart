@@ -28,14 +28,9 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: TextButton.styleFrom(
                 alignment: Alignment.center,
               ),
-              child: const Text(
+              child: Text(
                 'ActualIA',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24, // Medium
-                  fontFamily: 'Fira Code',
-                  fontWeight: FontWeight.w300,
-                ),
+                style: Theme.of(context).textTheme.displayMedium,
               ),
             ),
           ),

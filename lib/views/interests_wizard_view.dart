@@ -2,16 +2,13 @@ import 'dart:developer';
 
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
+import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-
 import '../widgets/wizard_widgets.dart';
-
-// TO REPLACE interests_wizard_view.dart
-// sorry Leander
 
 class InterestWizardView extends StatefulWidget {
   const InterestWizardView({super.key});
@@ -124,7 +121,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         body = countriesSelector;
         break;
       case WizardStep.CITIES:
-        // body = Text("test");
         body = citiesSelector;
         break;
       case WizardStep.INTERESTS:
@@ -135,7 +131,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     return Scaffold(
         appBar: const TopAppBar(),
         body: Container(
-          padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
+          padding: const EdgeInsets.all(4 * UNIT_PADDING),
           alignment: Alignment.topCenter,
           child: body,
         ));

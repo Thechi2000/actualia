@@ -62,7 +62,7 @@ class _ProfilePageState extends State<ProfilePageView> {
         // Username display
         Container(
             padding: const EdgeInsets.symmetric(
-                vertical: UNIT_PADDING / 2, horizontal: UNIT_PADDING + 16.0),
+                vertical: UNIT_PADDING / 2, horizontal: UNIT_PADDING * 2),
             alignment: Alignment.centerLeft,
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

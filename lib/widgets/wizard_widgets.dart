@@ -102,7 +102,8 @@ class WizardNavigationBottomBar extends StatelessWidget {
       right = FilledButton.tonal(onPressed: rOnPressed, child: Text(rText));
     }
     if (showCancel) {
-      cancel = FilledButton.tonal(onPressed: onCancel, child: Text("Cancel"));
+      cancel =
+          FilledButton.tonal(onPressed: onCancel, child: const Text("Cancel"));
     }
 
     return Row(

@@ -49,7 +49,7 @@ void main() {
     expect(find.text("$newsPaper, $date"), findsOne);
 
     //check title
-    expect(find.text("$title"), findsOne);
+    expect(find.text(title), findsOne);
 
     //check article is present and scrollable
     await tester.dragUntilVisible(
