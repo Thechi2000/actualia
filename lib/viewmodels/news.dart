@@ -14,6 +14,7 @@ class NewsViewModel extends ChangeNotifier {
   News? get news => _news;
   List<News> _newsList = [];
   List<News> get newsList => _newsList;
+  bool hasNews = true;
 
   @protected
   void setNews(News? news) {
@@ -88,21 +89,23 @@ class NewsViewModel extends ChangeNotifier {
       var response = await fetchNewsList();
 
       if (response.isEmpty) {
-        await generateAndGetNews();
-        _newsList.insert(0, _news!);
+        _newsList = [];
+        hasNews = false;
       } else {
+        hasNews = true;
         _newsList = response.map<News>((news) => parseNews(news)).toList();
 
-        //If the date of the first news is not today, call the cloud function
-        if (_newsList[0].date.substring(0, 10) !=
-            DateTime.now().toUtc().toString().substring(0, 10)) {
-          await generateAndGetNews();
-          _newsList.insert(0, _news!);
-        }
-      }
+        for (var news in _newsList) {
+          getAudioFile(news).whenComplete(() => notifyListeners());
 
-      for (var news in _newsList) {
-        getAudioFile(news).whenComplete(() => notifyListeners());
+          //If the date of the first news is more than 12 hours ago, call the cloud function
+          if (DateTime.now()
+                  .difference(DateTime.parse(_newsList[0].date))
+                  .inHours >
+              12) {
+            await generateAndGetNews();
+          }
+        }
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
@@ -113,7 +116,6 @@ class NewsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  @protected
   Future<void> generateAndGetNews() async {
     await invokeTranscriptFunction();
 
@@ -123,7 +125,12 @@ class NewsViewModel extends ChangeNotifier {
     if (_news == null || _news!.paragraphs.isEmpty) {
       setNewsError(DateTime.now(), 'News generation failed and no news found.',
           'Something went wrong while generating news. Please try again later.');
+    } else {
+      hasNews = true;
+      _newsList.insert(0, _news!);
+      getAudioFile(_news!).whenComplete(() => notifyListeners());
     }
+    notifyListeners();
   }
 
   Future<List<dynamic>> fetchNewsList() async {
