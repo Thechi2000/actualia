@@ -22,20 +22,22 @@ class _NoNewsViewState extends State<NoNewsView> {
         ? const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [CircularProgressIndicator()])
-        : FilledButton.tonal(
-            style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                    const EdgeInsets.all(UNIT_PADDING))),
-            onPressed: () async {
-              setState(() {
-                loading = true;
-              });
-              await newsViewModel.generateAndGetNews();
-            },
-            child: Text(
-                style: Theme.of(context).textTheme.displayMedium,
-                "Generate now"),
-          );
+        : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            FilledButton.tonal(
+              style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                      const EdgeInsets.all(UNIT_PADDING))),
+              onPressed: () async {
+                setState(() {
+                  loading = true;
+                });
+                await newsViewModel.generateAndGetNews();
+              },
+              child: Text(
+                  style: Theme.of(context).textTheme.displayMedium,
+                  "Generate now"),
+            )
+          ]);
 
     Widget subtitle = widget.text == null
         ? const SizedBox.shrink()
@@ -65,10 +67,7 @@ class _NoNewsViewState extends State<NoNewsView> {
                 subtitle,
               ],
             )),
-        Container(
-            padding: const EdgeInsets.symmetric(
-                vertical: UNIT_PADDING * 4, horizontal: UNIT_PADDING * 3),
-            child: button),
+        button,
       ],
     );
   }
