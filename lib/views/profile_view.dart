@@ -1,5 +1,6 @@
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,13 @@ class _ProfilePageState extends State<ProfilePageView> {
             context,
             MaterialPageRoute(
                 builder: (context) => const InterestWizardView()));
+        break;
+      case "Sources":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ProvidersWizardView()));
+        break;
       default:
         debugPrint("Click on ${e.name}");
         Fluttertoast.showToast(
@@ -65,7 +73,6 @@ class _ProfilePageState extends State<ProfilePageView> {
     Widget profilePage = Center(
         child: ListView(
       scrollDirection: Axis.vertical,
-      shrinkWrap: true,
       children: <Widget>[
         // Username display
         Container(
@@ -125,12 +132,14 @@ class _ProfilePageState extends State<ProfilePageView> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Done'))),
+                  child: const Text('Done',
+                      style: TextStyle(color: Colors.black)))),
         ]),
       ],
     ));
 
     return Material(
+      elevation: 5.0,
       child: Container(
           padding: const EdgeInsets.fromLTRB(
               UNIT_PADDING, 6 * UNIT_PADDING, UNIT_PADDING, UNIT_PADDING),
