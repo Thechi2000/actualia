@@ -98,7 +98,7 @@ void main() async {
     // Select a few interests.
     await selectEntry("Albania");
     await selectEntry("Lausanne");
-    await selectEntry("Gaming", last: true);
+    await selectEntry("Gaming");
 
     // Open the profile view.
     await tester.tap(find.byKey(const Key('profile')));
