@@ -2,6 +2,7 @@ import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
 
@@ -26,6 +27,42 @@ enum SettingsRows {
 
 class _ProfilePageState extends State<ProfilePageView> {
   ValueNotifier<bool> isInterestUnfold = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    isInterestUnfold.addListener(() {
+      build(context);
+    });
+  }
+
+  void handleRowTap(SettingsRows e) {
+    switch (e.name) {
+      case "Interests":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const InterestWizardView()));
+        break;
+      case "Sources":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ProvidersWizardView()));
+        break;
+      default:
+        debugPrint("Click on ${e.name}");
+        Fluttertoast.showToast(
+            msg: "The view for ${e.name} is not yet implemented.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color.fromARGB(255, 22, 231, 105),
+            textColor: Colors.white,
+            fontSize: 16.0);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,31 +145,5 @@ class _ProfilePageState extends State<ProfilePageView> {
               UNIT_PADDING, 6 * UNIT_PADDING, UNIT_PADDING, UNIT_PADDING),
           child: profilePage),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    isInterestUnfold.addListener(() {
-      build(context);
-    });
-  }
-
-  void handleRowTap(SettingsRows e) {
-    switch (e.name) {
-      case "Interests":
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const InterestWizardView()));
-      case "Sources":
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ProvidersWizardView()));
-      default:
-        debugPrint("Click on ${e.name}");
-        break;
-    }
   }
 }
