@@ -208,6 +208,8 @@ class MockHttp extends BaseMockedHttpClient {
             }
           ], 200, request);
         case "${BaseMockedHttpClient.baseUrl}/functions/v1/generate-transcript":
+        case "${BaseMockedHttpClient.baseUrl}/functions/v1/generate-audio":
+        case "${BaseMockedHttpClient.baseUrl}/storage/v1/object/audios/%22%22":
           return response("", 200, request);
       }
 

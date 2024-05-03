@@ -23,25 +23,29 @@ class MockNewsViewModel extends NewsViewModel {
                 source: "source1",
                 title: "title1",
                 date: "1970-01-01",
-                content: "content1"),
+                content: "content1",
+                url: "url1"),
             Paragraph(
                 transcript: "text2",
                 source: "source2",
                 title: "title2",
                 date: "1970-01-01",
-                content: "content2"),
+                content: "content2",
+                url: "url2"),
             Paragraph(
                 transcript: "text3",
                 source: "source3",
                 title: "title3",
                 date: "1970-01-01",
-                content: "content3"),
+                content: "content3",
+                url: "url3"),
             Paragraph(
                 transcript: "text4",
                 source: "source4",
                 title: "title4",
                 date: "1970-01-01",
-                content: "content4")
+                content: "content4",
+                url: "url4")
           ]);
 
   @override
@@ -57,25 +61,29 @@ class MockNewsViewModel extends NewsViewModel {
                   source: "source1",
                   title: "title1",
                   date: "1970-01-01",
-                  content: "content1"),
+                  content: "content1",
+                  url: "url1"),
               Paragraph(
                   transcript: "text2",
                   source: "source2",
                   title: "title2",
                   date: "1970-01-01",
-                  content: "content2"),
+                  content: "content2",
+                  url: "url2"),
               Paragraph(
                   transcript: "text3",
                   source: "source3",
                   title: "title3",
                   date: "1970-01-01",
-                  content: "content3"),
+                  content: "content3",
+                  url: "url3"),
               Paragraph(
                   transcript: "text4",
                   source: "source4",
                   title: "title4",
                   date: "1970-01-01",
-                  content: "content4")
+                  content: "content4",
+                  url: "url4")
             ]),
         News(
             title: "Title2",
@@ -88,25 +96,29 @@ class MockNewsViewModel extends NewsViewModel {
                   source: "source1",
                   title: "title1",
                   date: "1970-01-01",
-                  content: "content1"),
+                  content: "content1",
+                  url: "url1"),
               Paragraph(
                   transcript: "text2",
                   source: "source2",
                   title: "title2",
                   date: "1970-01-01",
-                  content: "content2"),
+                  content: "content2",
+                  url: "url2"),
               Paragraph(
                   transcript: "text3",
                   source: "source3",
                   title: "title3",
                   date: "1970-01-01",
-                  content: "content3"),
+                  content: "content3",
+                  url: "url3"),
               Paragraph(
                   transcript: "text4",
                   source: "source4",
                   title: "title4",
                   date: "1970-01-01",
-                  content: "content4")
+                  content: "content4",
+                  url: "url4")
             ]),
         News(
             title: "Title3",
@@ -119,13 +131,15 @@ class MockNewsViewModel extends NewsViewModel {
                   source: "source1",
                   title: "title1",
                   date: "1970-01-01",
-                  content: "content1"),
+                  content: "content1",
+                  url: "url1"),
               Paragraph(
                   transcript: "text2",
                   source: "source2",
                   title: "title2",
                   date: "1970-01-01",
-                  content: "content2"),
+                  content: "content2",
+                  url: "url2"),
             ]),
       ];
 
