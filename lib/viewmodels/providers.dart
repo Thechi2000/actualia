@@ -8,14 +8,14 @@ import '../models/providers.dart';
 
 class ProvidersViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
-  List<NewsProvider>? _newsProviders;
+  List<(NewsProvider, String)>? _newsProviders;
 
   ProvidersViewModel(this.supabase) {
     fetchNewsProviders();
   }
 
-  List<NewsProvider>? get newsProviders => _newsProviders;
-  void setNewsProviders(List<NewsProvider> newsProviders) {
+  List<(NewsProvider, String)>? get newsProviders => _newsProviders;
+  void setNewsProviders(List<(NewsProvider, String)> newsProviders) {
     _newsProviders = newsProviders;
   }
 
@@ -46,8 +46,11 @@ class ProvidersViewModel extends ChangeNotifier {
           .select()
           .eq("created_by", supabase.auth.currentUser!.id);
 
-      _newsProviders =
-          res.map((m) => NewsProvider.deserialize(m["type"])!).toList();
+      _newsProviders = res.map((m) {
+        NewsProvider p = NewsProvider.deserialize(m["type"])!;
+        String id = p.displayName();
+        return (p, id);
+      }).toList();
       log("fetch result: $_newsProviders",
           name: "DEBUG", level: Level.WARNING.value);
       return true;
@@ -61,8 +64,13 @@ class ProvidersViewModel extends ChangeNotifier {
 
   Future<bool> pushNewsProviders() async {
     try {
+      await supabase
+          .from("news_providers")
+          .delete()
+          .eq("created_by", supabase.auth.currentUser!.id);
+
       final List<dynamic>? toPush =
-          _newsProviders?.map((e) => e.serialize()).toList();
+          _newsProviders?.map((e) => e.$1.serialize()).toList();
       for (var p in toPush!) {
         await supabase.from("news_providers").upsert({
           "created_by": supabase.auth.currentUser!.id,
@@ -71,6 +79,7 @@ class ProvidersViewModel extends ChangeNotifier {
       }
       return true;
     } catch (e) {
+      debugPrint("[ERROR] $e");
       log("Error when pushing news providers: $e",
           name: "ERROR", level: Level.WARNING.value);
       return false;

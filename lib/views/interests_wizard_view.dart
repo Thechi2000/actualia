@@ -42,11 +42,11 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     final NewsSettings predefined = NewsSettings.defaults();
 
     Widget countriesSelector = WizardSelector(
-      items: predefined.predefinedCountries,
-      selectedItems: nsvm.settings!.countries,
+      items: predefined.predefinedCountries.map((e) => (e, e)).toList(),
+      selectedItems: nsvm.settings!.countries.map((e) => (e, e)).toList(),
       onPressed: (selected) {
         setState(() {
-          _selectedCountries = selected;
+          _selectedCountries = selected.map((e) => e.$2).toList();
           _step = WizardStep.CITIES;
         });
       },
@@ -59,11 +59,11 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     );
 
     Widget citiesSelector = WizardSelector(
-      items: predefined.predefinedCities,
-      selectedItems: nsvm.settings!.cities,
+      items: predefined.predefinedCities.map((e) => (e, e)).toList(),
+      selectedItems: nsvm.settings!.cities.map((e) => (e, e)).toList(),
       onPressed: (selected) {
         setState(() {
-          _selectedCities = selected;
+          _selectedCities = selected.map((e) => e.$2).toList();
           _step = WizardStep.INTERESTS;
         });
       },
@@ -78,11 +78,11 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     );
 
     Widget interestsSelector = WizardSelector(
-      items: predefined.predefinedInterests,
-      selectedItems: nsvm.settings!.interests,
+      items: predefined.predefinedInterests.map((e) => (e, e)).toList(),
+      selectedItems: nsvm.settings!.interests.map((e) => (e, e)).toList(),
       onPressed: (selected) async {
         setState(() {
-          _selectedInterests = selected;
+          _selectedInterests = selected.map((e) => e.$2).toList();
         });
         NewsSettings toSend = NewsSettings(
             cities: _selectedCities,

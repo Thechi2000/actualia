@@ -7,6 +7,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class FakeDeletePostgrestFilterBuilder<T> extends Fake
+    implements PostgrestFilterBuilder<T> {
+  final FakeDB db;
+  final T? selection;
+
+  FakeDeletePostgrestFilterBuilder({required this.db, this.selection});
+
+  @override
+  Future<Table> then<Table>(FutureOr<Table> Function(T t) func,
+      {Function? onError}) async {
+    try {
+      return func(selection as T);
+    } catch (e) {
+      debugPrint("[ERROR] in then: $e");
+      return Future.value(null);
+    }
+  }
+
+  @override
+  FakePostgrestFilterBuilder<T> eq(String field, Object val) {
+    debugPrint("[DEBUG] call to equal");
+    T newSelection = (selection == null
+        ? db.getRows(column: field, equal: val) ?? []
+        : db.getRowsFromTable(
+                table: selection! as Table, col: field, equal: val) ??
+            []) as T;
+    if (newSelection == []) {
+      debugPrint(
+          "No row matching the parameter $field and $val has been found, or parameter are invalid");
+    }
+    db.setProvidersTable(
+        table: db
+                .getRows()
+                ?.where((row) => !(newSelection as Table).contains(row))
+                .toList() ??
+            []);
+    return FakePostgrestFilterBuilder<T>(
+        providerDB: db, selection: newSelection);
+  }
+}
+
 class FakePostgrestFilterBuilder<T> extends Fake
     implements PostgrestFilterBuilder<T> {
   final FakeDB providerDB;
@@ -65,6 +106,7 @@ class FakeQueryBuilder extends Fake implements SupabaseQueryBuilder {
       {String? onConflict,
       bool ignoreDuplicates = false,
       bool defaultToNull = true}) {
+    debugPrint("[DEBUG] call to upsert");
     Table newTable = table.toList();
     Table val;
     try {
@@ -80,6 +122,12 @@ class FakeQueryBuilder extends Fake implements SupabaseQueryBuilder {
   @override
   PostgrestFilterBuilder<Table> select([String s = ""]) {
     return FakePostgrestFilterBuilder<Table>(providerDB: db, selection: table);
+  }
+
+  @override
+  PostgrestFilterBuilder<Table> delete() {
+    debugPrint("[DEBUG] call to delete");
+    return FakeDeletePostgrestFilterBuilder(db: db, selection: table);
   }
 }
 
@@ -109,14 +157,19 @@ class FakeDB extends Fake implements SupabaseClient {
   }
 
   Table? getRowsFromTable({required Table table, String? col, Object? equal}) {
+    debugPrint("[DEBUG] get from table: $table");
     return FakeDB(table).getRows(column: col, equal: equal);
   }
 
   Table? getRows({String? column, Object? equal}) {
     if (column == null) {
+      debugPrint("[DEBUG] get row column null, return: $_providersTables");
       return _providersTables;
     } else if (equal != null) {
-      bool columnExist = providersTable[0].containsKey(column);
+      debugPrint("[DEBUG] get row equal null");
+      bool columnExist = providersTable.isEmpty
+          ? false
+          : providersTable[0].containsKey(column);
       if (!columnExist) {
         debugPrint("$column does not exist in table");
         return null;
@@ -151,7 +204,7 @@ void main() {
     List<NewsProvider> toPush = [RSSFeedProvider(url: "https://dummy.com")];
     FakeDB db = FakeDB();
     ProvidersViewModel vm = ProvidersViewModel(db);
-    vm.setNewsProviders(toPush);
+    vm.setNewsProviders(toPush.map((e) => (e, e.displayName())).toList());
     await vm.pushNewsProviders();
 
     expect(
@@ -177,16 +230,12 @@ void main() {
       },
     ]);
     ProvidersViewModel vm = ProvidersViewModel(db);
-    vm.setNewsProviders(toPush);
+    vm.setNewsProviders(toPush.map((e) => (e, e.displayName())).toList());
     await vm.pushNewsProviders();
 
     expect(
         db.providersTable,
         equals([
-          {
-            "created_by": "1234",
-            "type": {"type": "gnews"}
-          },
           {
             "created_by": "4321",
             "type": {"type": "rss", "url": "dummy"}
@@ -206,7 +255,7 @@ void main() {
     ];
     FakeDB db = FakeDB();
     ProvidersViewModel vm = ProvidersViewModel(db);
-    vm.setNewsProviders(toPush);
+    vm.setNewsProviders(toPush.map((e) => (e, e.displayName())).toList());
     await vm.pushNewsProviders();
 
     expect(
@@ -236,17 +285,17 @@ void main() {
     ]);
     ProvidersViewModel vm = ProvidersViewModel(providersDb);
     await vm.fetchNewsProviders();
-    List<NewsProvider>? received = vm.newsProviders;
-    expect(received.runtimeType, equals(List<NewsProvider>));
+    List<(NewsProvider, String)>? received = vm.newsProviders;
+    expect(received.runtimeType, equals(List<(NewsProvider, String)>));
     expect(received!.length, equals(1));
-    expect(received[0].runtimeType, equals(GNewsProvider));
+    expect(received[0].$1.runtimeType, equals(GNewsProvider));
   });
 
   test("fetch work as intended for empty providers", () async {
     FakeDB providersDb = FakeDB();
     ProvidersViewModel vm = ProvidersViewModel(providersDb);
     await vm.fetchNewsProviders();
-    List<NewsProvider>? res = vm.newsProviders;
+    List<(NewsProvider, String)>? res = vm.newsProviders;
     expect(res!.length, equals(0));
     expect(res, equals([]));
   });
@@ -260,7 +309,7 @@ void main() {
     ]);
     ProvidersViewModel vm = ProvidersViewModel(providersDb);
     await vm.fetchNewsProviders();
-    List<NewsProvider>? res = vm.newsProviders;
+    List<(NewsProvider, String)>? res = vm.newsProviders;
     expect(res!.length, equals(0));
     expect(res, equals([]));
   });
@@ -282,10 +331,10 @@ void main() {
     ]);
     ProvidersViewModel vm = ProvidersViewModel(providersDb);
     await vm.fetchNewsProviders();
-    List<NewsProvider>? received = vm.newsProviders;
-    expect(received.runtimeType, equals(List<NewsProvider>));
+    List<(NewsProvider, String)>? received = vm.newsProviders;
+    expect(received.runtimeType, equals(List<(NewsProvider, String)>));
     expect(received!.length, equals(2));
-    expect(received[0].runtimeType, equals(GNewsProvider));
-    expect(received[1].runtimeType, equals(RSSFeedProvider));
+    expect(received[0].$1.runtimeType, equals(GNewsProvider));
+    expect(received[1].$1.runtimeType, equals(RSSFeedProvider));
   });
 }

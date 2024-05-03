@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:actualia/models/auth_model.dart";
+import "package:actualia/models/news.dart";
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/models/providers.dart";
 import "package:actualia/viewmodels/news_settings.dart";
@@ -28,7 +29,7 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
 }
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  MockProvidersViewModel({List<NewsProvider> init = const []})
+  MockProvidersViewModel({List<(NewsProvider, String)> init = const []})
       : super(FakeSupabaseClient()) {
     super.setNewsProviders(init);
   }
@@ -282,8 +283,11 @@ void main() {
     NewsProvider rssDummy = RSSFeedProvider(url: dummyUrl);
     NewsProvider rssTest = RSSFeedProvider(url: testUrl);
 
-    ProvidersViewModel pvm =
-        MockProvidersViewModel(init: [google, rssTest, rssDummy]);
+    ProvidersViewModel pvm = MockProvidersViewModel(init: [
+      (google, google.displayName()),
+      (rssTest, rssTest.displayName()),
+      (rssDummy, rssDummy.displayName())
+    ]);
     await tester.pumpWidget(WizardWrapper(
         wizard: const ProvidersWizardView(),
         nsvm: MockNewsSettingsViewModel(),
@@ -323,15 +327,9 @@ void main() {
     await tester.tap(find.text("Finish"));
 
     expect(
-        pvm
-            .providersToString(pvm.newsProviders!)
-            .contains(GNewsProvider().displayName()),
-        isTrue);
-    expect(
-        pvm
-            .providersToString(pvm.newsProviders!)
-            .contains(RSSFeedProvider(url: url).displayName()),
-        isTrue);
+        pvm.newsProviders!.contains((GNewsProvider(), "Google News")), isTrue);
+    NewsProvider rss = RSSFeedProvider(url: url);
+    expect(pvm.newsProviders!.contains((rss, rss.displayName())), isTrue);
   });
 
   testWidgets(

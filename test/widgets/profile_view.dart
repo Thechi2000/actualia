@@ -73,7 +73,7 @@ class MockNewsSettingsViewModel extends NewsSettingsViewModel {
 // End
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  MockProvidersViewModel({List<NewsProvider> init = const []})
+  MockProvidersViewModel({List<(NewsProvider, String)> init = const []})
       : super(FakeSupabaseClient()) {
     super.setNewsProviders(init);
   }
@@ -189,7 +189,8 @@ void main() {
     NewsProvider google = GNewsProvider();
     String url = "https://dummy.com";
     NewsProvider rss = RSSFeedProvider(url: url);
-    ProvidersViewModel pvm = MockProvidersViewModel(init: [google, rss]);
+    ProvidersViewModel pvm = MockProvidersViewModel(
+        init: [(google, google.displayName()), (rss, rss.displayName())]);
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
@@ -214,10 +215,10 @@ void main() {
     await tester.pump();
 
     expect(find.byType(ProfilePageView), findsOne);
-    List<String> providers = pvm.providersToString(pvm.newsProviders!);
-    expect(providers.contains(google.displayName()), isTrue);
-    expect(providers.contains(rss.displayName()), isTrue);
-    expect(
-        providers.contains(RSSFeedProvider(url: url2).displayName()), isTrue);
+    List<(NewsProvider, String)> providers = pvm.newsProviders!;
+    expect(providers.contains((google, google.displayName())), isTrue);
+    expect(providers.contains((rss, rss.displayName())), isTrue);
+    NewsProvider rss2 = RSSFeedProvider(url: url2);
+    expect(providers.contains((rss2, rss2.displayName())), isTrue);
   });
 }

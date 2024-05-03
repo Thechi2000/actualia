@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 class WizardSelector extends StatefulWidget {
   final String title;
   final String buttonText;
-  final List<String> items;
-  final List<String> selectedItems;
-  final void Function(List<String>) onPressed;
+  final List<(Object, String)> items;
+  final List<(Object, String)> selectedItems;
+  final void Function(List<(Object, String)>) onPressed;
   final bool isInitialOnboarding;
   final void Function()? onCancel;
 
@@ -27,8 +27,8 @@ class WizardSelector extends StatefulWidget {
 }
 
 class _WizardSelector extends State<WizardSelector> {
-  late List<String> _items;
-  List<String> _selectedItems = [];
+  late List<(Object, String)> _items;
+  List<(Object, String)> _selectedItems = [];
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _WizardSelector extends State<WizardSelector> {
                     alignment: WrapAlignment.center,
                     children: _items
                         .map((e) => FilterChip(
-                            label: Text(e),
+                            label: Text(e.$2),
                             onSelected: (v) {
                               setState(() {
                                 _selectedItems.contains(e)
@@ -103,7 +103,7 @@ class WizardTopBar extends StatelessWidget {
 class WizardSelectorTitle extends StatelessWidget {
   final String title;
 
-  const WizardSelectorTitle({this.title = "default title", super.key});
+  const WizardSelectorTitle({required this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -175,8 +175,8 @@ class RSSSelector extends StatefulWidget {
   final String title;
   final String buttonText;
   final bool isInitialOnboarding;
-  final List<String> selectedItems;
-  final void Function(List<String>) onSelect;
+  final List<(NewsProvider, String)> selectedItems;
+  final void Function(List<(NewsProvider, String)>) onSelect;
   final void Function() onPressed;
   final void Function()? onCancel;
 
@@ -196,7 +196,7 @@ class RSSSelector extends StatefulWidget {
 
 class _RSSSelector extends State<RSSSelector> {
   late TextEditingController _controller;
-  List<String> _selectedItems = [];
+  List<(NewsProvider, String)> _selectedItems = [];
 
   @override
   void initState() {
@@ -223,10 +223,12 @@ class _RSSSelector extends State<RSSSelector> {
         Expanded(
             child: TextField(
           controller: _controller,
-          onSubmitted: (String val) {
+          onSubmitted: (String url) {
             setState(() {
-              if (val.isNotEmpty && !_selectedItems.contains(val)) {
-                _selectedItems.add(val);
+              if (url.isNotEmpty &&
+                  !_selectedItems.map((e) => e.$2).contains(url)) {
+                NewsProvider p = RSSFeedProvider(url: url);
+                _selectedItems.add((p, p.displayName()));
               }
               widget.onSelect(_selectedItems);
             });
@@ -259,10 +261,7 @@ class _RSSSelector extends State<RSSSelector> {
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(RSSFeedProvider(url: item).displayName()),
-                        const Icon(Icons.close)
-                      ],
+                      children: [Text(item.$2), const Icon(Icons.close)],
                     ),
                   ))
               .toList(),

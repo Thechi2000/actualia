@@ -11,6 +11,14 @@ class GNewsProvider extends NewsProvider {
   String displayName() {
     return "Google News";
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GNewsProvider;
+  }
+
+  @override
+  int get hashCode => displayName().hashCode;
 }
 
 class RSSFeedProvider extends NewsProvider {
@@ -35,6 +43,14 @@ class RSSFeedProvider extends NewsProvider {
 
     return "$name (RSS)";
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RSSFeedProvider && url == other.url;
+  }
+
+  @override
+  int get hashCode => url.hashCode;
 }
 
 /// Describe a provider, an abstraction describing a way to
@@ -63,8 +79,8 @@ abstract class NewsProvider {
     }
   }
 
-  static List<NewsProvider> predefinedProviders = [
-    GNewsProvider(),
+  static List<(NewsProvider, String)> predefinedProviders = [
+    (GNewsProvider(), "Google News"),
   ];
 
   /// Converts a NewsProvider to a dynamic value, usable as a json.

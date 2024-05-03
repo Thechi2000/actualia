@@ -19,8 +19,8 @@ class ProvidersWizardView extends StatefulWidget {
 enum WizardStep { PREDEFINED, RSS }
 
 class _ProvidersWizardView extends State<ProvidersWizardView> {
-  late List<String> _selectedPredefinedProviders;
-  List<String>? _selectedRssProviders;
+  late List<(Object, String)> _selectedPredefinedProviders;
+  List<(Object, String)>? _selectedRssProviders;
   late WizardStep _step;
 
   @override
@@ -33,20 +33,20 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
   Widget build(BuildContext context) {
     final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
-    final List<String> predefined =
-        pvm.providersToString(NewsProvider.predefinedProviders);
-    List<NewsProvider> savedPredefinedProviders = pvm.newsProviders
-            ?.where((p) => p.runtimeType != RSSFeedProvider)
+    final List<(NewsProvider, String)> predefined =
+        NewsProvider.predefinedProviders;
+    List<(NewsProvider, String)> savedPredefinedProviders = pvm.newsProviders
+            ?.where((p) => p.$1.runtimeType != RSSFeedProvider)
             .toList() ??
         [];
-    List<NewsProvider> savedRSSProviders = pvm.newsProviders
-            ?.where((p) => p.runtimeType == RSSFeedProvider)
+    List<(NewsProvider, String)> savedRSSProviders = pvm.newsProviders
+            ?.where((p) => p.$1.runtimeType == RSSFeedProvider)
             .toList() ??
         [];
 
     Widget predefinedProvidersSelector = WizardSelector(
       items: predefined,
-      selectedItems: pvm.providersToString(savedPredefinedProviders),
+      selectedItems: savedPredefinedProviders,
       onPressed: (selected) {
         setState(() {
           _selectedPredefinedProviders = selected;
@@ -70,20 +70,21 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             _step = WizardStep.PREDEFINED;
           });
         },
-        selectedItems: pvm.rssToUrl(savedRSSProviders),
+        selectedItems: savedRSSProviders,
         onSelect: (urlList) {
           _selectedRssProviders = urlList;
         },
         onPressed: () async {
           if ((_selectedRssProviders?.isEmpty ?? true) &&
               savedRSSProviders.isNotEmpty) {
-            _selectedRssProviders = pvm.providersToString(savedRSSProviders);
+            _selectedRssProviders = savedRSSProviders;
           }
-          List<NewsProvider> selected =
-              pvm.stringToProviders(_selectedPredefinedProviders);
-          for (var url in _selectedRssProviders ?? []) {
-            selected.add(RSSFeedProvider(url: url));
-          }
+          List<(NewsProvider, String)> selected = _selectedPredefinedProviders
+              .map((e) => (e.$1 as NewsProvider, e.$2))
+              .toList();
+          selected.addAll(
+              _selectedRssProviders?.map((e) => (e.$1 as NewsProvider, e.$2)) ??
+                  []);
           pvm.setNewsProviders(selected);
           try {
             await pvm.pushNewsProviders();
