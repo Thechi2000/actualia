@@ -58,6 +58,8 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
         selectedDateTime, assetAudio, loopAudio, vibrate, volume, settingsId);
   }
 
+  // Cov: Alarm logic strictly depends on mobile platform
+  // coverage:ignore-start
   Future<void> updateAlarm(BuildContext context) async {
     AlarmsViewModel model = Provider.of(context, listen: false);
     await model.setAlarm(
@@ -74,6 +76,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
     AlarmsViewModel model = Provider.of(context, listen: false);
     await model.unsetAlarm();
   }
+  // coverage:ignore-end
 
   String getDay() {
     final now = DateTime.now();

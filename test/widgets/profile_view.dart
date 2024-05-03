@@ -93,8 +93,15 @@ class MockProvidersViewModel extends ProvidersViewModel {
 class MockAlarmsViewModelViewModel extends AlarmsViewModel {
   MockAlarmsViewModelViewModel(super.supabaseClient);
 
+  AlarmSettings? _alarm;
+  void internalSetAlarm(AlarmSettings? a) {
+    print("internalSetAlarm called !");
+    _alarm = a;
+    notifyListeners();
+  }
+
   @override
-  AlarmSettings? get alarm => null;
+  AlarmSettings? get alarm => _alarm;
 
   @override
   bool get isAlarmSet => false;

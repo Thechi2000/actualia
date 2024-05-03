@@ -2,7 +2,6 @@ import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:actualia/widgets/play_button.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
-import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
