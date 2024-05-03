@@ -22,21 +22,36 @@ class NewsText extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: news.paragraphs
               .map((paragraph) => GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => SourceView(
-                                  article: paragraph.content,
-                                  title: paragraph.title,
-                                  date: paragraph.date.substring(0, 10),
-                                  newsPaper: paragraph.source)));
-                    },
-                    child: Text(
-                      '${paragraph.transcript}\n',
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ))
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => SourceView(
+                                article: paragraph.content,
+                                title: paragraph.title,
+                                date: paragraph.date.substring(0, 10),
+                                newsPaper: paragraph.source)));
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        paragraph.transcript,
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            "Read more\n",
+                            style: (Theme.of(context).textTheme.displaySmall)!
+                                .apply(
+                              color: THEME_BUTTON,
+                              decoration: TextDecoration.underline,
+                              decorationColor: THEME_BUTTON,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ))
+                    ],
+                  )))
               .toList(),
         ),
         const Divider(
