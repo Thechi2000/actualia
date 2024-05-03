@@ -93,7 +93,8 @@ class AlreadyExistingNewsVM extends NewsViewModel {
               source: "source",
               title: "title",
               date: "12-04-2024",
-              content: "content")
+              content: "content",
+              url: "url")
         ]));
     return Future.value();
   }
@@ -123,7 +124,8 @@ class NonExistingNewsVM extends NewsViewModel {
                 source: "source",
                 title: "title",
                 date: "12-04-2024",
-                content: "content")
+                content: "content",
+                url: "url")
           ]));
     } else {
       setNews(null);
@@ -166,7 +168,8 @@ class NewsListVM extends NewsViewModel {
               source: "source",
               title: "title",
               date: "12-04-2024",
-              content: "content")
+              content: "content",
+              url: "url")
         ]));
     return Future.value();
   }
@@ -394,7 +397,8 @@ void main() {
               source: "source",
               title: "title",
               date: "12-04-2024",
-              content: "content")
+              content: "content",
+              url: "url")
         ]));
     expect(vm.generateAudioCalled, isTrue);
   });

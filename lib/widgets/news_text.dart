@@ -30,7 +30,8 @@ class NewsText extends StatelessWidget {
                                 article: paragraph.content,
                                 title: paragraph.title,
                                 date: paragraph.date.substring(0, 10),
-                                newsPaper: paragraph.source)));
+                                newsPaper: paragraph.source,
+                                url: paragraph.url)));
                   },
                   child: Column(
                     children: [
