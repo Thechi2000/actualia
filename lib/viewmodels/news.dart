@@ -98,7 +98,7 @@ class NewsViewModel extends ChangeNotifier {
         for (var news in _newsList) {
           getAudioFile(news).whenComplete(() => notifyListeners());
 
-          //If the date of the first news is more than 12 hours ago, call the cloud function
+          // If the date of the first news is more than 12 hours ago, call the cloud function
           if (DateTime.now()
                   .difference(DateTime.parse(_newsList[0].date))
                   .inHours >
@@ -180,8 +180,6 @@ class NewsViewModel extends ChangeNotifier {
 
   // Function to get the audio file from the database
   Future<void> getAudioFile(News news) async {
-    var audio = news.audio;
-
     // Check for valid transcriptId
     if (news.transcriptId == -1) {
       return;
@@ -189,10 +187,11 @@ class NewsViewModel extends ChangeNotifier {
 
     try {
       // Generate audio if not present
-      audio ??= await generateAudio(news.transcriptId);
+      news.audio ??= await generateAudio(news.transcriptId);
 
       // File download
-      final response = await supabase.storage.from("audios").download(audio);
+      final response =
+          await supabase.storage.from("audios").download(news.audio!);
 
       if (response.isEmpty) {
         log('Audio file not found.', level: Level.WARNING.value);

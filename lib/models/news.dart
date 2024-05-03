@@ -2,7 +2,7 @@ class News {
   final String title;
   final String date;
   final int transcriptId;
-  final String? audio;
+  String? audio;
   final List<Paragraph> paragraphs;
 
   News({
