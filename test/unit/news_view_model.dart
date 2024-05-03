@@ -85,7 +85,7 @@ class AlreadyExistingNewsVM extends NewsViewModel {
     setNews(News(
         date: DateTime.now().toIso8601String(),
         title: "News",
-        transcriptID: -1,
+        transcriptId: -1,
         audio: null,
         paragraphs: [
           Paragraph(
@@ -115,7 +115,7 @@ class NonExistingNewsVM extends NewsViewModel {
       setNews(News(
           date: DateTime.now().toIso8601String(),
           title: "News",
-          transcriptID: -1,
+          transcriptId: -1,
           audio: null,
           paragraphs: [
             Paragraph(
@@ -158,7 +158,7 @@ class NewsListVM extends NewsViewModel {
     setNews(News(
         date: DateTime.now().toIso8601String(),
         title: "News",
-        transcriptID: -1,
+        transcriptId: -1,
         audio: null,
         paragraphs: [
           Paragraph(
@@ -268,6 +268,19 @@ class NotTodayNewsListVM extends NewsViewModel {
   }
 }
 
+//Tests for audio functions
+
+class AudioNewsVM extends NewsViewModel {
+  AudioNewsVM(SupabaseClient super.supabase);
+  bool generateAudioCalled = false;
+
+  @override
+  Future<String> generateAudio(int transcriptId) {
+    generateAudioCalled = true;
+    return Future.value("audio");
+  }
+}
+
 void main() {
   test("generate-transcript failure is reported", () async {
     NewsViewModel vm = NewsViewModel(FakeFailingSupabaseClient());
@@ -365,5 +378,24 @@ void main() {
     // ignore: invalid_use_of_protected_member
     await vm.generateAndGetNews();
     expect(vm.news?.title, equals("News generation failed and no news found."));
+  });
+
+  // Test generateAudio is called
+  test('generateAudio is called when audio is null', () async {
+    AudioNewsVM vm = AudioNewsVM(FakeSupabaseClient());
+    await vm.getAudioFile(News(
+        date: DateTime.now().toIso8601String(),
+        title: "News",
+        transcriptId: 1,
+        audio: null,
+        paragraphs: [
+          Paragraph(
+              transcript: "text",
+              source: "source",
+              title: "title",
+              date: "12-04-2024",
+              content: "content")
+        ]));
+    expect(vm.generateAudioCalled, isTrue);
   });
 }

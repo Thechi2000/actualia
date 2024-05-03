@@ -15,7 +15,7 @@ class MockNewsViewModel extends NewsViewModel {
   News? get news => News(
           title: "Title",
           date: "1970-01-01",
-          transcriptID: -1,
+          transcriptId: -1,
           audio: null,
           paragraphs: [
             Paragraph(
@@ -49,7 +49,7 @@ class MockNewsViewModel extends NewsViewModel {
         News(
             title: "Title1",
             date: "1970-01-01",
-            transcriptID: -1,
+            transcriptId: -1,
             audio: null,
             paragraphs: [
               Paragraph(
@@ -80,7 +80,7 @@ class MockNewsViewModel extends NewsViewModel {
         News(
             title: "Title2",
             date: "1970-01-01",
-            transcriptID: -1,
+            transcriptId: -1,
             audio: null,
             paragraphs: [
               Paragraph(
@@ -111,7 +111,7 @@ class MockNewsViewModel extends NewsViewModel {
         News(
             title: "Title3",
             date: "1970-01-01",
-            transcriptID: -1,
+            transcriptId: -1,
             audio: null,
             paragraphs: [
               Paragraph(
