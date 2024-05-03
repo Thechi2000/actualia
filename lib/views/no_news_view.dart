@@ -39,7 +39,7 @@ class _NoNewsViewState extends State<NoNewsView> {
             )
           ]);
 
-    Widget subtitle = widget.text == null
+    Widget text = widget.text == null
         ? const SizedBox.shrink()
         : Text(
             widget.text!,
@@ -47,7 +47,7 @@ class _NoNewsViewState extends State<NoNewsView> {
             textAlign: TextAlign.center,
           );
 
-    return ListView(
+    Widget view = ListView(
       shrinkWrap: true,
       children: <Widget>[
         Container(
@@ -64,11 +64,13 @@ class _NoNewsViewState extends State<NoNewsView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: UNIT_PADDING * 2),
-                subtitle,
+                text,
               ],
             )),
         button,
       ],
     );
+
+    return view;
   }
 }
