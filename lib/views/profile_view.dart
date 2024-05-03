@@ -1,8 +1,6 @@
 import 'package:actualia/utils/themes.dart';
-import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/views/news_alert_setup_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
-import 'package:actualia/models/alarms.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';

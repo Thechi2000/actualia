@@ -1,12 +1,6 @@
-import 'dart:developer';
-
-import 'package:actualia/models/alarms.dart';
-import 'package:actualia/models/news_settings.dart';
-import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/foundation.dart';
-import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,17 +11,23 @@ class AlarmsViewModel extends ChangeNotifier {
   bool isAlarmRinging = false;
   bool isAlarmActive = false;
 
-  AlarmSettings? get alarm => Alarm.getAlarm(_alarmId);
-  bool get isAlarmSet => Alarm.getAlarm(_alarmId) != null;
+  AlarmSettings? get alarm =>
+      Alarm.hasAlarm() ? Alarm.getAlarm(_alarmId) : null;
+  bool get isAlarmSet => Alarm.hasAlarm() && Alarm.getAlarm(_alarmId) != null;
 
   AlarmsViewModel(SupabaseClient supabaseClient) {
     supabase = supabaseClient;
-    Alarm.ringStream.stream.listen((_) {
-      print("ringStream.stream.listen callback called");
-      isAlarmRinging = true;
-      isAlarmActive = true;
-      notifyListeners();
-    });
+    if (!Alarm.ringStream.hasListener) {
+      Alarm.ringStream.stream.listen((_) {
+        print("ringStream.stream.listen callback called");
+        isAlarmRinging = true;
+        isAlarmActive = true;
+        notifyListeners();
+      });
+    } else {
+      print(
+          "WARNING: Alarm.ringStream already had a listener ! Callback ignored");
+    }
     checkAndroidScheduleExactAlarmPermission();
   }
 

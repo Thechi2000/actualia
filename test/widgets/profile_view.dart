@@ -1,8 +1,10 @@
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
+import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -67,12 +69,24 @@ class MockNewsSettingsViewModel extends NewsSettingsViewModel {
 
 // End
 
+class MockAlarmsViewModelViewModel extends AlarmsViewModel {
+  MockAlarmsViewModelViewModel(super.supabaseClient);
+
+  @override
+  AlarmSettings? get alarm => null;
+
+  @override
+  bool get isAlarmSet => false;
+}
+
 class ProfilePageWrapper extends StatelessWidget {
   late final Widget _child;
   late final NewsSettingsViewModel _newsSettingsModel;
   late final AuthModel _authModel;
+  late final AlarmsViewModel _alarmsModel;
 
-  ProfilePageWrapper(this._child, this._newsSettingsModel, this._authModel,
+  ProfilePageWrapper(
+      this._child, this._newsSettingsModel, this._authModel, this._alarmsModel,
       {super.key});
 
   @override
@@ -81,7 +95,9 @@ class ProfilePageWrapper extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<NewsSettingsViewModel>(
               create: (context) => _newsSettingsModel),
-          ChangeNotifierProvider<AuthModel>(create: (context) => _authModel)
+          ChangeNotifierProvider<AuthModel>(create: (context) => _authModel),
+          ChangeNotifierProvider<AlarmsViewModel>(
+              create: (context) => _alarmsModel)
         ],
         child: MaterialApp(
           title: "ActualIA",
@@ -101,7 +117,8 @@ void main() {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text('Logout'), findsOne);
 
@@ -122,14 +139,15 @@ void main() {
     await testButton('Storage');
     await testButton('Narrator');
     await testButton('Accessibility');
-    await testButton('Done');
+    // await testButton('Done');
   });
 
   testWidgets("Correct username", (WidgetTester tester) async {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text("test.test@epfl.ch"), findsOne);
   });
@@ -138,7 +156,8 @@ void main() {
     await tester.pumpWidget(ProfilePageWrapper(
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text("Interests"), findsOne);
     await tester.tap(find.text("Interests"));

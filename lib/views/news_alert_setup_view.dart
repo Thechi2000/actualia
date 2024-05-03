@@ -1,11 +1,8 @@
-import 'package:actualia/models/auth_model.dart';
-import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/wizard_widgets.dart';
 
 class NewsAlertSetupView extends StatefulWidget {
   const NewsAlertSetupView({super.key});

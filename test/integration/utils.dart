@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:actualia/main.dart';
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:http/http.dart' as http;
@@ -46,6 +47,8 @@ class AppWrapper extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) =>
                 NewsSettingsViewModel(Supabase.instance.client)),
+        ChangeNotifierProvider(
+            create: (context) => AlarmsViewModel(Supabase.instance.client)),
       ],
       child: const App(),
     );
