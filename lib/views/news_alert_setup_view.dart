@@ -17,6 +17,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
   late bool creating;
   late bool loading;
 
+  late bool enabled;
   late DateTime selectedDateTime;
   late bool loopAudio;
   late bool vibrate;
@@ -30,6 +31,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
     loading = false;
 
     if (creating) {
+      enabled = false;
       selectedDateTime = DateTime.now().add(const Duration(minutes: 1));
       selectedDateTime = selectedDateTime.copyWith(second: 0, millisecond: 0);
       loopAudio = true;
@@ -66,13 +68,13 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
 
     switch (difference) {
       case 0:
-        return 'Today';
+        return 'today';
       case 1:
-        return 'Tomorrow';
+        return 'tomorrow';
       case 2:
-        return 'After tomorrow';
+        return 'after tomorrow';
       default:
-        return 'In $difference days';
+        return '$difference days';
     }
   }
 
@@ -102,6 +104,8 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
 
   @override
   Widget build(BuildContext context) {
+    AlarmsViewModel alarmModel = Provider.of(context);
+
     PreferredSizeWidget appBar = PreferredSize(
         preferredSize: const Size.fromHeight(120.0),
         child: Container(
@@ -120,101 +124,131 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
     Widget body = Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          //// Maybe interesting ?
-          // Text(
-          //   getDay(),
-          //   style: Theme.of(context)
-          //       .textTheme
-          //       .titleMedium!
-          //       .copyWith(color: Colors.blueAccent.withOpacity(0.8)),
-          // ),
-          RawMaterialButton(
-            onPressed: pickTime,
-            fillColor: Colors.grey[200],
-            child: Container(
-              margin: const EdgeInsets.all(20),
-              child: Text(
-                TimeOfDay.fromDateTime(selectedDateTime).format(context),
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium!
-                    .copyWith(color: Colors.blueAccent),
-              ),
-            ),
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Loop alarm audio',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Switch(
-                value: loopAudio,
-                onChanged: (value) => setState(() => loopAudio = value),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Vibrate',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Switch(
-                value: vibrate,
-                onChanged: (value) => setState(() => vibrate = value),
-              ),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Custom volume',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Text(
-                "${(volume * 100).round()}%",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Slider(
-                  value: volume,
-                  onChanged: (value) {
-                    setState(() => volume = value);
-                  },
+          Container(
+              margin: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: pickTime,
+                      fillColor: Colors.grey[200],
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Text(
+                          TimeOfDay.fromDateTime(selectedDateTime)
+                              .format(context),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium!
+                              .copyWith(color: Colors.blueAccent),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          enabled ? Icons.alarm_on : Icons.alarm_off,
+                          size: 30.0,
+                        ),
+                        Switch(
+                          value: enabled,
+                          onChanged: (value) => setState(() => enabled = value),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ),
-            ],
-          ),
-
-          RawMaterialButton(
-            onPressed: () => testAlarm(context),
-            elevation: 2.0,
-            fillColor: Colors.lightGreen,
-            padding: const EdgeInsets.all(15.0),
-            shape: const RoundedRectangleBorder(
+                Text(
+                  alarmModel.isAlarmSet
+                      ? "Alarm set for ${getDay()}!"
+                      : "Alarm not set",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Colors.blueAccent.withOpacity(0.8)),
+                ),
+              ])),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 3, color: Colors.lightBlueAccent),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Text(
-              "Test!",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(color: Colors.white),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      volume > 0.7
+                          ? Icons.volume_up_rounded
+                          : volume > 0.1
+                              ? Icons.volume_down_rounded
+                              : Icons.volume_mute_rounded,
+                    ),
+                    Text(
+                      "${(volume * 100).round()}%",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: volume,
+                        onChanged: (value) {
+                          setState(() => volume = value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Loop alarm audio',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Switch(
+                      value: loopAudio,
+                      onChanged: (value) => setState(() => loopAudio = value),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Vibrate',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Switch(
+                      value: vibrate,
+                      onChanged: (value) => setState(() => vibrate = value),
+                    ),
+                  ],
+                ),
+                RawMaterialButton(
+                  onPressed: () => testAlarm(context),
+                  elevation: 2.0,
+                  fillColor: Colors.lightGreen,
+                  padding: const EdgeInsets.all(15.0),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Text(
+                    "Test!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ),
-
           if (!creating)
             TextButton(
               onPressed: deleteAlarm,

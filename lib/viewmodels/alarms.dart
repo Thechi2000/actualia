@@ -11,6 +11,9 @@ class AlarmsViewModel extends ChangeNotifier {
   static int _alarmId = 1;
   bool isAlarmRinging = false;
 
+  AlarmSettings? get alarm => Alarm.getAlarm(_alarmId);
+  bool get isAlarmSet => Alarm.getAlarm(_alarmId) != null;
+
   AlarmsViewModel(SupabaseClient supabaseClient) {
     supabase = supabaseClient;
     Alarm.ringStream.stream.listen((_) {
