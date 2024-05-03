@@ -1,6 +1,7 @@
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:actualia/models/auth_model.dart';
 
@@ -43,6 +44,14 @@ class _ProfilePageState extends State<ProfilePageView> {
                 builder: (context) => const InterestWizardView()));
       default:
         debugPrint("Click on ${e.name}");
+        Fluttertoast.showToast(
+            msg: "The view for ${e.name} is not yet implemented.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color.fromARGB(255, 22, 231, 105),
+            textColor: Colors.white,
+            fontSize: 16.0);
         break;
     }
   }
