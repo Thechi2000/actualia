@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 const double UNIT_PADDING = 16.0;
 const Color THEME_PRIMARY = Color(0xFF5EDCE4);
 const Color THEME_GREY = Color(0xFFCDCDDC);
+const Color THEME_BUTTON = Color.fromARGB(255, 68, 159, 166);
 
 ThemeData ACTUALIA_THEME = ThemeData(
     brightness: Brightness.light,

@@ -1,14 +1,14 @@
 class News {
   final String title;
   final String date;
-  final int transcriptID;
+  final int transcriptId;
   final String? audio;
   final List<Paragraph> paragraphs;
 
   News({
     required this.title,
     required this.date,
-    required this.transcriptID,
+    required this.transcriptId,
     required this.audio,
     required this.paragraphs,
   });

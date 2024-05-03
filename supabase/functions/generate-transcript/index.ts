@@ -10,7 +10,15 @@ import {
   required,
   validate,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+
 import { generateTranscript } from "../_shared/generate-transcript.ts";
+
+const bodySchema = {
+  userId: [
+    isString,
+    match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
+  ],
+};
 
 const bodySchema = {
   userId: [
