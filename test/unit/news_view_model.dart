@@ -64,7 +64,7 @@ class FakeFunctionsClient extends Fake implements FunctionsClient {
       {Map<String, String>? headers,
       Map<String, dynamic>? body,
       HttpMethod method = HttpMethod.post}) {
-    expect(functionName, equals('get-transcript'));
+    expect(functionName, equals('generate-transcript'));
     expect(body, isNull);
     expect(method, equals(HttpMethod.post));
 
@@ -151,7 +151,7 @@ class NeverExistingNewsVM extends NewsViewModel {
 }
 
 class NewsListVM extends NewsViewModel {
-  NewsListVM(SupabaseClient super.supabase);
+  NewsListVM(super.supabase);
 
   @override
   Future<void> fetchNews(DateTime date) {
@@ -180,7 +180,7 @@ class NewsListVM extends NewsViewModel {
         "id": -1,
         "audio": null,
         "transcript": {
-          "articles": [
+          "news": [
             {
               "transcript": "text",
               "source": {"name": "source"},
@@ -201,7 +201,7 @@ class NewsListVM extends NewsViewModel {
 }
 
 class NewsList2VM extends NewsViewModel {
-  NewsList2VM(SupabaseClient super.supabase);
+  NewsList2VM(super.supabase);
   bool invokedTranscriptFunction = false;
   bool fetchNewsCalled = false;
 
@@ -220,7 +220,7 @@ class NewsList2VM extends NewsViewModel {
 }
 
 class EmptyNewsListVM extends NewsViewModel {
-  EmptyNewsListVM(SupabaseClient super.supabase);
+  EmptyNewsListVM(super.supabase);
   bool generateNewsCalled = false;
 
   @override
@@ -236,7 +236,7 @@ class EmptyNewsListVM extends NewsViewModel {
 }
 
 class ExceptionNewsListVM extends NewsViewModel {
-  ExceptionNewsListVM(SupabaseClient super.supabase);
+  ExceptionNewsListVM(super.supabase);
 
   @override
   Future<List<dynamic>> fetchNewsList() async {
@@ -245,7 +245,7 @@ class ExceptionNewsListVM extends NewsViewModel {
 }
 
 class NotTodayNewsListVM extends NewsViewModel {
-  NotTodayNewsListVM(SupabaseClient super.supabase);
+  NotTodayNewsListVM(super.supabase);
   bool generateNewsCalled = false;
 
   @override
@@ -262,14 +262,14 @@ class NotTodayNewsListVM extends NewsViewModel {
         "title": "News",
         "id": -1,
         "audio": null,
-        "transcript": {"articles": []}
+        "transcript": {"news": []}
       }
     ]);
   }
 }
 
 void main() {
-  test("get-transcript failure is reported", () async {
+  test("generate-transcript failure is reported", () async {
     NewsViewModel vm = NewsViewModel(FakeFailingSupabaseClient());
     bool hasThrown = false;
 
