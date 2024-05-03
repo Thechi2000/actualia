@@ -2,6 +2,7 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
@@ -106,21 +107,6 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
   Widget build(BuildContext context) {
     AlarmsViewModel alarmModel = Provider.of(context);
 
-    PreferredSizeWidget appBar = PreferredSize(
-        preferredSize: const Size.fromHeight(120.0),
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 50, 16, 8.0),
-          child: const Text(
-            "Configure your 'News Alert'",
-            textScaler: TextScaler.linear(2.0),
-            style: TextStyle(
-                fontFamily: 'EB Garamond',
-                fontWeight: FontWeight.w700,
-                color: Colors.black),
-            maxLines: 2,
-          ),
-        ));
-
     Widget body = Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Column(
@@ -163,14 +149,17 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                     )
                   ],
                 ),
-                Text(
-                  alarmModel.isAlarmSet
-                      ? "Alarm set for ${getDay()}!"
-                      : "Alarm not set",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Colors.blueAccent.withOpacity(0.8)),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text(
+                    alarmModel.isAlarmSet
+                        ? "Alarm set for ${getDay()}!"
+                        : "Alarm not set",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: Colors.blueAccent.withOpacity(0.8)),
+                  ),
                 ),
               ])),
           Container(
@@ -231,52 +220,31 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                     ),
                   ],
                 ),
-                RawMaterialButton(
-                  onPressed: () => testAlarm(context),
-                  elevation: 2.0,
-                  fillColor: Colors.lightGreen,
-                  padding: const EdgeInsets.all(15.0),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Text(
-                    "Test!",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
+                FilledButton.tonal(
+                    onPressed: () => testAlarm(context),
+                    child: const Text("Test!")),
               ],
             ),
           ),
-          if (!creating)
-            TextButton(
-              onPressed: deleteAlarm,
-              child: Text(
-                'Delete Alarm',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.red),
-              ),
-            ),
-          const SizedBox(),
         ],
       ),
     );
 
-    Widget bottomBar = WizardNavigationBottomBar(
-        lText: 'Cancel',
-        lOnPressed: () {
-          Navigator.pop(context);
-        },
-        showRight: true,
-        rText: 'Validate',
-        rOnPressed: () async {
-          saveAlarm(context);
-          Navigator.pop(context);
-        });
+    Widget bottomBar = Container(
+      margin: EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FilledButton.tonal(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Done")),
+        ],
+      ),
+    );
 
-    return Scaffold(appBar: appBar, body: body, bottomNavigationBar: bottomBar);
+    return Scaffold(
+        appBar: const TopAppBar(), body: body, bottomNavigationBar: bottomBar);
   }
 }
