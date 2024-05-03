@@ -150,7 +150,7 @@ class NewsViewModel extends ChangeNotifier {
         .map((item) => Paragraph(
             transcript: item['transcript'],
             source: item['source']['name'],
-            url: item['source']['url'],
+            url: item['url'],
             title: item['title'],
             date: item['publishedAt'],
             content: item['content']))

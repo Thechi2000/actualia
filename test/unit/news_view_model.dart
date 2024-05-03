@@ -186,6 +186,7 @@ class NewsListVM extends NewsViewModel {
           "news": [
             {
               "transcript": "text",
+              "url": "url",
               "source": {"name": "source", "url": "url"},
               "title": "title",
               "publishedAt": "12-04-2024",
