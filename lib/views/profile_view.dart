@@ -1,4 +1,5 @@
 import 'package:actualia/utils/themes.dart';
+import 'package:actualia/views/news_alert_setup_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:flutter/material.dart';
@@ -37,19 +38,24 @@ class _ProfilePageState extends State<ProfilePageView> {
   }
 
   void handleRowTap(SettingsRows e) {
-    switch (e.name) {
-      case "Interests":
+    switch (e) {
+      case SettingsRows.INTERESTS:
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => const InterestWizardView()));
         break;
-      case "Sources":
+      case SettingsRows.SOURCES:
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => const ProvidersWizardView()));
         break;
+      case SettingsRows.ALARM:
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const NewsAlertSetupView()));
       default:
         debugPrint("Click on ${e.name}");
         Fluttertoast.showToast(

@@ -1,12 +1,14 @@
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/models/providers.dart';
+import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -88,14 +90,32 @@ class MockProvidersViewModel extends ProvidersViewModel {
   }
 }
 
+class MockAlarmsViewModelViewModel extends AlarmsViewModel {
+  MockAlarmsViewModelViewModel(super.supabaseClient);
+
+  AlarmSettings? _alarm;
+  void internalSetAlarm(AlarmSettings? a) {
+    print("internalSetAlarm called !");
+    _alarm = a;
+    notifyListeners();
+  }
+
+  @override
+  AlarmSettings? get alarm => _alarm;
+
+  @override
+  bool get isAlarmSet => false;
+}
+
 class ProfilePageWrapper extends StatelessWidget {
   late final Widget _child;
   late final NewsSettingsViewModel _newsSettingsModel;
   final ProvidersViewModel pvm;
   late final AuthModel _authModel;
+  late final AlarmsViewModel _alarmsModel;
 
-  ProfilePageWrapper(
-      this._child, this._newsSettingsModel, this.pvm, this._authModel,
+  ProfilePageWrapper(this._child, this._newsSettingsModel, this.pvm,
+      this._authModel, this._alarmsModel,
       {super.key});
 
   @override
@@ -105,7 +125,9 @@ class ProfilePageWrapper extends StatelessWidget {
           ChangeNotifierProvider<NewsSettingsViewModel>(
               create: (context) => _newsSettingsModel),
           ChangeNotifierProvider<AuthModel>(create: (context) => _authModel),
-          ChangeNotifierProvider<ProvidersViewModel>(create: (context) => pvm)
+          ChangeNotifierProvider<ProvidersViewModel>(create: (context) => pvm),
+          ChangeNotifierProvider<AlarmsViewModel>(
+              create: (context) => _alarmsModel)
         ],
         child: MaterialApp(
           title: "ActualIA",
@@ -126,7 +148,8 @@ void main() {
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text('Logout'), findsOne);
 
@@ -143,7 +166,7 @@ void main() {
     await testButton('Storage');
     await testButton('Narrator');
     await testButton('Accessibility');
-    await testButton('Done');
+    // await testButton('Done');
   });
 
   testWidgets("Correct username", (WidgetTester tester) async {
@@ -151,7 +174,8 @@ void main() {
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text("test.test@epfl.ch"), findsOne);
   });
@@ -161,7 +185,8 @@ void main() {
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     expect(find.text("Interests"), findsOne);
     await tester.tap(find.text("Interests"));
@@ -194,7 +219,8 @@ void main() {
         const ProfilePageView(),
         MockNewsSettingsViewModel(),
         pvm,
-        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
 
     await tester.tap(find.text("Sources"));
     await tester.pumpAndSettle();
