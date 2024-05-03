@@ -32,9 +32,7 @@ class MockAuthModel extends AuthModel {
   final bool isOnboardingRequired;
 
   MockAuthModel(super.key, super._googleSignIn,
-      {this.isOnboardingRequired = false}) {
-    print("instantiated mockauth");
-  }
+      {this.isOnboardingRequired = false});
 
   @override
   User? get user => User(
@@ -46,6 +44,7 @@ class MockAuthModel extends AuthModel {
         createdAt: DateTime.now().toIso8601String(),
       );
 
+  @override
   Future<bool> signInWithGoogle() async {
     return Future.value(true);
   }

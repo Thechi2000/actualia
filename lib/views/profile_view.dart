@@ -57,9 +57,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   FilledButton.tonal(
                     onPressed: () async {
                       Navigator.pop(context);
-                      if (await authModel.signOut()) {
-                        debugPrint("signed out fine");
-                      }
+                      await authModel.signOut();
                     },
                     child: const Text(
                         style: TextStyle(fontFamily: "Fira Code"), "Logout"),
