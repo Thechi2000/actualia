@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:actualia/models/news.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
@@ -97,9 +100,15 @@ class NewsViewModel extends ChangeNotifier {
           _newsList.insert(0, _news!);
         }
       }
+
+      for (var news in _newsList) {
+        getAudioFile(news).whenComplete(() => notifyListeners());
+      }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
       _newsList = [];
+      setNewsError(DateTime.now(), "Error fetching news list",
+          "Got the following error : ${e.toString()}");
     }
     notifyListeners();
   }
@@ -143,7 +152,7 @@ class NewsViewModel extends ChangeNotifier {
       title: response['title'],
       // Dates are stored in UTC timezone in the database.
       date: DateTime.parse(response['date']).toLocal().toIso8601String(),
-      transcriptID: response['id'],
+      transcriptId: response['id'],
       audio: response['audio'],
       paragraphs: paragraphs,
     );
@@ -161,12 +170,81 @@ class NewsViewModel extends ChangeNotifier {
     }
   }
 
+  // Function to get the audio file from the database
+  Future<void> getAudioFile(News news) async {
+    var audio = news.audio;
+
+    // Check for valid transcriptId
+    if (news.transcriptId == -1) {
+      return;
+    }
+
+    try {
+      // Generate audio if not present
+      audio ??= await generateAudio(news.transcriptId);
+
+      // File download
+      final response = await supabase.storage.from("audios").download(audio);
+
+      if (response.isEmpty) {
+        log('Audio file not found.', level: Level.WARNING.value);
+        return;
+      }
+
+      log('Audio file downloaded successfully.', level: Level.INFO.value);
+
+      final directory = await getApplicationDocumentsDirectory();
+      final transcriptsDirectory = Directory('${directory.path}/audios');
+
+      if (!await transcriptsDirectory.exists()) {
+        await transcriptsDirectory.create(recursive: true);
+      }
+
+      final file =
+          File('${transcriptsDirectory.path}/${news.transcriptId}.mp3');
+      await file.writeAsBytes(response);
+    } catch (e) {
+      log('Error downloading audio file: $e', level: Level.WARNING.value);
+    }
+  }
+
+  Future<String> generateAudio(int transcriptId) async {
+    try {
+      final audio = await supabase.functions
+          .invoke('generate-audio', body: {"transcriptId": transcriptId});
+
+      log("Cloud function 'audio' invoked successfully.",
+          level: Level.INFO.value);
+      return audio.data;
+    } catch (e) {
+      log("Error invoking audio cloud function: $e",
+          level: Level.WARNING.value);
+      throw Exception("Failed to invoke audio function");
+    }
+  }
+
+  Future<Source?> getAudioSource(int transcriptId) async {
+    if (transcriptId == -1) {
+      return null;
+    }
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/audios/$transcriptId.mp3';
+
+    final file = File(filePath);
+    if (await file.exists()) {
+      return DeviceFileSource(filePath);
+    } else {
+      log("Can't find audio file at $filePath", level: Level.WARNING.value);
+      return null;
+    }
+  }
+
   /// Sets an error message for the news.
   void setNewsError(DateTime date, String title, String message) {
     _news = News(
       date: date.toString().substring(0, 10),
       title: title,
-      transcriptID: -1,
+      transcriptId: -1,
       audio: null,
       paragraphs: [
         Paragraph(
