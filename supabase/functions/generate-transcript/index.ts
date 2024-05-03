@@ -20,13 +20,6 @@ const bodySchema = {
   ],
 };
 
-const bodySchema = {
-  userId: [
-    isString,
-    match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
-  ],
-};
-
 Deno.serve(async (request) => {
   // Check that the required environment variables are available.
   assertHasEnv("GNEWS_API_KEY");
