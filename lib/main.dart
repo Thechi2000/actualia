@@ -1,6 +1,7 @@
 //coverage:ignore-file
 
 import 'package:actualia/models/auth_model.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/views/loading_view.dart';
@@ -38,6 +39,8 @@ Future<void> main() async {
       ChangeNotifierProvider(
           create: (context) => NewsSettingsViewModel(Supabase.instance.client)),
       ChangeNotifierProvider(
+          create: (context) => ProvidersViewModel(Supabase.instance.client)),
+      ChangeNotifierProvider(
           create: (context) => AlarmsViewModel(Supabase.instance.client)),
     ],
     child: const App(),
@@ -63,7 +66,8 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of(context);
     AlarmsViewModel alarmsModel = Provider.of(context);
-    late NewsSettingsViewModel newsSettings;
+    ProvidersViewModel pvm = Provider.of(context);
+    NewsSettingsViewModel newsSettings = Provider.of(context);
 
     Widget home;
     if (alarmsModel.isAlarmActive) {
@@ -74,7 +78,7 @@ class _AppState extends State<App> {
     } else if (authModel.isSignedIn) {
       newsSettings = Provider.of(context);
       if (authModel.isOnboardingRequired) {
-        if (newsSettings.settings == null) {
+        if (newsSettings.settings == null || pvm.newsProviders == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
           home = const InterestWizardView();

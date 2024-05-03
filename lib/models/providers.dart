@@ -11,6 +11,14 @@ class GNewsProvider extends NewsProvider {
   String displayName() {
     return "Google News";
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GNewsProvider;
+  }
+
+  @override
+  int get hashCode => displayName().hashCode;
 }
 
 class RSSFeedProvider extends NewsProvider {
@@ -35,6 +43,14 @@ class RSSFeedProvider extends NewsProvider {
 
     return "$name (RSS)";
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RSSFeedProvider && url == other.url;
+  }
+
+  @override
+  int get hashCode => url.hashCode;
 }
 
 /// Describe a provider, an abstraction describing a way to
@@ -43,7 +59,7 @@ abstract class NewsProvider {
   /// Converts a dynamic value to a NewsProvider.
   ///
   /// The following format are accepted:
-  /// - GNews: `{"type", "gnews"}`
+  /// - GNews: `{"type": "gnews"}`
   /// - RSS: `{"type": "rss", "url": string}`
   static NewsProvider? deserialize(dynamic dict) {
     try {
@@ -62,6 +78,10 @@ abstract class NewsProvider {
       return null;
     }
   }
+
+  static List<(NewsProvider, String)> predefinedProviders = [
+    (GNewsProvider(), "Google News"),
+  ];
 
   /// Converts a NewsProvider to a dynamic value, usable as a json.
   dynamic serialize();
