@@ -97,14 +97,14 @@ class NewsViewModel extends ChangeNotifier {
 
         for (var news in _newsList) {
           getAudioFile(news).whenComplete(() => notifyListeners());
+        }
 
-          // If the date of the first news is more than 12 hours ago, call the cloud function
-          if (DateTime.now()
-                  .difference(DateTime.parse(_newsList[0].date))
-                  .inHours >
-              12) {
-            await generateAndGetNews();
-          }
+        // If the date of the first news is more than 12 hours ago, call the cloud function
+        if (DateTime.now()
+                .difference(DateTime.parse(_newsList[0].date))
+                .inHours >
+            12) {
+          await generateAndGetNews();
         }
       }
     } catch (e) {
