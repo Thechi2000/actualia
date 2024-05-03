@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:actualia/models/alarms.dart';
+import 'package:actualia/models/news_settings.dart';
+import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,7 +32,7 @@ class AlarmsViewModel extends ChangeNotifier {
   }
 
   Future<void> setAlarm(DateTime dateTime, String assetAudioPath,
-      bool loopAudio, bool vibrate, double volume) async {
+      bool loopAudio, bool vibrate, double volume, int? settingsId) async {
     final settings = AlarmSettings(
         id: _alarmId,
         dateTime: dateTime,
@@ -42,6 +47,22 @@ class AlarmsViewModel extends ChangeNotifier {
         androidFullScreenIntent: true);
     print("Alarm set with settings : $settings");
     await Alarm.set(alarmSettings: settings);
+
+    if (settingsId != null) {
+      final timetz =
+          "${dateTime.hour}:${dateTime.minute}:${dateTime.second}+${dateTime.timeZoneOffset.inHours}";
+      try {
+        await supabase.from("alarms").upsert({
+          'created_by': supabase.auth.currentUser!.id,
+          'timetz': timetz,
+          'transcript_settings_id': settingsId
+        }, onConflict: "created_by");
+        print("Alarm pushed on supabase");
+      } catch (e) {
+        //log("Error pushing alarm: $e", level: Level.WARNING.value);
+        print("Error pushing alarm: $e");
+      }
+    }
   }
 
   Future<void> unsetAlarm() async {

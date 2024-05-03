@@ -15,7 +15,6 @@ class NewsAlertSetupView extends StatefulWidget {
 }
 
 class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
-  late bool creating;
   late bool loading;
 
   late bool enabled;
@@ -28,10 +27,11 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
   @override
   void initState() {
     super.initState();
-    creating = true; // widget.alarmSettings == null;
+    AlarmsViewModel alarmModel = Provider.of(context, listen: false);
+    final previousAlarm = alarmModel.alarm;
     loading = false;
 
-    if (creating) {
+    if (previousAlarm == null) {
       enabled = false;
       selectedDateTime = DateTime.now().add(const Duration(minutes: 1));
       selectedDateTime = selectedDateTime.copyWith(second: 0, millisecond: 0);
@@ -39,25 +39,38 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
       vibrate = true;
       volume = 0.3;
       assetAudio = 'assets/audio/boom.mp3';
+      print("Loaded new alarm settings");
     } else {
-      // selectedDateTime = widget.alarmSettings!.dateTime;
-      // loopAudio = widget.alarmSettings!.loopAudio;
-      // vibrate = widget.alarmSettings!.vibrate;
-      // volume = widget.alarmSettings!.volume;
-      // assetAudio = widget.alarmSettings!.assetAudioPath;
+      enabled = true;
+      selectedDateTime = previousAlarm.dateTime;
+      loopAudio = previousAlarm.loopAudio;
+      vibrate = previousAlarm.vibrate;
+      volume = previousAlarm.volume!;
+      assetAudio = previousAlarm.assetAudioPath;
+      print("Loaded previous alarm settings");
     }
   }
 
   Future<void> saveAlarm(BuildContext context) async {
     AlarmsViewModel model = Provider.of(context, listen: false);
+    NewsSettingsViewModel newsSettingsModel =
+        Provider.of(context, listen: false);
+    await newsSettingsModel.fetchSettings();
+    final settingsId = newsSettingsModel.settingsId!;
     await model.setAlarm(
-        selectedDateTime, assetAudio, loopAudio, vibrate, volume);
+        selectedDateTime, assetAudio, loopAudio, vibrate, volume, settingsId);
+  }
+
+  Future<void> updateAlarm(BuildContext context) async {
+    AlarmsViewModel model = Provider.of(context, listen: false);
+    await model.setAlarm(
+        selectedDateTime, assetAudio, loopAudio, vibrate, volume, null);
   }
 
   Future<void> testAlarm(BuildContext context) async {
     AlarmsViewModel model = Provider.of(context, listen: false);
     await model.setAlarm(
-        DateTime.now(), assetAudio, loopAudio, vibrate, volume);
+        DateTime.now(), assetAudio, loopAudio, vibrate, volume, null);
   }
 
   Future<void> deleteAlarm(BuildContext context) async {
@@ -198,6 +211,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                         value: volume,
                         onChanged: (value) {
                           setState(() => volume = value);
+                          updateAlarm(context);
                         },
                       ),
                     ),
@@ -212,7 +226,10 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                     ),
                     Switch(
                       value: loopAudio,
-                      onChanged: (value) => setState(() => loopAudio = value),
+                      onChanged: (value) => setState(() {
+                        loopAudio = value;
+                        updateAlarm(context);
+                      }),
                     ),
                   ],
                 ),
@@ -225,7 +242,10 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                     ),
                     Switch(
                       value: vibrate,
-                      onChanged: (value) => setState(() => vibrate = value),
+                      onChanged: (value) => setState(() {
+                        vibrate = value;
+                        updateAlarm(context);
+                      }),
                     ),
                   ],
                 ),
