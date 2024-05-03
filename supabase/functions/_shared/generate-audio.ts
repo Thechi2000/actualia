@@ -33,12 +33,7 @@ export async function generateAudio(
   }
 
   const user = data[0].user;
-  const transcript = data[0].transcript;
-  const full_transcript = transcript.news.reduce(
-    (accumulator: string, article: any) =>
-      accumulator + article.transcript + "\n",
-    "",
-  );
+  const full_transcript = data[0].transcript.full_transcript;
   const path = `${user}/${transcriptId}.mp3`;
 
   const openai = new OpenAI();
