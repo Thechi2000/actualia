@@ -10,6 +10,7 @@ class AlarmsViewModel extends ChangeNotifier {
 
   static int _alarmId = 1;
   bool isAlarmRinging = false;
+  bool isAlarmActive = false;
 
   AlarmSettings? get alarm => Alarm.getAlarm(_alarmId);
   bool get isAlarmSet => Alarm.getAlarm(_alarmId) != null;
@@ -19,6 +20,7 @@ class AlarmsViewModel extends ChangeNotifier {
     Alarm.ringStream.stream.listen((_) {
       print("ringStream.stream.listen callback called");
       isAlarmRinging = true;
+      isAlarmActive = true;
       notifyListeners();
     });
     checkAndroidScheduleExactAlarmPermission();
@@ -42,9 +44,18 @@ class AlarmsViewModel extends ChangeNotifier {
     await Alarm.set(alarmSettings: settings);
   }
 
+  Future<void> unsetAlarm() async {
+    await Alarm.stop(_alarmId);
+  }
+
   Future<void> stopAlarms() async {
     await Alarm.stopAll();
     isAlarmRinging = false;
+    notifyListeners();
+  }
+
+  void dismissAlarm() {
+    isAlarmActive = false;
     notifyListeners();
   }
 

@@ -8,7 +8,14 @@ import 'package:provider/provider.dart';
 
 class PlayButton extends StatefulWidget {
   final int transcriptId;
-  const PlayButton({super.key, required this.transcriptId});
+  final double size;
+  final Future<void> Function()? onPressed;
+
+  const PlayButton(
+      {super.key,
+      required this.transcriptId,
+      this.size = 40.0,
+      this.onPressed});
 
   @override
   State<PlayButton> createState() => PlayButtonState();
@@ -22,6 +29,12 @@ class PlayButtonState extends State<PlayButton> {
   void initState() {
     super.initState();
     _playerState = PlayerState.stopped;
+  }
+
+  @override
+  void deactivate() {
+    audioPlayer.pause();
+    super.deactivate();
   }
 
   PlayerState get playerState {
@@ -43,17 +56,20 @@ class PlayButtonState extends State<PlayButton> {
 
     return IconButton(
         icon: _playerState == PlayerState.playing
-            ? const Icon(
+            ? Icon(
                 Icons.pause_circle_outline,
-                size: 40.0,
+                size: widget.size,
                 color: THEME_BUTTON,
               )
-            : const Icon(
+            : Icon(
                 Icons.play_circle_outline,
-                size: 40.0,
+                size: widget.size,
                 color: THEME_BUTTON,
               ),
         onPressed: () async {
+          if (widget.onPressed != null) {
+            await widget.onPressed!();
+          }
           switch (_playerState) {
             case PlayerState.playing:
               await audioPlayer.pause();

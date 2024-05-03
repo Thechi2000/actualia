@@ -66,11 +66,9 @@ class _AppState extends State<App> {
     late NewsSettingsViewModel newsSettings;
 
     Widget home;
-    if (alarmsModel.isAlarmRinging) {
+    if (alarmsModel.isAlarmActive) {
       print("On affiche l'alerte !");
-      home = const Scaffold(
-        body: NewsAlertView(),
-      );
+      home = const NewsAlertView();
       Future.microtask(
           () => {_navKey.currentState?.popUntil((r) => r.isFirst)});
     } else if (authModel.isSignedIn) {

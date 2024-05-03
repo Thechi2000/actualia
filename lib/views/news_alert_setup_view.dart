@@ -38,7 +38,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
       loopAudio = true;
       vibrate = true;
       volume = 0.3;
-      assetAudio = 'assets/test.mp3';
+      assetAudio = 'assets/audio/boom.mp3';
     } else {
       // selectedDateTime = widget.alarmSettings!.dateTime;
       // loopAudio = widget.alarmSettings!.loopAudio;
@@ -60,7 +60,10 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
         DateTime.now(), assetAudio, loopAudio, vibrate, volume);
   }
 
-  Future<void> deleteAlarm() async {}
+  Future<void> deleteAlarm(BuildContext context) async {
+    AlarmsViewModel model = Provider.of(context, listen: false);
+    await model.unsetAlarm();
+  }
 
   String getDay() {
     final now = DateTime.now();
@@ -143,7 +146,13 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                         ),
                         Switch(
                           value: enabled,
-                          onChanged: (value) => setState(() => enabled = value),
+                          onChanged: (value) => {
+                            setState(() => enabled = value),
+                            if (value)
+                              {saveAlarm(context)}
+                            else
+                              {deleteAlarm(context)}
+                          },
                         ),
                       ],
                     )

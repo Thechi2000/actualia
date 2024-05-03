@@ -1,4 +1,7 @@
 import 'package:actualia/viewmodels/alarms.dart';
+import 'package:actualia/viewmodels/news.dart';
+import 'package:actualia/widgets/play_button.dart';
+import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,55 +14,61 @@ class NewsAlertView extends StatefulWidget {
 }
 
 class _NewsAlertViewState extends State<NewsAlertView> {
+  int? transcriptId;
+
+  Future<void> fetchTranscriptId(context) async {
+    NewsViewModel news = Provider.of(context, listen: false);
+    await news.fetchNews(DateTime.now());
+    if (news.news?.audio != null) {
+      setState(() {
+        transcriptId = news.news!.transcriptId;
+      });
+    } else if (news.news != null) {
+      await news.getAudioFile(news.news!);
+      setState(() {
+        transcriptId = news.news!.transcriptId;
+      });
+    } else {
+      print("News not found for news alert !");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AlarmsViewModel alarms = Provider.of(context);
+    Future.microtask(() async => fetchTranscriptId(context));
 
-    return Column(
+    Widget maybePlayer = transcriptId != null
+        ? PlayButton(
+            transcriptId: transcriptId!,
+            onPressed: alarms.stopAlarms,
+            size: 200.0)
+        : const CircularProgressIndicator();
+
+    final column = Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Spacer(),
-        Row(
-          children: [
-            const Text('🔔', style: TextStyle(fontSize: 70)),
-            const Text('📰', style: TextStyle(fontSize: 150)),
-            const Text('🔔', style: TextStyle(fontSize: 70)),
-          ],
+        const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-        ),
-        Row(
           children: [
-            const Text("C'est l'heure des news !!",
-                style: TextStyle(fontSize: 20))
+            Text('🔔', style: TextStyle(fontSize: 70)),
+            Text('📰', style: TextStyle(fontSize: 150)),
+            Text('🔔', style: TextStyle(fontSize: 70)),
           ],
-          mainAxisAlignment: MainAxisAlignment.center,
         ),
-        Spacer(),
-        RawMaterialButton(
-          onPressed: () {},
-          elevation: 2.0,
-          fillColor: Colors.lightBlue,
-          child: Icon(
-            Icons.play_arrow,
-            size: 100.0,
-          ),
-          padding: EdgeInsets.all(15.0),
-          shape: CircleBorder(),
-        ),
-        const SizedBox(height: 20),
-        RawMaterialButton(
-          onPressed: alarms.stopAlarms,
-          elevation: 2.0,
-          fillColor: Colors.red,
-          child: Icon(
-            Icons.alarm_off,
-            size: 25.0,
-          ),
-          padding: EdgeInsets.all(15.0),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-        ),
-        Spacer(),
+        maybePlayer,
+        FilledButton.tonal(
+            onPressed: () {
+              alarms.stopAlarms();
+              alarms.dismissAlarm();
+            },
+            child: const Text("Dismiss alarm")),
       ],
+    );
+
+    return Scaffold(
+      body: column,
+      appBar: const TopAppBar(enableProfileButton: false),
     );
   }
 }
