@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 @immutable
-class ExpandableFab extends StatefulWidget {
-  const ExpandableFab({
+class ShareButton extends StatefulWidget {
+  const ShareButton({
     super.key,
     this.initialOpen,
     required this.distance,
@@ -15,10 +15,10 @@ class ExpandableFab extends StatefulWidget {
   final List<Widget> children;
 
   @override
-  State<ExpandableFab> createState() => _ExpandableFabState();
+  State<ShareButton> createState() => _ExpandableFabState();
 }
 
-class _ExpandableFabState extends State<ExpandableFab>
+class _ExpandableFabState extends State<ShareButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
