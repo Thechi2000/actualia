@@ -18,44 +18,20 @@ class ProvidersViewModel extends ChangeNotifier {
     _newsProviders = newsProviders;
   }
 
-  List<String> providersToString(List<NewsProvider> providers) {
-    return providers.map((e) => e.displayName()).toList();
-  }
-
-  List<String> rssToUrl(List<NewsProvider> providers) {
-    return providers.map((e) => (e as RSSFeedProvider).url).toList();
-  }
-
-  List<NewsProvider> stringToProviders(List<String> names) {
-    return names.map((e) {
-      switch (e) {
-        case "Google News":
-          return GNewsProvider() as NewsProvider;
-        default:
-          log("Unknown provider name: $e", level: Level.WARNING.value);
-          return GNewsProvider() as NewsProvider;
-      }
-    }).toList();
-  }
-
   Future<bool> fetchNewsProviders() async {
     try {
       final res = await supabase
-          .from('news_providers')
-          .select()
-          .eq("created_by", supabase.auth.currentUser!.id);
+          .from('news_settings')
+          .select("providers")
+          .eq("created_by", supabase.auth.currentUser!.id)
+          .single();
 
-      _newsProviders = res.map((m) {
-        NewsProvider p = NewsProvider.deserialize(m["type"])!;
-        String id = p.displayName();
-        return (p, id);
-      }).toList();
+      _newsProviders = res["providers"];
       log("fetch result: $_newsProviders",
           name: "DEBUG", level: Level.WARNING.value);
       return true;
     } catch (e) {
-      log("Error when fetching news providers: $e",
-          name: "ERROR", level: Level.WARNING.value);
+      log("Could not fetch news providers: $e", level: Level.WARNING.value);
       _newsProviders = [];
       return false;
     }
@@ -64,23 +40,11 @@ class ProvidersViewModel extends ChangeNotifier {
   Future<bool> pushNewsProviders() async {
     try {
       await supabase
-          .from("news_providers")
-          .delete()
-          .eq("created_by", supabase.auth.currentUser!.id);
-
-      final List<dynamic>? toPush =
-          _newsProviders?.map((e) => e.$1.serialize()).toList();
-      for (var p in toPush!) {
-        await supabase.from("news_providers").upsert({
-          "created_by": supabase.auth.currentUser!.id,
-          "type": p,
-        });
-      }
+          .from("news_settings")
+          .update({"providers": _newsProviders!.map((e) => e.$1.url).toList()});
       return true;
     } catch (e) {
-      debugPrint("[ERROR] $e");
-      log("Error when pushing news providers: $e",
-          name: "ERROR", level: Level.WARNING.value);
+      log("Could not push news providers: $e", level: Level.WARNING.value);
       return false;
     }
   }
