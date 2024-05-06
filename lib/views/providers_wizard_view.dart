@@ -4,7 +4,6 @@ import 'package:actualia/models/providers.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 import '../models/auth_model.dart';
