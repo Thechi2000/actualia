@@ -26,12 +26,11 @@ class ProvidersViewModel extends ChangeNotifier {
           .eq("created_by", supabase.auth.currentUser!.id)
           .single();
 
-      _newsProviders = (res["providers"] as List<String>)
+      _newsProviders = (res["providers"] as List<dynamic>)
           .map((e) => NewsProvider(url: e))
           .toList();
 
-      log("fetch result: $_newsProviders",
-          name: "DEBUG", level: Level.WARNING.value);
+      log("fetch result: $_newsProviders", level: Level.FINEST.value);
       return true;
     } catch (e) {
       log("Could not fetch news providers: $e", level: Level.WARNING.value);

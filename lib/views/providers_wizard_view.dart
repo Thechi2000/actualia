@@ -1,4 +1,3 @@
-import 'package:actualia/models/providers.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
@@ -16,24 +15,34 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() =>
+        Provider.of<ProvidersViewModel>(context, listen: false)
+            .fetchNewsProviders());
   }
 
   @override
   Widget build(BuildContext context) {
-    /* final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
+    final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
     if (widget.items.isEmpty) {
       setState(() {
         widget.items =
             pvm.newsProviders?.map((e) => ProviderWidget(e)).toList() ?? [];
       });
-    } */
+    }
 
     return ListView(physics: const NeverScrollableScrollPhysics(), children: [
       ...widget.items,
       TextButton(
           onPressed: () => setState(
               () => widget.items = [...widget.items, ProviderWidget(null)]),
-          child: Text("Add"))
+          child: const Text("Add")),
+      TextButton(
+          onPressed: () {
+            pvm.setNewsProviders(
+                widget.items.map((e) => e.toProvider()).toList());
+            pvm.pushNewsProviders();
+          },
+          child: const Text("Validate"))
     ]);
   }
 }
