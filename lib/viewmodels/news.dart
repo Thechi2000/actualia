@@ -157,13 +157,13 @@ class NewsViewModel extends ChangeNotifier {
         .toList();
 
     return News(
-      title: response['title'],
-      // Dates are stored in UTC timezone in the database.
-      date: DateTime.parse(response['date']).toLocal().toIso8601String(),
-      transcriptId: response['id'],
-      audio: response['audio'],
-      paragraphs: paragraphs,
-    );
+        title: response['title'],
+        // Dates are stored in UTC timezone in the database.
+        date: DateTime.parse(response['date']).toLocal().toIso8601String(),
+        transcriptId: response['id'],
+        audio: response['audio'],
+        paragraphs: paragraphs,
+        fullTranscript: response['transcript']['full-transcript']);
   }
 
   /// Invokes a cloud function to generate news transcripts.
@@ -262,6 +262,7 @@ class NewsViewModel extends ChangeNotifier {
             content: '',
             url: '')
       ],
+      fullTranscript: message,
     );
   }
 }
