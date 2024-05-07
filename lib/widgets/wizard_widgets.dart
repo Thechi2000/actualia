@@ -171,116 +171,34 @@ class WizardScaffold extends StatelessWidget {
   }
 }
 
-class RSSSelector extends StatefulWidget {
-  final String title;
-  final String buttonText;
-  final bool isInitialOnboarding;
-  final List<(NewsProvider, String)> selectedItems;
-  final void Function(List<(NewsProvider, String)>) onSelect;
-  final void Function() onPressed;
-  final void Function()? onCancel;
+class ProviderWidget extends StatelessWidget {
+  final ProviderType type;
+  final List<String> values;
 
-  const RSSSelector(
-      {required this.onSelect,
-      required this.onPressed,
-      this.title = "Default",
-      this.buttonText = "Next",
-      this.isInitialOnboarding = false,
-      this.onCancel,
-      this.selectedItems = const [],
-      super.key});
+  ProviderWidget(NewsProvider? provider, {super.key})
+      : type = provider?.type ?? ProviderType.rss,
+        values = provider?.parameters ?? List.empty();
 
-  @override
-  State<RSSSelector> createState() => _RSSSelector();
-}
-
-class _RSSSelector extends State<RSSSelector> {
-  late TextEditingController _controller;
-  List<(NewsProvider, String)> _selectedItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedItems = widget.selectedItems.toList();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  NewsProvider toProvider() {
+    return NewsProvider(url: "${type.basePath}/${values.join("/")}");
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget title = WizardSelectorTitle(
-      title: widget.title,
-    );
+    var fields = type.parameters.map((e) => TextField(
+        decoration: InputDecoration(hintText: e),
+        autocorrect: false,
+        maxLines: 1,
+        controller:
+            TextEditingController(text: values[type.parameters.indexOf(e)]),
+        onChanged: (v) => values[type.parameters.indexOf(e)] = v));
 
-    Widget selectUrl = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-            child: TextField(
-          controller: _controller,
-          onSubmitted: (String url) {
-            setState(() {
-              if (url.isNotEmpty &&
-                  !_selectedItems.map((e) => e.$2).contains(url)) {
-                NewsProvider p = RSSFeedProvider(url: url);
-                _selectedItems.add((p, p.displayName()));
-              }
-              widget.onSelect(_selectedItems);
-            });
-          },
-        )),
-        IconButton(
-            onPressed: () {
-              setState(() {
-                _controller.clear();
-              });
-            },
-            icon: const Icon(Icons.close))
-      ],
-    );
-
-    Widget displaySelected = Expanded(
-        child: Container(
-      padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 24.0),
-      child: SingleChildScrollView(
-        child: Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          alignment: WrapAlignment.center,
-          children: _selectedItems
-              .map((item) => OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedItems.remove(item);
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(item.$2), const Icon(Icons.close)],
-                    ),
-                  ))
-              .toList(),
-        ),
-      ),
-    ));
-
-    Widget bottom = WizardNavigationBottomBar(
-      showCancel: !widget.isInitialOnboarding,
-      onCancel: widget.onCancel,
-      showRight: true,
-      rText: widget.buttonText,
-      rOnPressed: () {
-        widget.onPressed();
-      },
-    );
-
-    return Column(
-      children: [title, selectUrl, displaySelected, bottom],
-    );
+    return ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        children: [
+          Text(type.displayName, style: Theme.of(context).textTheme.titleSmall),
+          ...fields,
+        ]);
   }
 }
