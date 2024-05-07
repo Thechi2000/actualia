@@ -7,14 +7,14 @@ import '../models/providers.dart';
 
 class ProvidersViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
-  List<(NewsProvider, String)>? _newsProviders;
+  List<NewsProvider>? _newsProviders;
 
   ProvidersViewModel(this.supabase) {
     fetchNewsProviders();
   }
 
-  List<(NewsProvider, String)>? get newsProviders => _newsProviders;
-  void setNewsProviders(List<(NewsProvider, String)> newsProviders) {
+  List<NewsProvider>? get newsProviders => _newsProviders;
+  void setNewsProviders(List<NewsProvider> newsProviders) {
     _newsProviders = newsProviders;
   }
 
@@ -26,7 +26,10 @@ class ProvidersViewModel extends ChangeNotifier {
           .eq("created_by", supabase.auth.currentUser!.id)
           .single();
 
-      _newsProviders = res["providers"];
+      _newsProviders = (res["providers"] as List<String>)
+          .map((e) => NewsProvider(url: e))
+          .toList();
+
       log("fetch result: $_newsProviders",
           name: "DEBUG", level: Level.WARNING.value);
       return true;
@@ -41,7 +44,7 @@ class ProvidersViewModel extends ChangeNotifier {
     try {
       await supabase
           .from("news_settings")
-          .update({"providers": _newsProviders!.map((e) => e.$1.url).toList()});
+          .update({"providers": _newsProviders!.map((e) => e.url).toList()});
       return true;
     } catch (e) {
       log("Could not push news providers: $e", level: Level.WARNING.value);
