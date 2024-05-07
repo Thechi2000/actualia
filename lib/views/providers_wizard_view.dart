@@ -31,8 +31,8 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
     return ListView(physics: const NeverScrollableScrollPhysics(), children: [
       ...widget.items,
       TextButton(
-          onPressed: () =>
-              setState(() => widget.items.add(ProviderWidget(null))),
+          onPressed: () => setState(
+              () => widget.items = [...widget.items, ProviderWidget(null)]),
           child: Text("Add"))
     ]);
   }

@@ -173,11 +173,13 @@ class WizardScaffold extends StatelessWidget {
 
 class ProviderWidget extends StatelessWidget {
   final ProviderType type;
-  final List<String> values;
+  late final List<String> values;
 
   ProviderWidget(NewsProvider? provider, {super.key})
-      : type = provider?.type ?? ProviderType.rss,
-        values = provider?.parameters ?? List.empty();
+      : type = provider?.type ?? ProviderType.rss {
+    values = provider?.parameters.toList() ??
+        List.filled(type.parameters.length, "");
+  }
 
   NewsProvider toProvider() {
     return NewsProvider(url: "${type.basePath}/${values.join("/")}");
@@ -185,13 +187,15 @@ class ProviderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fields = type.parameters.map((e) => TextField(
-        decoration: InputDecoration(hintText: e),
-        autocorrect: false,
-        maxLines: 1,
-        controller:
-            TextEditingController(text: values[type.parameters.indexOf(e)]),
-        onChanged: (v) => values[type.parameters.indexOf(e)] = v));
+    var fields = type.parameters.map((e) {
+      var index = type.parameters.indexOf(e);
+      return TextField(
+          decoration: InputDecoration(hintText: e),
+          autocorrect: false,
+          maxLines: 1,
+          controller: TextEditingController(text: values[index]),
+          onChanged: (v) => values[index] = v);
+    });
 
     return ListView(
         physics: const NeverScrollableScrollPhysics(),
