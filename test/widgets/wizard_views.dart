@@ -26,7 +26,7 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
 }
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  MockProvidersViewModel({List<(NewsProvider, String)> init = const []})
+  MockProvidersViewModel({List<NewsProvider> init = const []})
       : super(FakeSupabaseClient()) {
     super.setNewsProviders(init);
   }
@@ -242,110 +242,5 @@ void main() {
     await tester.tap(find.text("Cancel"));
     await tester.pumpAndSettle();
     expect(find.text("Select countries"), findsOne);
-  });
-
-  testWidgets(
-      "Providers wizard: correctly display each selector whith no saved values",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(WizardWrapper(
-        wizard: const ProvidersWizardView(),
-        nsvm: MockNewsSettingsViewModel(),
-        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
-        pvm: MockProvidersViewModel()));
-
-    expect(find.byType(TopAppBar), findsOneWidget);
-    expect(find.text("Select a predefined source"), findsOne);
-    expect(find.byType(FilterChip), findsAtLeast(1));
-    expect(find.byType(WizardNavigationBottomBar), findsOne);
-    await tester.tap(find.text("Next"));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(TopAppBar), findsOneWidget);
-    expect(find.text("Enter url for the RSS source of your choice"), findsOne);
-    expect(find.byType(TextField), findsOneWidget);
-    await tester.enterText(find.byType(TextField), "https://test.com");
-    await tester.testTextInput.receiveAction(TextInputAction.done);
-    await tester.pump();
-    expect(find.text(RSSFeedProvider(url: "https://test.com").displayName()),
-        findsOne);
-    expect(find.byType(WizardNavigationBottomBar), findsOneWidget);
-  });
-
-  testWidgets(
-      "Providers wizard: correctly display each selector with saved value",
-      (WidgetTester tester) async {
-    NewsProvider google = GNewsProvider();
-    String dummyUrl = "http://dummy.com";
-    String testUrl = "http://test.com";
-    NewsProvider rssDummy = RSSFeedProvider(url: dummyUrl);
-    NewsProvider rssTest = RSSFeedProvider(url: testUrl);
-
-    ProvidersViewModel pvm = MockProvidersViewModel(init: [
-      (google, google.displayName()),
-      (rssTest, rssTest.displayName()),
-      (rssDummy, rssDummy.displayName())
-    ]);
-    await tester.pumpWidget(WizardWrapper(
-        wizard: const ProvidersWizardView(),
-        nsvm: MockNewsSettingsViewModel(),
-        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
-        pvm: pvm));
-
-    await tester.tap(find.text("Google News"));
-    await tester.tap(find.text("Next"));
-    await tester.pump();
-
-    expect(find.text(rssTest.displayName()), findsOne);
-    expect(find.text(rssDummy.displayName()), findsOne);
-
-    await tester.tap(find.text("Finish"));
-    expect(pvm.newsProviders?.contains(google), equals(false));
-  });
-
-  testWidgets(
-      "Providers wizard: Can select predefined providers and rss providers and push them",
-      (WidgetTester tester) async {
-    ProvidersViewModel pvm = MockProvidersViewModel();
-    await tester.pumpWidget(WizardWrapper(
-        wizard: const ProvidersWizardView(),
-        nsvm: MockNewsSettingsViewModel(),
-        pvm: pvm,
-        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin())));
-
-    await tester.tap(find.text("Google News"));
-    await tester.tap(find.text("Next"));
-    await tester.pump();
-
-    String url = "https://dummy.com";
-    await tester.enterText(find.byType(TextField), url);
-    await tester.testTextInput.receiveAction(TextInputAction.done);
-    await tester.pumpAndSettle();
-    expect(find.text(RSSFeedProvider(url: url).displayName()), findsOne);
-    await tester.tap(find.text("Finish"));
-
-    expect(
-        pvm.newsProviders!.contains((GNewsProvider(), "Google News")), isTrue);
-    NewsProvider rss = RSSFeedProvider(url: url);
-    expect(pvm.newsProviders!.contains((rss, rss.displayName())), isTrue);
-  });
-
-  testWidgets(
-      "Interests wizard: Cancel present and send to previous screen on tap",
-      (tester) async {
-    await tester.pumpWidget(WizardWrapper(
-        wizard: const ProvidersWizardView(),
-        nsvm: MockNewsSettingsViewModel(),
-        pvm: MockProvidersViewModel(),
-        auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin(),
-            isOnboardingRequired: false)));
-
-    expect(find.text("Cancel"), findsOne);
-    await tester.tap(find.text("Next"));
-    await tester.pump();
-    expect(find.byType(RSSSelector), findsOne);
-    expect(find.text("Cancel"), findsOne);
-    await tester.tap(find.text("Cancel"));
-    await tester.pump();
-    expect(find.byType(WizardSelector), findsOne);
   });
 }

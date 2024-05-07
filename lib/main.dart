@@ -10,7 +10,6 @@ import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/views/login_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
-import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -96,7 +95,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
-      home: Material(child: ProvidersWizardView()),
+      home: home,
       navigatorKey: _navKey,
     );
   }

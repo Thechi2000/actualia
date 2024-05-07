@@ -48,6 +48,8 @@ class MockHttp extends BaseMockedHttpClient {
             "providers_id": null,
             "voice_wanted": null
           }, 200, req);
+        case "${BaseMockedHttpClient.baseUrl}/rest/v1/news_settings?select=providers&created_by=eq.${BaseMockedHttpClient.uuid}":
+          return response([], 200, req);
         default:
       }
 

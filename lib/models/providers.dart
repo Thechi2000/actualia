@@ -51,15 +51,7 @@ class NewsProvider {
     } else {
       return parameters.isEmpty
           ? type.displayName
-          : "${type.displayName} ($parameters)";
+          : "${type.displayName} (${parameters.join(", ")})";
     }
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is NewsProvider && url == other.url;
-  }
-
-  @override
-  int get hashCode => url.hashCode;
 }

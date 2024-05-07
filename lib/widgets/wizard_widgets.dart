@@ -179,7 +179,9 @@ class ProviderWidget extends StatefulWidget {
   NewsProvider toProvider() {
     return NewsProvider(
         url: type.basePath.isNotEmpty
-            ? "${type.basePath}/${values.join("/")}"
+            ? values.isNotEmpty
+                ? "${type.basePath}/${values.join("/")}"
+                : type.basePath
             : values.join("/"));
   }
 
