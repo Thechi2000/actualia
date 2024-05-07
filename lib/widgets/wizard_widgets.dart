@@ -183,8 +183,7 @@ class ProviderWidget extends StatefulWidget {
             : values.join("/"));
   }
 
-  ProviderWidget(NewsProvider? provider,
-      {required void Function(ProviderWidget) this.onDelete})
+  ProviderWidget(NewsProvider? provider, {super.key, required this.onDelete})
       : type = provider?.type ?? ProviderType.rss {
     values = provider?.parameters.toList() ??
         List.filled(type.parameters.length, "");
