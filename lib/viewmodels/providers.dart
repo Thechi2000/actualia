@@ -43,7 +43,8 @@ class ProvidersViewModel extends ChangeNotifier {
     try {
       await supabase
           .from("news_settings")
-          .update({"providers": _newsProviders!.map((e) => e.url).toList()});
+          .update({"providers": _newsProviders!.map((e) => e.url).toList()}).eq(
+              "created_by", supabase.auth.currentUser!.id);
       return true;
     } catch (e) {
       log("Could not push news providers: $e", level: Level.WARNING.value);

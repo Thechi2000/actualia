@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProvidersWizardView extends StatefulWidget {
-  ProvidersWizardView({super.key}) : items = List.empty();
+  ProvidersWizardView({super.key}) : items = List.empty(growable: true);
   List<ProviderWidget> items;
 
   @override
@@ -20,21 +20,27 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             .fetchNewsProviders());
   }
 
+  void _removeItem(ProviderWidget w) {
+    setState(() => widget.items.remove(w));
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
     if (widget.items.isEmpty) {
       setState(() {
-        widget.items =
-            pvm.newsProviders?.map((e) => ProviderWidget(e)).toList() ?? [];
+        widget.items = pvm.newsProviders
+                ?.map((e) => ProviderWidget(e, onDelete: (w) => _removeItem(w)))
+                .toList() ??
+            [];
       });
     }
 
     return ListView(physics: const NeverScrollableScrollPhysics(), children: [
       ...widget.items,
       TextButton(
-          onPressed: () => setState(
-              () => widget.items = [...widget.items, ProviderWidget(null)]),
+          onPressed: () => setState(() => widget.items
+              .add(ProviderWidget(null, onDelete: (w) => _removeItem(w)))),
           child: const Text("Add")),
       TextButton(
           onPressed: () {

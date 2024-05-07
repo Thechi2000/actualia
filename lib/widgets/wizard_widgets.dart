@@ -174,12 +174,17 @@ class WizardScaffold extends StatelessWidget {
 class ProviderWidget extends StatefulWidget {
   ProviderType type;
   late List<String> values;
+  void Function(ProviderWidget) onDelete;
 
   NewsProvider toProvider() {
-    return NewsProvider(url: "${type.basePath}/${values.join("/")}");
+    return NewsProvider(
+        url: type.basePath.isNotEmpty
+            ? "${type.basePath}/${values.join("/")}"
+            : values.join("/"));
   }
 
-  ProviderWidget(NewsProvider? provider)
+  ProviderWidget(NewsProvider? provider,
+      {required void Function(ProviderWidget) this.onDelete})
       : type = provider?.type ?? ProviderType.rss {
     values = provider?.parameters.toList() ??
         List.filled(type.parameters.length, "");
@@ -222,6 +227,9 @@ class _ProviderWidgetState extends State<ProviderWidget> {
         children: [
           title,
           ...fields,
+          IconButton(
+              onPressed: () => widget.onDelete(widget),
+              icon: const Icon(Icons.delete))
         ]);
   }
 }
