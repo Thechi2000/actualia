@@ -171,37 +171,56 @@ class WizardScaffold extends StatelessWidget {
   }
 }
 
-class ProviderWidget extends StatelessWidget {
-  final ProviderType type;
-  late final List<String> values;
-
-  ProviderWidget(NewsProvider? provider, {super.key})
-      : type = provider?.type ?? ProviderType.rss {
-    values = provider?.parameters.toList() ??
-        List.filled(type.parameters.length, "");
-  }
+class ProviderWidget extends StatefulWidget {
+  ProviderType type;
+  late List<String> values;
 
   NewsProvider toProvider() {
     return NewsProvider(url: "${type.basePath}/${values.join("/")}");
   }
 
+  ProviderWidget(NewsProvider? provider)
+      : type = provider?.type ?? ProviderType.rss {
+    values = provider?.parameters.toList() ??
+        List.filled(type.parameters.length, "");
+  }
+
+  @override
+  State<StatefulWidget> createState() => _ProviderWidgetState();
+}
+
+class _ProviderWidgetState extends State<ProviderWidget> {
   @override
   Widget build(BuildContext context) {
-    var fields = type.parameters.map((e) {
-      var index = type.parameters.indexOf(e);
+    var fields = widget.type.parameters.map((e) {
+      var index = widget.type.parameters.indexOf(e);
       return TextField(
+          style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(hintText: e),
           autocorrect: false,
           maxLines: 1,
-          controller: TextEditingController(text: values[index]),
-          onChanged: (v) => values[index] = v);
+          controller: TextEditingController(text: widget.values[index]),
+          onChanged: (v) => widget.values[index] = v);
     });
+
+    var title = DropdownButton(
+        value: widget.type,
+        items: ProviderType.values
+            .map((e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e.displayName),
+                ))
+            .toList(),
+        onChanged: (e) => setState(() {
+              widget.type = e!;
+              widget.values = List.filled(widget.type.parameters.length, "");
+            }));
 
     return ListView(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
-          Text(type.displayName, style: Theme.of(context).textTheme.titleSmall),
+          title,
           ...fields,
         ]);
   }
