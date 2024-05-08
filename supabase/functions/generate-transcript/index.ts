@@ -19,7 +19,7 @@ Deno.serve(async (request) => {
   // Check that the required environment variables are available.
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
-  assertHasEnv("RSS_BASE");
+  assertHasEnv("RSSHUB_BASE_URL");
 
   let userId: string = "";
   try {
