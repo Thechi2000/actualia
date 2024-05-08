@@ -1,7 +1,7 @@
 /// List all available provider types, as well as useful informations for display
 enum ProviderType {
   telegram("/telegram/channel", "Telegram", parameters: ["Channel ID"]),
-  google("/google/news/:category", "Google News"),
+  google("/google/news/:query", "Google News"),
   rss("", "RSS", parameters: ["URL"]);
 
   /// Base url of the provider, used for matching
