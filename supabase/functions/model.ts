@@ -40,18 +40,7 @@ export interface News {
     url: string;
   };
 }
-
-interface GNewsProvider {
-  type: "gnews";
-}
-
-interface RSSProvider {
-  type: "rss";
-  url: string;
-}
-
 /**
- * Describe a provider where news can be fetched.
- * They can be distinguished by their `type` property.
+ * Describes the URL or URI of a provider.
  */
-export type Provider = GNewsProvider | RSSProvider;
+export type Provider = string;
