@@ -1,13 +1,8 @@
 import { assertHasEnv } from "../util.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
-import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
-import { corsHeaders } from "../_shared/cors.ts";
-import { fetchNews } from "../providers.ts";
-import { News } from "../model.ts";
 import {
   isString,
   match,
-  required,
   validate,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 
@@ -24,6 +19,7 @@ Deno.serve(async (request) => {
   // Check that the required environment variables are available.
   assertHasEnv("GNEWS_API_KEY");
   assertHasEnv("OPENAI_API_KEY");
+  assertHasEnv("RSS_BASE");
 
   let userId: string = "";
   try {
@@ -35,7 +31,9 @@ Deno.serve(async (request) => {
     }
 
     userId = body.userId;
-  } catch (_) {}
+  } catch (_) {
+    return new Response("Body must be a valid JSON", { status: 400 });
+  }
 
   let supabaseClient;
 

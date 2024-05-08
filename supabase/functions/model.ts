@@ -16,17 +16,17 @@ export interface NewsProvider {
 }
 
 export interface NewsSettings {
-    id: number,
-    created_at: string;
-    created_by: string;
-    interests: any,
-    wants_interests: boolean,
-    countries: any,
-    wants_countries: boolean,
-    cities: any,
-    wants_cities: boolean,
-    user_prompt: string,
-    providers_id: any
+  id: number;
+  created_at: string;
+  created_by: string;
+  interests: string;
+  wants_interests: boolean;
+  countries: string;
+  wants_countries: boolean;
+  cities: string;
+  wants_cities: boolean;
+  user_prompt: string;
+  providers: string[];
 }
 
 export interface News {
