@@ -95,7 +95,8 @@ class AlreadyExistingNewsVM extends NewsViewModel {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -113,20 +114,23 @@ class NonExistingNewsVM extends NewsViewModel {
   @override
   Future<void> fetchNews(DateTime date) {
     if (invokedTranscriptFunction) {
-      setNews(News(
-          date: DateTime.now().toIso8601String(),
-          title: "News",
-          transcriptId: -1,
-          audio: null,
-          paragraphs: [
-            Paragraph(
-                transcript: "text",
-                source: "source",
-                title: "title",
-                date: "12-04-2024",
-                content: "content",
-                url: "url")
-          ]));
+      setNews(
+        News(
+            date: DateTime.now().toIso8601String(),
+            title: "News",
+            transcriptId: -1,
+            audio: null,
+            paragraphs: [
+              Paragraph(
+                  transcript: "text",
+                  source: "source",
+                  title: "title",
+                  date: "12-04-2024",
+                  content: "content",
+                  url: "url")
+            ],
+            fullTranscript: "fullTranscript"),
+      );
     } else {
       setNews(null);
     }
@@ -170,7 +174,8 @@ class NewsListVM extends NewsViewModel {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -405,7 +410,8 @@ void main() {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     expect(vm.generateAudioCalled, isTrue);
   });
 }
