@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
@@ -51,7 +51,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           onPressed: () async {
             pvm.setNewsProviders(
                 widget.items.map((e) => e.toProvider()).toList());
-            if (!await pvm.pushNewsProviders()) {
+            if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
               Fluttertoast.showToast(msg: "Error while updating providers");
             } else {
               Navigator.pop(context);

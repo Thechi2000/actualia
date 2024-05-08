@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test("Correctly parses GNews provider", () {
-    var prov = NewsProvider(url: "/google/news/:category");
+    var prov = NewsProvider(url: "/google/news/:query");
     expect(prov.type, equals(ProviderType.google));
     expect(listEquals(prov.parameters, []), isTrue);
   });
@@ -23,7 +23,7 @@ void main() {
   });
 
   test("Correctly displays GNews provider", () {
-    var prov = NewsProvider(url: "/google/news/:category");
+    var prov = NewsProvider(url: "/google/news/:query");
     expect(prov.displayName(), equals("Google News"));
   });
   test("Correctly displays Telegram provider", () {
