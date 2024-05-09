@@ -118,7 +118,7 @@ void main() async {
     await tester.tap(find.textContaining("Google News"));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.textContaining("Validate"));
+    await tester.tap(find.textContaining("Next"));
     await tester.pumpAndSettle();
 
     // Open the profile view.

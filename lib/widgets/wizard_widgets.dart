@@ -222,15 +222,24 @@ class _ProviderWidgetState extends State<ProviderWidget> {
               widget.values = List.filled(widget.type.parameters.length, "");
             }));
 
-    return ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: [
-          title,
-          ...fields,
-          IconButton(
-              onPressed: () => widget.onDelete(widget),
-              icon: const Icon(Icons.delete))
-        ]);
+    return Card(
+        margin: const EdgeInsets.all(UNIT_PADDING),
+        child: ListView(
+            padding: const EdgeInsets.all(UNIT_PADDING),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  title,
+                  FilledButton.tonalIcon(
+                      label: const Text("Remove"),
+                      onPressed: () => widget.onDelete(widget),
+                      icon: const Icon(Icons.delete))
+                ],
+              ),
+              ...fields,
+            ]));
   }
 }
