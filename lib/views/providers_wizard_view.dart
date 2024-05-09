@@ -9,10 +9,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ProvidersWizardView extends StatefulWidget {
-  const ProvidersWizardView(
-      {this.cancelable = false, this.hasNext = true, super.key});
   final bool cancelable;
   final bool hasNext;
+
+  const ProvidersWizardView(
+      {this.cancelable = false, this.hasNext = true, super.key});
 
   @override
   State<ProvidersWizardView> createState() => _ProvidersWizardView();
