@@ -51,7 +51,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
       const SizedBox(height: UNIT_PADDING),
       Expanded(
           child: ListView(
-        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, UNIT_PADDING),
         children: [
           ...widget.items,
           FilledButton.tonal(
