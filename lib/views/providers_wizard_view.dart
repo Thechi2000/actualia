@@ -80,7 +80,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
                 pvm.setNewsProviders(items.map((e) => e.toProvider()).toList());
                 if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
                   Fluttertoast.showToast(msg: "Error while updating providers");
-                } else {
+                } else if (context.mounted) {
                   Navigator.pop(context);
                 }
               },
