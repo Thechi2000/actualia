@@ -94,11 +94,12 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const AlarmWizardView()));
+            } else {
+              if (context.mounted) Navigator.pop(context);
             }
           } catch (e) {
             log("error in news provider wizard: $e");
           }
-          Navigator.pop(context);
         });
 
     Widget? body;

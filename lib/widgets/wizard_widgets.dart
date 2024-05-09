@@ -121,6 +121,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
   final bool showCancel;
   final bool showRight;
   final String rText;
+  final String cancelText;
   final void Function()? rOnPressed;
   final void Function()? onCancel;
 
@@ -128,6 +129,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
       {this.showCancel = true,
       this.showRight = true,
       this.rText = "right button",
+      this.cancelText = "Cancel",
       this.rOnPressed,
       this.onCancel,
       super.key});
@@ -140,8 +142,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
       right = FilledButton.tonal(onPressed: rOnPressed, child: Text(rText));
     }
     if (showCancel) {
-      cancel =
-          FilledButton.tonal(onPressed: onCancel, child: const Text("Cancel"));
+      cancel = FilledButton.tonal(onPressed: onCancel, child: Text(cancelText));
     }
 
     return Row(

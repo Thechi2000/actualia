@@ -96,7 +96,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
-      home: const AlarmWizardView(),
+      home: home, //const AlarmWizardView(),
       navigatorKey: _navKey,
     );
   }
