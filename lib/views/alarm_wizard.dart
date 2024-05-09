@@ -1,4 +1,6 @@
+import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/viewmodels/alarms.dart';
+import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/widgets/alarms_widget.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,10 @@ class AlarmWizardView extends StatefulWidget {
 
 class _AlarmWizardView extends State<AlarmWizardView> {
   late DateTime _selectedTime;
+  late final String assetAudio;
+  late final bool vibrate;
+  late final double volume;
+  late final bool loopAudio;
 
   @override
   void initState() {
@@ -20,25 +26,46 @@ class _AlarmWizardView extends State<AlarmWizardView> {
     _selectedTime = DateTime.now()
         .add(const Duration(minutes: 5))
         .copyWith(second: 0, millisecond: 0);
+    loopAudio = true;
+    vibrate = true;
+    volume = 0.3;
+    assetAudio = "assets/audio/boom.mp3";
   }
 
   @override
   Widget build(BuildContext context) {
     AlarmsViewModel avm = Provider.of<AlarmsViewModel>(context);
+    AuthModel auth = Provider.of<AuthModel>(context);
 
     Widget body = Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        const Text("work in progress"),
+        Text("Choose your first alarm!",
+            style: Theme.of(context).textTheme.titleLarge),
         PickTimeButton(
             initialTime: _selectedTime,
             onTimeSelected: (time) {
               _selectedTime = time;
             }),
-        WizardNavigationBottomBar(
-          rText: "close",
-          rOnPressed: () => Navigator.pop(context),
-        )
+        OutlinedButton(
+            onPressed: () async {
+              avm.setAlarm(
+                  _selectedTime,
+                  assetAudio,
+                  loopAudio,
+                  vibrate,
+                  volume,
+                  Provider.of<NewsSettingsViewModel>(context, listen: false)
+                      .settingsId);
+              if (auth.isOnboardingRequired) {
+                await auth.setOnboardingIsDone();
+              }
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Validate",
+              style: Theme.of(context).textTheme.titleMedium,
+            )),
       ],
     );
 

@@ -90,7 +90,6 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           try {
             await pvm.pushNewsProviders();
             if (auth.isOnboardingRequired) {
-              await auth.setOnboardingIsDone();
               Navigator.push(
                   context,
                   MaterialPageRoute(
