@@ -66,6 +66,7 @@ class ProvidersViewModel extends ChangeNotifier {
 
   void updateEditedProvider(int index, ProviderType type, List<String> values) {
     _editedProviders[index] = (type, values);
+    // Does not call notifyListeners() to avoid redrawing the edition widgets.
   }
 
   Future<bool> pushNewsProviders() async {
