@@ -37,7 +37,7 @@ Deno.serve(async (request) => {
 
   let supabaseClient;
 
-  if (userId !== "") {
+  if (userId !== "" && typeof userId === "string") {
     supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",

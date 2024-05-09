@@ -22,7 +22,7 @@ export async function fetchNews(
       topic: string | undefined,
     ) {
       let url = provider.replaceAll(":query", topic || "");
-      if(url.startsWith("/")) {
+      if (url.startsWith("/")) {
         url = Deno.env.get("RSSHUB_BASE_URL") + url;
       }
       console.info("Fetching from ", url);
