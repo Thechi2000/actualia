@@ -62,23 +62,19 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             )
           ],
         )),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          widget.cancelable
-              ? FilledButton.tonal(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel"))
-              : const SizedBox(),
-          FilledButton.tonal(
-              onPressed: () async {
-                pvm.updateProvidersFromEdited();
-                if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
-                  Fluttertoast.showToast(msg: "Error while updating providers");
-                } else if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-              child: Text(widget.hasNext ? "Next" : "Done"))
-        ]),
+        WizardNavigationBottomBar(
+          showCancel: widget.cancelable,
+          rText: widget.hasNext ? "Next" : "Done",
+          onCancel: () => Navigator.pop(context),
+          rOnPressed: () async {
+            pvm.updateProvidersFromEdited();
+            if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
+              Fluttertoast.showToast(msg: "Error while updating providers");
+            } else if (context.mounted) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ]);
     }
 
