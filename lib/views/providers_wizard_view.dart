@@ -5,7 +5,6 @@ import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
