@@ -58,10 +58,16 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           padding: const EdgeInsets.fromLTRB(0, 0, 0, UNIT_PADDING),
           children: [
             ...items,
-            FilledButton.tonal(
-                onPressed: () => setState(() => items.add(
-                    ProviderWidget(null, onDelete: (w) => _removeItem(w)))),
-                child: const Text("Add"))
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FilledButton.tonalIcon(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => setState(() => items.add(
+                        ProviderWidget(null, onDelete: (w) => _removeItem(w)))),
+                    label: const Text("Add"))
+              ],
+            )
           ],
         )),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
