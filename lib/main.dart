@@ -4,6 +4,7 @@ import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/alarms.dart';
+import 'package:actualia/views/alarm_wizard.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/news_alert_view.dart';
 import 'package:actualia/views/news_view.dart';
@@ -95,7 +96,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
-      home: home,
+      home: const AlarmWizardView(), //const AlarmWizardView(),
       navigatorKey: _navKey,
     );
   }

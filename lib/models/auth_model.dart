@@ -28,7 +28,7 @@ class AuthModel extends ChangeNotifier {
       if (user != null) {
         final bool onboardingDone =
             user!.userMetadata?['onboardingDone'] ?? false;
-        isOnboardingRequired = !onboardingDone;
+        isOnboardingRequired = true; //!onboardingDone;
       }
 
       notifyListeners();

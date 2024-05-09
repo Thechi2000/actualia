@@ -1,5 +1,6 @@
 import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/widgets/alarms_widget.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -95,30 +96,6 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
     }
   }
 
-  Future<void> pickTime() async {
-    final res = await showTimePicker(
-      initialTime: TimeOfDay.fromDateTime(selectedDateTime),
-      context: context,
-    );
-
-    if (res != null) {
-      setState(() {
-        final now = DateTime.now();
-        selectedDateTime = now.copyWith(
-          hour: res.hour,
-          minute: res.minute,
-          second: 0,
-          millisecond: 0,
-          microsecond: 0,
-        );
-        if (selectedDateTime.isBefore(now)) {
-          selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-        }
-        print("Selected date time : $selectedDateTime");
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     AlarmsViewModel alarmModel = Provider.of(context);
@@ -134,23 +111,9 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    RawMaterialButton(
-                      onPressed: pickTime,
-                      fillColor: Colors.grey[200],
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Container(
-                        margin: const EdgeInsets.all(20),
-                        child: Text(
-                          TimeOfDay.fromDateTime(selectedDateTime)
-                              .format(context),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium!
-                              .copyWith(color: Colors.blueAccent),
-                        ),
-                      ),
-                    ),
+                    PickTimeButton(
+                        initialTime: selectedDateTime,
+                        onTimeSelected: (t) => selectedDateTime = t),
                     Column(
                       children: [
                         Icon(

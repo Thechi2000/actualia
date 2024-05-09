@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 import '../models/auth_model.dart';
+import 'alarm_wizard.dart';
 
 class ProvidersWizardView extends StatefulWidget {
   const ProvidersWizardView({super.key});
@@ -63,7 +64,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
 
     Widget rssSelector = RSSSelector(
         title: "Enter url for the RSS source of your choice",
-        buttonText: "Finish",
+        buttonText: auth.isOnboardingRequired ? "Next" : "Finish",
         isInitialOnboarding: auth.isOnboardingRequired,
         onCancel: () {
           setState(() {
@@ -90,6 +91,10 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             await pvm.pushNewsProviders();
             if (auth.isOnboardingRequired) {
               await auth.setOnboardingIsDone();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AlarmWizardView()));
             }
           } catch (e) {
             log("error in news provider wizard: $e");
