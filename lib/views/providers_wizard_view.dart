@@ -9,9 +9,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ProvidersWizardView extends StatefulWidget {
-  ProvidersWizardView({this.cancelable = false, this.hasNext = true, super.key})
-      : items = null;
-  List<ProviderWidget>? items;
+  const ProvidersWizardView(
+      {this.cancelable = false, this.hasNext = true, super.key});
   final bool cancelable;
   final bool hasNext;
 
@@ -20,6 +19,8 @@ class ProvidersWizardView extends StatefulWidget {
 }
 
 class _ProvidersWizardView extends State<ProvidersWizardView> {
+  List<ProviderWidget>? items;
+
   @override
   void initState() {
     super.initState();
@@ -28,25 +29,17 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             .fetchNewsProviders());
   }
 
-  void _removeItem(ProviderWidget w) {
-    setState(() => widget.items!.remove(w));
-  }
-
   @override
   Widget build(BuildContext context) {
     final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
-    if (widget.items == null) {
-      setState(() {
-        widget.items = pvm.newsProviders
-                ?.map((e) => ProviderWidget(e, onDelete: (w) => _removeItem(w)))
-                .toList() ??
-            [];
-      });
-    }
+    items = pvm.editedProviders.indexed
+        .map((e) => ProviderWidget(
+            idx: e.$1, onDelete: (w) => pvm.removeEditedProvider(e.$1)))
+        .toList();
 
     Widget body = const LoadingView(text: "Loading your sources");
-    if (widget.items != null) {
-      var items = widget.items as List<ProviderWidget>;
+    if (items != null) {
+      var items_ = items as List<ProviderWidget>;
 
       body = Column(children: [
         Text("Choose the sources for your news",
@@ -56,14 +49,13 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             child: ListView(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, UNIT_PADDING),
           children: [
-            ...items,
+            ...items_,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FilledButton.tonalIcon(
                     icon: const Icon(Icons.add),
-                    onPressed: () => setState(() => items.add(
-                        ProviderWidget(null, onDelete: (w) => _removeItem(w)))),
+                    onPressed: () => pvm.addEditedProvider(),
                     label: const Text("Add"))
               ],
             )
@@ -77,7 +69,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
               : const SizedBox(),
           FilledButton.tonal(
               onPressed: () async {
-                pvm.setNewsProviders(items.map((e) => e.toProvider()).toList());
+                pvm.updateProvidersFromEdited();
                 if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
                   Fluttertoast.showToast(msg: "Error while updating providers");
                 } else if (context.mounted) {

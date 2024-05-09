@@ -1,12 +1,33 @@
 import 'package:actualia/models/providers.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class FakeSupabase extends Fake implements SupabaseClient {}
+
+class MockProvidersViewModel extends ProvidersViewModel {
+  final List<(ProviderType, List<String>)> providers;
+
+  MockProvidersViewModel(this.providers) : super(FakeSupabase());
+
+  @override
+  List<(ProviderType, List<String>)> get editedProviders => providers;
+
+  @override
+  void updateEditedProvider(int index, ProviderType type, List<String> values) {
+    providers[index] = (type, values);
+  }
+}
 
 class ProviderWrapper extends StatelessWidget {
-  late final Widget _child;
+  final Widget _child;
+  final ProvidersViewModel pvm;
 
-  ProviderWrapper(this._child, {super.key});
+  const ProviderWrapper(this._child, this.pvm, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,35 +37,35 @@ class ProviderWrapper extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Material(child: _child));
+        home: ChangeNotifierProvider<ProvidersViewModel>(
+            create: (context) => pvm, child: Material(child: _child)));
   }
 }
 
 void main() {
   testWidgets("Correctly display initial data", (tester) async {
-    var w = ProviderWidget(NewsProvider(url: "/telegram/channel/clicnews"),
-        onDelete: (e) {});
-    await tester.pumpWidget(ProviderWrapper(w));
+    var w = ProviderWidget(idx: 0, onDelete: (e) {});
+    await tester.pumpWidget(ProviderWrapper(
+        w,
+        MockProvidersViewModel(const [
+          (ProviderType.telegram, ["clicnews"])
+        ])));
 
     expect(find.textContaining("Telegram"), findsOneWidget);
     expect(find.textContaining("clicnews"), findsOneWidget);
-    expect(w.toProvider().url, equals("/telegram/channel/clicnews"));
-  });
-
-  testWidgets("Defaults to empty RSS", (tester) async {
-    var w = ProviderWidget(null, onDelete: (e) {});
-    await tester.pumpWidget(ProviderWrapper(w));
-
-    expect(find.textContaining("RSS"), findsOneWidget);
-    expect(w.toProvider().url, equals(""));
   });
 
   testWidgets("Can delete", (tester) async {
     var deleted = false;
-    await tester.pumpWidget(ProviderWrapper(ProviderWidget(
-        NewsProvider(url: "/telegram/channel/clicnews"), onDelete: (e) {
-      deleted = true;
-    })));
+    await tester.pumpWidget(ProviderWrapper(
+        ProviderWidget(
+            idx: 0,
+            onDelete: (e) {
+              deleted = true;
+            }),
+        MockProvidersViewModel(const [
+          (ProviderType.telegram, ["clicnews"])
+        ])));
 
     await tester.tap(find.byIcon(Icons.delete));
     await tester.pumpAndSettle();
@@ -53,9 +74,11 @@ void main() {
   });
 
   testWidgets("Can change type", (tester) async {
-    var w = ProviderWidget(NewsProvider(url: "/telegram/channel/clicnews"),
-        onDelete: (e) {});
-    await tester.pumpWidget(ProviderWrapper(w));
+    var w = ProviderWidget(idx: 0, onDelete: (e) {});
+    var pvm = MockProvidersViewModel(List.of([
+      (ProviderType.telegram, List<String>.of(["clicnews"]))
+    ]));
+    await tester.pumpWidget(ProviderWrapper(w, pvm));
 
     await tester.tap(find.textContaining("Telegram"));
     await tester.pumpAndSettle();
@@ -64,19 +87,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining("Google News"), findsOneWidget);
-    expect(w.toProvider().url, equals(ProviderType.google.basePath));
+    expect(pvm.providers[0].$1, equals(ProviderType.google));
   });
 
   testWidgets("Can change field", (tester) async {
-    var w = ProviderWidget(NewsProvider(url: "/telegram/channel/clicnews"),
-        onDelete: (e) {});
-    await tester.pumpWidget(ProviderWrapper(w));
+    var w = ProviderWidget(idx: 0, onDelete: (e) {});
+    var pvm = MockProvidersViewModel(List.of([
+      (ProviderType.telegram, List<String>.of(["clicnews"]))
+    ]));
+    await tester.pumpWidget(ProviderWrapper(w, pvm));
 
     await tester.enterText(find.textContaining("clicnews"), "clic_bonplans");
     await tester.pumpAndSettle();
 
     expect(find.textContaining("Telegram"), findsOneWidget);
     expect(find.textContaining("clic_bonplans"), findsOneWidget);
-    expect(w.toProvider().url, equals("/telegram/channel/clic_bonplans"));
+    expect(listEquals(pvm.providers[0].$2, ["clic_bonplans"]), isTrue);
   });
 }

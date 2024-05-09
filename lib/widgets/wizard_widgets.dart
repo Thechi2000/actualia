@@ -1,7 +1,9 @@
 import 'package:actualia/models/providers.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
@@ -172,24 +174,10 @@ class WizardScaffold extends StatelessWidget {
 }
 
 class ProviderWidget extends StatefulWidget {
-  ProviderType type;
-  late List<String> values;
-  void Function(ProviderWidget) onDelete;
+  final void Function(ProviderWidget) onDelete;
+  final int idx;
 
-  NewsProvider toProvider() {
-    return NewsProvider(
-        url: type.basePath.isNotEmpty
-            ? values.isNotEmpty
-                ? "${type.basePath}/${values.join("/")}"
-                : type.basePath
-            : values.join("/"));
-  }
-
-  ProviderWidget(NewsProvider? provider, {super.key, required this.onDelete})
-      : type = provider?.type ?? ProviderType.rss {
-    values = provider?.parameters.toList() ??
-        List.filled(type.parameters.length, "");
-  }
+  const ProviderWidget({required this.idx, super.key, required this.onDelete});
 
   @override
   State<StatefulWidget> createState() => _ProviderWidgetState();
@@ -198,19 +186,27 @@ class ProviderWidget extends StatefulWidget {
 class _ProviderWidgetState extends State<ProviderWidget> {
   @override
   Widget build(BuildContext context) {
-    var fields = widget.type.parameters.map((e) {
-      var index = widget.type.parameters.indexOf(e);
+    var pvm = Provider.of<ProvidersViewModel>(context);
+
+    var type = pvm.editedProviders[widget.idx].$1;
+    var values = pvm.editedProviders[widget.idx].$2;
+
+    var fields = type.parameters.map((e) {
+      var index = type.parameters.indexOf(e);
       return TextField(
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(hintText: e),
           autocorrect: false,
           maxLines: 1,
-          controller: TextEditingController(text: widget.values[index]),
-          onChanged: (v) => widget.values[index] = v);
+          controller: TextEditingController(text: values[index]),
+          onChanged: (v) {
+            values[index] = v;
+            pvm.updateEditedProvider(widget.idx, type, values);
+          });
     });
 
     var title = DropdownButton(
-        value: widget.type,
+        value: type,
         items: ProviderType.values
             .map((e) => DropdownMenuItem(
                   value: e,
@@ -218,8 +214,9 @@ class _ProviderWidgetState extends State<ProviderWidget> {
                 ))
             .toList(),
         onChanged: (e) => setState(() {
-              widget.type = e!;
-              widget.values = List.filled(widget.type.parameters.length, "");
+              type = e!;
+              values = List.filled(type.parameters.length, "");
+              pvm.updateEditedProvider(widget.idx, type, values);
             }));
 
     return Card(
