@@ -48,9 +48,6 @@ class _NewsViewState extends State<NewsView> {
           });
     }
 
-    return Scaffold(
-      appBar: const TopAppBar(),
-      body: body,
-    );
+    return body;
   }
 }

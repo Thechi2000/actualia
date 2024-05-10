@@ -1,6 +1,7 @@
+import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
 
-import '../models/navigation_bar.dart';
+import '../models/navigation_menu.dart';
 
 class ActualiaBottomNavigationBar extends StatefulWidget {
   final List<Destination> destinations;
@@ -14,6 +15,14 @@ class ActualiaBottomNavigationBar extends StatefulWidget {
 class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
   Views _currentView = Views.NEWS;
 
+  void setCurrentViewState(Views view) {
+    if (view != Views.CAMERA) {
+      setState(() {
+        _currentView = view;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -22,18 +31,17 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     Widget bar = Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: widget.destinations.map((dest) {
-          return OutlinedButton(
-            child: dest.icon,
+          return RawMaterialButton(
+            fillColor: dest.view == _currentView ? THEME_BUTTON : null,
             onPressed: () {
-              setState(() {
-                _currentView = dest.view;
-              });
+              setCurrentViewState(dest.view);
               dest.onPressed(_currentView);
             },
+            child: dest.icon,
           );
         }).toList(),
       ),

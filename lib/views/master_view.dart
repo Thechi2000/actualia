@@ -6,7 +6,7 @@ import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-import '../models/navigation_bar.dart';
+import '../models/navigation_menu.dart';
 import '../widgets/navigation_menu.dart';
 
 class MasterView extends StatefulWidget {
@@ -58,13 +58,13 @@ class _MasterView extends State<MasterView> {
         body = const NewsView();
         break;
       case Views.CAMERA:
-        body = const Text("To be implemented");
+        body = const Center(child: Text("To be implemented"));
         break;
       case Views.FEED:
-        body = const Text("To be implemented");
+        body = const Center(child: Text("To be implemented"));
         break;
       default:
-        body = const Text("SHOULD NOT BE DISPLAYED");
+        body = const Center(child: Text("SHOULD NOT BE DISPLAYED"));
         break;
     }
 
