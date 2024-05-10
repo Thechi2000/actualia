@@ -226,17 +226,15 @@ class _ProviderWidgetState extends State<ProviderWidget> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  title,
-                  FilledButton.tonalIcon(
-                      label: const Text("Remove"),
-                      onPressed: () => widget.onDelete(widget),
-                      icon: const Icon(Icons.delete))
-                ],
-              ),
+              title,
               ...fields,
+              const SizedBox(height: UNIT_PADDING / 2),
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                FilledButton.tonalIcon(
+                    label: const Text("Remove"),
+                    onPressed: () => widget.onDelete(widget),
+                    icon: const Icon(Icons.delete))
+              ]),
             ]));
   }
 }
