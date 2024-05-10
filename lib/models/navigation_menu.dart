@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Destination {
   final Views view;
-  final Icon icon;
+  final IconData icon;
   final void Function(Views) onPressed;
 
   Destination(

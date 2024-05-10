@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
@@ -37,16 +36,14 @@ class _MasterView extends State<MasterView> {
     _destinations = [
       Destination(
           view: Views.NEWS,
-          icon: const Icon(Icons.newspaper),
+          icon: Icons.newspaper,
           onPressed: setCurrentViewState),
       Destination(
           view: Views.CAMERA,
-          icon: const Icon(Icons.camera_alt),
+          icon: Icons.camera_alt,
           onPressed: setCurrentViewState),
       Destination(
-          view: Views.FEED,
-          icon: const Icon(Icons.feed),
-          onPressed: setCurrentViewState)
+          view: Views.FEED, icon: Icons.feed, onPressed: setCurrentViewState)
     ];
   }
 

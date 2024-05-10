@@ -36,12 +36,22 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: widget.destinations.map((dest) {
           return RawMaterialButton(
-            fillColor: dest.view == _currentView ? THEME_BUTTON : null,
+            shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.all(Radius.circular(UNIT_PADDING * 2))),
             onPressed: () {
               setCurrentViewState(dest.view);
               dest.onPressed(_currentView);
             },
-            child: dest.icon,
+            child: dest.view == _currentView
+                ? Icon(
+                    dest.icon,
+                    color: THEME_BUTTON,
+                  )
+                : Icon(
+                    dest.icon,
+                    color: THEME_GREY,
+                  ),
           );
         }).toList(),
       ),
