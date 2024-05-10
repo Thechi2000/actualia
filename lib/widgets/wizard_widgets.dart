@@ -221,11 +221,9 @@ class _ProviderWidgetState extends State<ProviderWidget> {
 
     return Card(
         margin: const EdgeInsets.all(UNIT_PADDING),
-        child: ListView(
+        child: Container(
             padding: const EdgeInsets.all(UNIT_PADDING),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: [
+            child: Column(children: [
               title,
               ...fields,
               const SizedBox(height: UNIT_PADDING / 2),
@@ -235,6 +233,6 @@ class _ProviderWidgetState extends State<ProviderWidget> {
                     onPressed: () => widget.onDelete(widget),
                     icon: const Icon(Icons.delete))
               ]),
-            ]));
+            ])));
   }
 }
