@@ -1,6 +1,7 @@
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/no_news_view.dart';
 import 'package:actualia/widgets/bottom_bar.dart';
+import 'package:actualia/widgets/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/widgets/news_text.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
@@ -52,7 +53,6 @@ class _NewsViewState extends State<NewsView> {
     return Scaffold(
       appBar: const TopAppBar(),
       body: body,
-      bottomNavigationBar: const BottomBar(),
     );
   }
 }

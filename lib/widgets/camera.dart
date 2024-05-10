@@ -28,6 +28,13 @@ class _CameraState extends State<Camera> {
     }
   }
 
+//initState
+  @override
+  void initState() {
+    super.initState();
+    _takePicture();
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
