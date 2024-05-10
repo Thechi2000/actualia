@@ -15,24 +15,19 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> _takePicture() async {
+  Future<XFile?> _takePicture() async {
     final permission = await Permission.camera.request();
 
     if (permission.isGranted) {
       final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
       if (photo != null) {
         debugPrint('Path to picture: ${photo.path}');
+        return photo;
       }
     } else {
       log('Permission denied', level: Level.WARNING.value);
     }
-  }
-
-//initState
-  @override
-  void initState() {
-    super.initState();
-    _takePicture();
+    return null;
   }
 
   @override
