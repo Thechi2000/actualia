@@ -24,11 +24,6 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Widget bar = Container(
       padding: const EdgeInsets.all(16.0),
