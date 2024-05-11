@@ -77,7 +77,7 @@ class MockNewsSettingsViewModel extends NewsSettingsViewModel {
 // End
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  MockProvidersViewModel({List<(NewsProvider, String)> init = const []})
+  MockProvidersViewModel({List<NewsProvider> init = const []})
       : super(FakeSupabaseClient()) {
     super.setNewsProviders(init);
   }

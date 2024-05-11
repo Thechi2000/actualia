@@ -1,7 +1,4 @@
-import "dart:math";
-
 import "package:actualia/models/auth_model.dart";
-import "package:actualia/models/news.dart";
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/models/providers.dart";
 import "package:actualia/viewmodels/alarms.dart";
@@ -32,7 +29,7 @@ class FakeGoTrueClient extends Fake implements GoTrueClient {
 }
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  MockProvidersViewModel({List<(NewsProvider, String)> init = const []})
+  MockProvidersViewModel({List<NewsProvider> init = const []})
       : super(FakeSupabaseClient()) {
     super.setNewsProviders(init);
   }

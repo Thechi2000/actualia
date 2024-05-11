@@ -49,7 +49,8 @@ class _ProfilePageState extends State<ProfilePageView> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const ProvidersWizardView()));
+                builder: (context) =>
+                    ProvidersWizardView(cancelable: true, hasNext: false)));
         break;
       case SettingsRows.ALARM:
         Navigator.push(
