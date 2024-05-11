@@ -38,7 +38,7 @@ class _AlarmWizardView extends State<AlarmWizardView> {
     AuthModel auth = Provider.of<AuthModel>(context);
 
     Widget body = Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("Choose your first alarm!",
             style: Theme.of(context).textTheme.titleLarge),

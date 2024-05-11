@@ -129,6 +129,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                             else
                               {deleteAlarm(context)}
                           },
+                          key: const Key("Switch-on-off"),
                         ),
                       ],
                     )
@@ -193,6 +194,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                         loopAudio = value;
                         updateAlarm(context);
                       }),
+                      key: const Key("Switch-loop"),
                     ),
                   ],
                 ),
@@ -209,6 +211,7 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
                         vibrate = value;
                         updateAlarm(context);
                       }),
+                      key: const Key("Switch-vibrate"),
                     ),
                   ],
                 ),

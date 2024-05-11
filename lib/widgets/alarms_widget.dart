@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ffi';
 
+import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -53,17 +54,14 @@ class _PickTimeButton extends State<PickTimeButton> {
   Widget build(BuildContext context) {
     return RawMaterialButton(
       onPressed: pickTime,
-      fillColor: Colors.grey[200],
+      fillColor: THEME_BUTTON, //Colors.grey[200],
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Container(
-        margin: const EdgeInsets.all(20),
+        margin: const EdgeInsets.all(UNIT_PADDING),
         child: Text(
           TimeOfDay.fromDateTime(_selectedTime).format(context),
-          style: Theme.of(context)
-              .textTheme
-              .displayMedium!
-              .copyWith(color: Colors.blueAccent),
+          style: Theme.of(context).textTheme.displayMedium!,
         ),
       ),
     );
