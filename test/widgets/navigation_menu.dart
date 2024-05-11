@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import "package:flutter_test/flutter_test.dart";
 
 void main() {
-  testWidgets('Navigation menu', (WidgetTester tester) async {
+  testWidgets('Test ActualIA bottom navigation menu',
+      (WidgetTester tester) async {
     final List<Destination> destinations = [
       Destination(
           view: Views.NEWS,
@@ -25,8 +26,15 @@ void main() {
     ];
 
     await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-            body: ActualiaBottomNavigationBar(destinations: destinations))));
+      home: Scaffold(
+        body: const Center(
+          child: Text("test"),
+        ),
+        bottomNavigationBar: ActualiaBottomNavigationBar(
+          destinations: destinations,
+        ),
+      ),
+    ));
 
     await tester.tap(find.byIcon(Icons.newspaper));
     await tester.pump();
