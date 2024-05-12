@@ -1,91 +1,57 @@
-import 'dart:developer';
-import 'package:logging/logging.dart';
+/// List all available provider types, as well as useful informations for display
+enum ProviderType {
+  telegram("/telegram/channel", "Telegram", parameters: ["Channel ID"]),
+  google("/google/news/:query/en", "Google News"),
+  rss("", "RSS", parameters: ["URL"]);
 
-class GNewsProvider extends NewsProvider {
-  @override
-  serialize() {
-    return {"type": "gnews"};
-  }
+  /// Base url of the provider, used for matching
+  final String basePath;
 
-  @override
-  String displayName() {
-    return "Google News";
-  }
+  /// Name of the provider
+  final String displayName;
 
-  @override
-  bool operator ==(Object other) {
-    return other is GNewsProvider;
-  }
+  /// Display name of the additional parameters.
+  /// They are appended in the url in the same order as provided.
+  final List<String> parameters;
 
-  @override
-  int get hashCode => displayName().hashCode;
+  const ProviderType(this.basePath, this.displayName,
+      {this.parameters = const []});
 }
 
-class RSSFeedProvider extends NewsProvider {
+class NewsProvider {
   final String url;
+  late final ProviderType type;
+  late final List<String> parameters;
 
-  RSSFeedProvider({required this.url});
-
-  @override
-  serialize() {
-    return {"type": "rss", "url": url};
-  }
-
-  @override
-  String displayName() {
-    // Use the domain name as the feed name.
-    var name = (RegExp(r"https?:\/\/(?:[^./]+\.)*([^./]+)\.[^./]+(?:\/.*)?")
-                .firstMatch(url)
-                ?.group(1) ??
-            "")
-        .replaceAll("[^a-zA-Z0-9]", " ")
-        .toUpperCase();
-
-    return "$name (RSS)";
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is RSSFeedProvider && url == other.url;
-  }
-
-  @override
-  int get hashCode => url.hashCode;
-}
-
-/// Describe a provider, an abstraction describing a way to
-/// fetch news for the transcript generation.
-abstract class NewsProvider {
-  /// Converts a dynamic value to a NewsProvider.
-  ///
-  /// The following format are accepted:
-  /// - GNews: `{"type": "gnews"}`
-  /// - RSS: `{"type": "rss", "url": string}`
-  static NewsProvider? deserialize(dynamic dict) {
-    try {
-      switch (dict['type']) {
-        case "gnews":
-          return GNewsProvider();
-        case "rss":
-          return RSSFeedProvider(url: dict['url']);
-        default:
-          log("Unknown provider type: ${dict['type']}",
-              level: Level.WARNING.value);
-          return null;
-      }
-    } catch (e) {
-      log("Unable to parse provider: $e", level: Level.WARNING.value);
-      return null;
+  NewsProvider({required this.url}) {
+    type = ProviderType.values.firstWhere((e) => url.startsWith(e.basePath));
+    if (type == ProviderType.rss) {
+      parameters = [url];
+    } else {
+      parameters = url
+          .substring(ProviderType.values
+              .firstWhere((e) => url.startsWith(e.basePath))
+              .basePath
+              .length)
+          .split("/")
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
   }
 
-  static List<(NewsProvider, String)> predefinedProviders = [
-    (GNewsProvider(), "Google News"),
-  ];
+  String displayName() {
+    if (type == ProviderType.rss) {
+      var name = (RegExp(r"https?:\/\/(?:[^./]+\.)*([^./]+)\.[^./]+(?:\/.*)?")
+                  .firstMatch(url)
+                  ?.group(1) ??
+              "")
+          .replaceAll("[^a-zA-Z0-9]", " ");
 
-  /// Converts a NewsProvider to a dynamic value, usable as a json.
-  dynamic serialize();
-
-  /// Returns a unique name to display to the user.
-  String displayName();
+      return "RSS ($name)";
+    } else {
+      return parameters.isEmpty
+          ? type.displayName
+          : "${type.displayName} (${parameters.join(", ")})";
+    }
+  }
 }

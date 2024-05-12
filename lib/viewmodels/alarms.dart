@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -81,20 +84,19 @@ class AlarmsViewModel extends ChangeNotifier {
   }
 
   Future<void> checkAndroidScheduleExactAlarmPermission() async {
-    final scheduleExactAlarmStatus = await Permission.scheduleExactAlarm.status;
-    print('Schedule exact alarm permission: $scheduleExactAlarmStatus.');
-    if (!scheduleExactAlarmStatus.isGranted) {
-      print('Requesting schedule exact alarm permission...');
-      final res = await Permission.scheduleExactAlarm.request();
-      print(
-          'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
-    }
-    final notificationStatus = await Permission.notification.status;
-    print('Notification permission: $notificationStatus.');
-    if (!notificationStatus.isGranted) {
-      print('Requesting notification permission...');
-      final res = await Permission.notification.request();
-      print('Notification permission ${res.isGranted ? '' : 'not'} granted.');
+    try {
+      final scheduleExactAlarmStatus =
+          await Permission.scheduleExactAlarm.status;
+      if (!scheduleExactAlarmStatus.isGranted) {
+        await Permission.scheduleExactAlarm.request();
+      }
+
+      final notificationStatus = await Permission.notification.status;
+      if (!notificationStatus.isGranted) {
+        await Permission.notification.request();
+      }
+    } catch (e) {
+      log("Could not get correct permissions: $e", level: Level.SEVERE.value);
     }
   }
 }
