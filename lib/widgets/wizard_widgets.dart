@@ -243,7 +243,8 @@ class _ProviderWidgetState extends State<ProviderWidget> {
         margin: const EdgeInsets.all(UNIT_PADDING),
         child: Container(
             padding: const EdgeInsets.all(UNIT_PADDING),
-            child: Column(children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               title,
               ...fields,
               const SizedBox(height: UNIT_PADDING / 2),
