@@ -20,6 +20,8 @@ class _DefaultProviderFactory extends _ProviderFactory {
 }
 
 class _TelegramProviderFactory extends _ProviderFactory {
+  const _TelegramProviderFactory();
+
   static final _telegramIdRegex =
       RegExp(r"^(?:https://t\.me/|@)?([a-zA-Z0-9_-]+)$");
 
@@ -37,7 +39,8 @@ class _TelegramProviderFactory extends _ProviderFactory {
 
 /// List all available provider types, as well as useful information for display
 enum ProviderType {
-  telegram("/telegram/channel", "Telegram", parameters: ["Channel ID"]),
+  telegram("/telegram/channel", "Telegram",
+      parameters: ["Channel ID"], factory: _TelegramProviderFactory()),
   google("/google/news/:query/en", "Google News"),
   rss("", "RSS", parameters: ["URL"]);
 
