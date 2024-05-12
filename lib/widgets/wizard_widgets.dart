@@ -212,9 +212,13 @@ class _ProviderWidgetState extends State<ProviderWidget> {
           });
 
       var errorMessage = error != null
-          ? Text(error,
-              style:
-                  Theme.of(context).textTheme.labelLarge?.merge(erroredTheme))
+          ? Container(
+              padding: const EdgeInsets.fromLTRB(UNIT_PADDING, 0, 0, 0),
+              child: Text(error,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.merge(erroredTheme)))
           : null;
 
       return errorMessage != null
