@@ -190,10 +190,19 @@ class _ProviderWidgetState extends State<ProviderWidget> {
 
     var type = pvm.editedProviders[widget.idx].$1;
     var values = pvm.editedProviders[widget.idx].$2;
+    var errors = pvm.editedProviders[widget.idx].$3;
+    print(type);
+    print(errors);
 
-    var fields = type.parameters.map((e) {
-      var index = type.parameters.indexOf(e);
-      return TextField(
+    var fields = type.parameters.indexed.expand((el) {
+      var index = el.$1;
+      var e = el.$2;
+
+      var error = errors?[index];
+      var erroredTheme = TextStyle(
+          color: error != null ? null : const Color.fromARGB(0, 255, 0, 0));
+
+      var textField = TextField(
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(hintText: e),
           autocorrect: false,
@@ -203,6 +212,16 @@ class _ProviderWidgetState extends State<ProviderWidget> {
             values[index] = v;
             pvm.updateEditedProvider(widget.idx, type, values);
           });
+
+      var errorMessage = error != null
+          ? Text(error,
+              style:
+                  Theme.of(context).textTheme.labelLarge?.merge(erroredTheme))
+          : null;
+
+      return errorMessage != null
+          ? [textField, const SizedBox(height: UNIT_PADDING / 3), errorMessage]
+          : [textField];
     });
 
     var title = DropdownButton(
@@ -220,6 +239,7 @@ class _ProviderWidgetState extends State<ProviderWidget> {
             }));
 
     return Card(
+        color: errors != null ? const Color.fromARGB(255, 255, 204, 204) : null,
         margin: const EdgeInsets.all(UNIT_PADDING),
         child: Container(
             padding: const EdgeInsets.all(UNIT_PADDING),

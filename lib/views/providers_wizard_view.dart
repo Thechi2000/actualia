@@ -68,8 +68,10 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           onCancel: () => Navigator.pop(context),
           rOnPressed: () async {
             pvm.updateProvidersFromEdited();
-            if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
-              Fluttertoast.showToast(msg: "Error while updating providers");
+            if (!await pvm.pushNewsProviders()) {
+              if (Platform.isAndroid) {
+                Fluttertoast.showToast(msg: "Error while updating providers");
+              }
             } else if (context.mounted) {
               Navigator.pop(context);
             }
