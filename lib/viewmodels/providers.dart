@@ -85,7 +85,7 @@ class ProvidersViewModel extends ChangeNotifier {
           _editedProviders[i] = (
             _editedProviders[i].$1,
             _editedProviders[i].$2,
-            provider.getOrElse(() => [])
+            provider.fold((l) => null, (r) => r)
           );
         }
 
@@ -93,10 +93,11 @@ class ProvidersViewModel extends ChangeNotifier {
         return false;
       }
 
-      await supabase
-          .from("news_settings")
-          .update({"providers": _newsProviders!.map((e) => e.url).toList()}).eq(
-              "created_by", supabase.auth.currentUser!.id);
+      await supabase.from("news_settings").update({
+        "providers": providers
+            .map((e) => e.fold((l) => l.url, (r) => throw AssertionError()))
+            .toList()
+      }).eq("created_by", supabase.auth.currentUser!.id);
       return true;
     } catch (e) {
       log("Could not push news providers: $e", level: Level.WARNING.value);
