@@ -191,8 +191,6 @@ class _ProviderWidgetState extends State<ProviderWidget> {
     var type = pvm.editedProviders[widget.idx].$1;
     var values = pvm.editedProviders[widget.idx].$2;
     var errors = pvm.editedProviders[widget.idx].$3;
-    print(type);
-    print(errors);
 
     var fields = type.parameters.indexed.expand((el) {
       var index = el.$1;
