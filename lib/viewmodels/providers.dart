@@ -5,14 +5,20 @@ import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/providers.dart';
 
+typedef EditedProviderData = (
+  ProviderType type,
+  List<String> values,
+  List<String?>? errors
+);
+
 class ProvidersViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
 
   List<NewsProvider>? _newsProviders;
   List<NewsProvider>? get newsProviders => _newsProviders;
 
-  List<(ProviderType, List<String>)> get editedProviders => _editedProviders;
-  late List<(ProviderType, List<String>)> _editedProviders;
+  List<EditedProviderData> get editedProviders => _editedProviders;
+  late List<EditedProviderData> _editedProviders;
 
   ProvidersViewModel(this.supabase) {
     fetchNewsProviders();
@@ -34,7 +40,7 @@ class ProvidersViewModel extends ChangeNotifier {
           .map((e) => NewsProvider(url: e))
           .toList();
       _editedProviders = _newsProviders!
-          .map((e) => (e.type, e.parameters.toList()))
+          .map((e) => (e.type, e.parameters.toList(), null as List<String?>?))
           .toList(growable: true);
 
       log("fetch result: $_newsProviders", level: Level.FINEST.value);
@@ -55,7 +61,7 @@ class ProvidersViewModel extends ChangeNotifier {
   }
 
   void addEditedProvider() {
-    _editedProviders.add((ProviderType.rss, [""]));
+    _editedProviders.add((ProviderType.rss, [""], null));
     notifyListeners();
   }
 
@@ -65,12 +71,28 @@ class ProvidersViewModel extends ChangeNotifier {
   }
 
   void updateEditedProvider(int index, ProviderType type, List<String> values) {
-    _editedProviders[index] = (type, values);
+    _editedProviders[index] = (type, values, null);
     // Does not call notifyListeners() to avoid redrawing the edition widgets.
   }
 
   Future<bool> pushNewsProviders() async {
     try {
+      var providers =
+          await Future.wait(editedProviders.map((e) => e.$1.build(e.$2)));
+
+      if (providers.any((e) => e.isRight())) {
+        for (var (i, provider) in providers.indexed) {
+          _editedProviders[i] = (
+            _editedProviders[i].$1,
+            _editedProviders[i].$2,
+            provider.getOrElse(() => [])
+          );
+        }
+
+        notifyListeners();
+        return false;
+      }
+
       await supabase
           .from("news_settings")
           .update({"providers": _newsProviders!.map((e) => e.url).toList()}).eq(
