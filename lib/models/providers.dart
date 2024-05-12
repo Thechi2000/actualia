@@ -1,4 +1,41 @@
-/// List all available provider types, as well as useful informations for display
+import 'package:dartz/dartz.dart';
+
+abstract class _ProviderFactory {
+  const _ProviderFactory();
+
+  Future<Either<NewsProvider, List<String?>>> build(
+      ProviderType type, List<String> values);
+}
+
+class _DefaultProviderFactory extends _ProviderFactory {
+  const _DefaultProviderFactory();
+
+  @override
+  Future<Either<NewsProvider, List<String?>>> build(
+          ProviderType type, List<String> values) async =>
+      Left(NewsProvider(
+          url: [type.basePath, ...values]
+              .where((e) => e.isNotEmpty)
+              .join(", ")));
+}
+
+class _TelegramProviderFactory extends _ProviderFactory {
+  static final _telegramIdRegex =
+      RegExp(r"^(?:https://t\.me/|@)?([a-zA-Z0-9_-]+)$");
+
+  @override
+  Future<Either<NewsProvider, List<String?>>> build(
+      ProviderType type, List<String> values) async {
+    var match = _telegramIdRegex.firstMatch(values[0]);
+    if (match != null) {
+      return Left(NewsProvider(url: "${type.basePath}/${match.group(1)}"));
+    } else {
+      return const Right(["Must be a channel name or an invite link"]);
+    }
+  }
+}
+
+/// List all available provider types, as well as useful information for display
 enum ProviderType {
   telegram("/telegram/channel", "Telegram", parameters: ["Channel ID"]),
   google("/google/news/:query/en", "Google News"),
@@ -14,8 +51,16 @@ enum ProviderType {
   /// They are appended in the url in the same order as provided.
   final List<String> parameters;
 
+  final _ProviderFactory _factory;
+
   const ProviderType(this.basePath, this.displayName,
-      {this.parameters = const []});
+      {this.parameters = const [],
+      _ProviderFactory factory = const _DefaultProviderFactory()})
+      : _factory = factory;
+
+  Future<Either<NewsProvider, List<String?>>> build(List<String> values) {
+    return _factory.build(this, values);
+  }
 }
 
 class NewsProvider {
