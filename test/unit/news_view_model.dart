@@ -188,6 +188,7 @@ class NewsListVM extends NewsViewModel {
         "id": -1,
         "audio": null,
         "transcript": {
+          "fullTranscript": "fullTranscript",
           "news": [
             {
               "transcript": "text",
