@@ -1,6 +1,8 @@
 /// List all available provider types, as well as useful informations for display
 enum ProviderType {
   telegram("/telegram/channel", "Telegram", parameters: ["Channel ID"]),
+  epfl("https://actu.epfl.ch/feeds/rss/fr/", "Actu EPFL"),
+  twentyMinutes("https://partner-feeds.20min.ch/rss/20minutes", "20 Minutes CH"),
   google("/google/news/:query/en", "Google News"),
   rss("", "RSS", parameters: ["URL"]);
 
