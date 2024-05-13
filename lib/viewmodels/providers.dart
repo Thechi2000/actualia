@@ -80,6 +80,7 @@ class ProvidersViewModel extends ChangeNotifier {
       var providers =
           await Future.wait(editedProviders.map((e) => e.$1.build(e.$2)));
 
+      // If an error occurred, reports it and do not push.
       if (providers.any((e) => e.isRight())) {
         for (var (i, provider) in providers.indexed) {
           _editedProviders[i] = (

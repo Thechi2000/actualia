@@ -3,6 +3,8 @@ import 'package:dartz/dartz.dart';
 abstract class _ProviderFactory {
   const _ProviderFactory();
 
+  /// Builds a NewsProvider from its different parameters.
+  /// If one or more of the parameters is invalid, returns a list of errors for each one of them (in the same order as fed to the function).
   Future<Either<NewsProvider, List<String?>>> build(
       ProviderType type, List<String> values);
 }
