@@ -1,7 +1,9 @@
 import 'package:actualia/models/providers.dart';
+import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
@@ -171,116 +173,66 @@ class WizardScaffold extends StatelessWidget {
   }
 }
 
-class RSSSelector extends StatefulWidget {
-  final String title;
-  final String buttonText;
-  final bool isInitialOnboarding;
-  final List<(NewsProvider, String)> selectedItems;
-  final void Function(List<(NewsProvider, String)>) onSelect;
-  final void Function() onPressed;
-  final void Function()? onCancel;
+class ProviderWidget extends StatefulWidget {
+  final void Function(ProviderWidget) onDelete;
+  final int idx;
 
-  const RSSSelector(
-      {required this.onSelect,
-      required this.onPressed,
-      this.title = "Default",
-      this.buttonText = "Next",
-      this.isInitialOnboarding = false,
-      this.onCancel,
-      this.selectedItems = const [],
-      super.key});
+  const ProviderWidget({required this.idx, super.key, required this.onDelete});
 
   @override
-  State<RSSSelector> createState() => _RSSSelector();
+  State<StatefulWidget> createState() => _ProviderWidgetState();
 }
 
-class _RSSSelector extends State<RSSSelector> {
-  late TextEditingController _controller;
-  List<(NewsProvider, String)> _selectedItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedItems = widget.selectedItems.toList();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+class _ProviderWidgetState extends State<ProviderWidget> {
   @override
   Widget build(BuildContext context) {
-    Widget title = WizardSelectorTitle(
-      title: widget.title,
-    );
+    var pvm = Provider.of<ProvidersViewModel>(context);
 
-    Widget selectUrl = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-            child: TextField(
-          controller: _controller,
-          onSubmitted: (String url) {
-            setState(() {
-              if (url.isNotEmpty &&
-                  !_selectedItems.map((e) => e.$2).contains(url)) {
-                NewsProvider p = RSSFeedProvider(url: url);
-                _selectedItems.add((p, p.displayName()));
-              }
-              widget.onSelect(_selectedItems);
-            });
-          },
-        )),
-        IconButton(
-            onPressed: () {
-              setState(() {
-                _controller.clear();
-              });
-            },
-            icon: const Icon(Icons.close))
-      ],
-    );
+    var type = pvm.editedProviders[widget.idx].$1;
+    var values = pvm.editedProviders[widget.idx].$2;
 
-    Widget displaySelected = Expanded(
+    var fields = type.parameters.map((e) {
+      var index = type.parameters.indexOf(e);
+      return TextField(
+          style: Theme.of(context).textTheme.bodyMedium,
+          decoration: InputDecoration(hintText: e),
+          autocorrect: false,
+          maxLines: 1,
+          controller: TextEditingController(text: values[index]),
+          onChanged: (v) {
+            values[index] = v;
+            pvm.updateEditedProvider(widget.idx, type, values);
+          });
+    });
+
+    var title = DropdownButton(
+        value: type,
+        items: ProviderType.values
+            .map((e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e.displayName),
+                ))
+            .toList(),
+        onChanged: (e) => setState(() {
+              type = e!;
+              values = List.filled(type.parameters.length, "");
+              pvm.updateEditedProvider(widget.idx, type, values);
+            }));
+
+    return Card(
+        margin: const EdgeInsets.all(UNIT_PADDING),
         child: Container(
-      padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 24.0),
-      child: SingleChildScrollView(
-        child: Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          alignment: WrapAlignment.center,
-          children: _selectedItems
-              .map((item) => OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedItems.remove(item);
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(item.$2), const Icon(Icons.close)],
-                    ),
-                  ))
-              .toList(),
-        ),
-      ),
-    ));
-
-    Widget bottom = WizardNavigationBottomBar(
-      showCancel: !widget.isInitialOnboarding,
-      onCancel: widget.onCancel,
-      showRight: true,
-      rText: widget.buttonText,
-      rOnPressed: () {
-        widget.onPressed();
-      },
-    );
-
-    return Column(
-      children: [title, selectUrl, displaySelected, bottom],
-    );
+            padding: const EdgeInsets.all(UNIT_PADDING),
+            child: Column(children: [
+              title,
+              ...fields,
+              const SizedBox(height: UNIT_PADDING / 2),
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                FilledButton.tonalIcon(
+                    label: const Text("Remove"),
+                    onPressed: () => widget.onDelete(widget),
+                    icon: const Icon(Icons.delete))
+              ]),
+            ])));
   }
 }
