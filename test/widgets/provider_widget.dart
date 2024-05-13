@@ -104,4 +104,19 @@ void main() {
     expect(find.textContaining("clic_bonplans"), findsOneWidget);
     expect(listEquals(pvm.providers[0].$2, ["clic_bonplans"]), isTrue);
   });
+
+  testWidgets("Errors are displayed", (tester) async {
+    var w = ProviderWidget(idx: 0, onDelete: (e) {});
+    var pvm = MockProvidersViewModel(List.of([
+      (
+        ProviderType.telegram,
+        List<String>.of(["clicnews."]),
+        ["Must be a channel name or an invite link"]
+      )
+    ]));
+    await tester.pumpWidget(ProviderWrapper(w, pvm));
+
+    expect(find.textContaining("Must be a channel name or an invite link"),
+        findsOneWidget);
+  });
 }
