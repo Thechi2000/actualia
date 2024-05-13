@@ -1,10 +1,5 @@
 import { assertHasEnv } from "../util.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
-import {
-  isString,
-  match,
-  validate,
-} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 import { NewsSettings } from "../model.ts";
 import { fetchNews } from "../providers.ts";
 
