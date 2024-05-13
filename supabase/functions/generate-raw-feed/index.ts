@@ -1,29 +1,51 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import { assertHasEnv } from "../util.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.40.0";
+import {
+  isString,
+  match,
+  validate,
+} from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
+import { NewsSettings } from "../model.ts";
+import { fetchNews } from "../providers.ts";
 
-console.log("Hello from Functions!")
+Deno.serve(async (request) => {
+  assertHasEnv("RSSHUB_BASE_URL");
 
-Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
+  // Create a Supabase client with the user's token.
+  const authHeader = request.headers.get("Authorization")!;
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
+
+  // Get the user from the token.
+  const user = await supabaseClient.auth.getUser();
+  if (user.error !== null) {
+    console.error(user.error);
+    return new Response("Authentication error", { status: 401 });
   }
+  const userId = user.data.user.id;
+  console.log("We start the process for the user with ID:", userId);
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
+  // Get the user's interests.
+  console.log("Fetching user settings");
+  const interestsDB = await supabaseClient.from("news_settings").select(
+    "*",
   )
-})
+    .filter("created_by", "eq", userId)
+    .filter("wants_interests", "eq", true);
 
-/* To invoke locally:
+  if (interestsDB.error) {
+    console.error("We can't get the user's interests");
+    console.error(interestsDB.error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
+  const interests: NewsSettings = interestsDB.data[0];
 
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
+  // Get the news.
+  console.log(`Fetching news from ${interests.providers.length} providers`);
+  const news = await fetchNews(interests.providers || [], interests);
 
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/generate-raw-rss-feed' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
+  return new Response(JSON.stringify(news), { status: 200 });
+});
