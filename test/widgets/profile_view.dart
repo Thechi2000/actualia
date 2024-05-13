@@ -93,7 +93,6 @@ class MockAlarmsViewModelViewModel extends AlarmsViewModel {
 
   AlarmSettings? _alarm;
   void internalSetAlarm(AlarmSettings? a) {
-    print("internalSetAlarm called !");
     _alarm = a;
     notifyListeners();
   }
