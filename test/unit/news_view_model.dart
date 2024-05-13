@@ -276,7 +276,7 @@ class NotTodayNewsListVM extends NewsViewModel {
         "title": "News",
         "id": -1,
         "audio": null,
-        "transcript": {"news": []}
+        "transcript": {"fullTranscript": "", "news": []}
       }
     ]);
   }
