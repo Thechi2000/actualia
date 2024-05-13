@@ -4,6 +4,11 @@ enum ProviderType {
   epfl("https://actu.epfl.ch/feeds/rss/fr/", "Actu EPFL"),
   twentyMinutes("https://partner-feeds.20min.ch/rss/20minutes", "20 Minutes CH"),
   google("/google/news/:query/en", "Google News"),
+  franceInfo("https://www.francetvinfo.fr/france.rss", "France Info (France)"),
+  franceInfoMonde("https://www.francetvinfo.fr/monde.rss", "France Info (Monde)"),
+  rts("https://www.rts.ch/info/suisse?format=rss/news", "RTS (Suisse)"),
+  rtsMonde("https://www.rts.ch/info/toute-info/?format=rss/news", "RTS (Monde)"),
+  leMonde("https://www.lemonde.fr/rss/une.xml", "Le Monde (La une)"),
   rss("", "RSS", parameters: ["URL"]);
 
   /// Base url of the provider, used for matching
