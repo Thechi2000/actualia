@@ -197,8 +197,8 @@ class _ProviderWidgetState extends State<ProviderWidget> {
       var e = el.$2;
 
       var error = errors?[index];
-      var erroredTheme = TextStyle(
-          color: error != null ? null : const Color.fromARGB(0, 255, 0, 0));
+      var erroredTheme = const TextStyle(
+          color: Color.fromARGB(255, 163, 0, 0), fontWeight: FontWeight.bold);
 
       var textField = TextField(
           style: Theme.of(context).textTheme.bodyMedium,
