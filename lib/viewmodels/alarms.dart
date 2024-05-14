@@ -59,7 +59,6 @@ class AlarmsViewModel extends ChangeNotifier {
           'transcript_settings_id': settingsId
         }, onConflict: "created_by");
       } catch (e) {
-        //log("Error pushing alarm: $e", level: Level.WARNING.value);
         log("Error pushing alarm: $e", level: Level.SEVERE.value);
       }
     }
