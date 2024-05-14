@@ -85,6 +85,8 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   Future<void> getNewsList() async {
+    print("suzdgfshidufh");
+
     try {
       var response = await fetchNewsList();
 
@@ -95,9 +97,8 @@ class NewsViewModel extends ChangeNotifier {
         hasNews = true;
         _newsList = response.map<News>((news) => parseNews(news)).toList();
 
-        for (var news in _newsList) {
-          getAudioFile(news).whenComplete(() => notifyListeners());
-        }
+        Future.wait(_newsList.map((e) => getAudioFile(e)))
+            .whenComplete(() => notifyListeners());
 
         // If the date of the first news is more than 12 hours ago, call the cloud function
         if (DateTime.now()
