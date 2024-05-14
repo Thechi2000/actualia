@@ -2,6 +2,8 @@ import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { fetchNews } from "../providers.ts";
 import { News } from "../model.ts";
+import SupabaseClient from "https://esm.sh/v135/@supabase/supabase-js@2.40.0/dist/module/SupabaseClient.js";
+import { NewsSettings } from "../model.ts";
 
 interface Result {
   transcript: string;
@@ -25,7 +27,7 @@ interface Transcript {
 
 export async function generateTranscript(
   userId: string,
-  supabaseClient: any,
+  supabaseClient: SupabaseClient,
 ) {
   console.log("We start the process for the user with ID:", userId);
 
@@ -37,33 +39,16 @@ export async function generateTranscript(
     .filter("created_by", "eq", userId)
     .filter("wants_interests", "eq", true);
 
-  let interests = null;
   if (interestsDB.error) {
     console.error("We can't get the user's interests");
     console.error(interestsDB.error);
     return new Response("Internal Server Error", { status: 500 });
-  } else {
-    interests = interestsDB.data[0];
   }
-
-  console.log("Fetching provider from the database");
-  const providersDB = await supabaseClient.from("news_providers").select("*")
-    .in(
-      "id",
-      interests["providers_id"] || [],
-    );
-  let providers = null;
-  if (providersDB.error) {
-    console.error("We can't get the user's providers");
-    console.error(providersDB.error);
-    return new Response("Internal Server Error", { status: 500 });
-  } else {
-    providers = providersDB.data.map((p: any) => p.type);
-  }
+  const interests: NewsSettings = interestsDB.data[0];
 
   // Get the news.
-  console.log(`Fetching news from ${providers.length} providers`);
-  const news = await fetchNews(providers || [], interests);
+  console.log(`Fetching news from ${interests.providers.length} providers`);
+  const news = await fetchNews(interests.providers || [], interests);
 
   // Generate a transcript from the news.
   console.log("Generating transcript from news");
