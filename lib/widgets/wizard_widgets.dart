@@ -197,8 +197,8 @@ class _ProviderWidgetState extends State<ProviderWidget> {
       var e = el.$2;
 
       var error = errors?[index];
-      var erroredTheme = const TextStyle(
-          color: Color.fromARGB(255, 163, 0, 0), fontWeight: FontWeight.bold);
+      var erroredTheme =
+          const TextStyle(color: THEME_ERROR_TEXT, fontWeight: FontWeight.bold);
 
       var textField = TextField(
           style: Theme.of(context).textTheme.bodyMedium,
@@ -241,7 +241,7 @@ class _ProviderWidgetState extends State<ProviderWidget> {
             }));
 
     return Card(
-        color: errors != null ? const Color.fromARGB(255, 255, 204, 204) : null,
+        color: errors != null ? THEME_ERROR_BACKGROUND : null,
         margin: const EdgeInsets.all(UNIT_PADDING),
         child: Container(
             padding: const EdgeInsets.all(UNIT_PADDING),
