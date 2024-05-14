@@ -47,7 +47,7 @@ class MockNewsViewModel extends NewsViewModel {
             content: "content4",
             url: "url4")
       ],
-      fullTranscript: "fullTranscript");
+      fullTranscript: "full-transcript");
 
   @override
   List<News> get newsList => [
@@ -86,7 +86,7 @@ class MockNewsViewModel extends NewsViewModel {
                   content: "content4",
                   url: "url4")
             ],
-            fullTranscript: "fullTranscript"),
+            fullTranscript: "full-transcript"),
         News(
             title: "Title2",
             date: "1970-01-01",
@@ -122,7 +122,7 @@ class MockNewsViewModel extends NewsViewModel {
                   content: "content4",
                   url: "url4")
             ],
-            fullTranscript: "fullTranscript"),
+            fullTranscript: "full-transcript"),
         News(
             title: "Title3",
             date: "1970-01-01",
@@ -144,7 +144,7 @@ class MockNewsViewModel extends NewsViewModel {
                   content: "content2",
                   url: "url2"),
             ],
-            fullTranscript: "fullTranscript"),
+            fullTranscript: "full-transcript"),
       ];
 
   @override
