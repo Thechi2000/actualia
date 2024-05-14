@@ -1,4 +1,7 @@
+import 'package:http/http.dart' as http;
+
 import 'package:dartz/dartz.dart';
+import 'package:xml/xml.dart';
 
 abstract class _ProviderFactory {
   const _ProviderFactory();
@@ -39,12 +42,58 @@ class _TelegramProviderFactory extends _ProviderFactory {
   }
 }
 
+class _RSSFeedProviderFactory extends _ProviderFactory {
+  const _RSSFeedProviderFactory();
+
+  static const paths = [
+    "/feed/",
+    "/rss/",
+    "/blog/feed/",
+    "/blog/rss/",
+    "/rss.xml",
+    "/blog/rss.xml"
+  ];
+
+  Future<bool> _isRss(Uri url) async {
+    try {
+      var file = await http.get(url);
+      var document = XmlDocument.parse(file.body);
+      return document.findAllElements("rss").isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<Either<NewsProvider, List<String?>>> build(
+      ProviderType type, List<String> values) async {
+    try {
+      var url = Uri.parse(values[0]);
+
+      // Finds a related RSS feed by iterating over a list of predefined uris often used for feeds.
+      var urls = [url, ...paths.map((e) => url.resolve(e))];
+
+      var feeds = (await Future.wait(
+              urls.map((e) => _isRss(e).then((value) => (e, value)))))
+          .where((element) => element.$2);
+
+      if (feeds.isNotEmpty) {
+        return Left(NewsProvider(url: feeds.firstOrNull!.$1.toString()));
+      } else {
+        return const Right(["Unable to find related rss feed"]);
+      }
+    } catch (e) {
+      return const Right(["Must be a valid URL"]);
+    }
+  }
+}
+
 /// List all available provider types, as well as useful information for display
 enum ProviderType {
   telegram("/telegram/channel", "Telegram",
       parameters: ["Channel ID"], factory: _TelegramProviderFactory()),
   google("/google/news/:query/en", "Google News"),
-  rss("", "RSS", parameters: ["URL"]);
+  rss("", "RSS", parameters: ["URL"], factory: _RSSFeedProviderFactory());
 
   /// Base url of the provider, used for matching
   final String basePath;
