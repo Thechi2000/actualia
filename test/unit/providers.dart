@@ -34,4 +34,12 @@ void main() {
     var prov = NewsProvider(url: "http://rss.cnn.com/rss/cnn_topstories.rss");
     expect(prov.displayName(), equals("RSS (cnn)"));
   });
+
+  test("Telegram provider is correctly built", () async {
+    (await ProviderType.telegram.build(["clicnews"])).fold(
+        (l) => expect(l.url, equals("/telegram/channel/clicnews")),
+        (r) => fail("Provider build should have been successful"));
+    (await ProviderType.telegram.build(["clic.news"]))
+        .fold((l) => fail("Provider build should have failed"), (r) {});
+  });
 }
