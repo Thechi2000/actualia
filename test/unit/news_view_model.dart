@@ -65,7 +65,7 @@ class FakeFunctionsClient extends Fake implements FunctionsClient {
       Map<String, dynamic>? body,
       HttpMethod method = HttpMethod.post}) {
     expect(functionName, equals('generate-transcript'));
-    expect(body, isNull);
+    expect(body, equals({}));
     expect(method, equals(HttpMethod.post));
 
     return Future.value(FunctionResponse(status: 200));
