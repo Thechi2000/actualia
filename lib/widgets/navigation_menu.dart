@@ -27,6 +27,7 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
   Widget build(BuildContext context) {
     Widget bar = Container(
       padding: const EdgeInsets.all(16.0),
+      color: THEME_LIGHTGRAY,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: widget.destinations.map((dest) {
@@ -38,14 +39,20 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
               setCurrentViewState(dest.view);
               dest.onPressed(_currentView);
             },
+            // constraints: const BoxConstraints(
+            //   minHeight: 50,
+            //   minWidth: 100
+            // ),
             child: dest.view == _currentView
                 ? Icon(
                     dest.icon,
                     color: THEME_BUTTON,
+                    size: ICON_NAV_SIZE,
                   )
                 : Icon(
                     dest.icon,
                     color: THEME_GREY,
+                    size: ICON_NAV_SIZE,
                   ),
           );
         }).toList(),
