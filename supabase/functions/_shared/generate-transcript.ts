@@ -71,7 +71,7 @@ export async function generateTranscript(
   const { data: transcriptRow, error } = await supabaseClient.from("news")
     .insert({
       user: userId,
-      title: transcript.title, // For retro-compatibility, ideally to be removed in a future PR
+      title: transcript.title,
       transcript: transcript,
     }).select().single();
   if (error) {
