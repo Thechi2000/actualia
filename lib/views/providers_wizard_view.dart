@@ -39,7 +39,9 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
         .toList();
 
     Widget body = const LoadingView(text: "Loading your sources");
-    if (items != null) {
+    if (pvm.isPushing) {
+      body = const LoadingView(text: "Updating");
+    } else if (items != null) {
       var items_ = items as List<ProviderWidget>;
 
       body = Column(children: [
