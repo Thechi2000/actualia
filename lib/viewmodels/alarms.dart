@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,14 +22,13 @@ class AlarmsViewModel extends ChangeNotifier {
     supabase = supabaseClient;
     if (!Alarm.ringStream.hasListener) {
       Alarm.ringStream.stream.listen((_) {
-        print("ringStream.stream.listen callback called");
         isAlarmRinging = true;
         isAlarmActive = true;
         notifyListeners();
       });
     } else {
-      print(
-          "WARNING: Alarm.ringStream already had a listener ! Callback ignored");
+      log("Alarm.ringStream already had a listener ! Callback ignored",
+          level: Level.WARNING.value);
     }
     checkAndroidScheduleExactAlarmPermission();
   }
@@ -45,7 +47,6 @@ class AlarmsViewModel extends ChangeNotifier {
         notificationBody: 'Your customized News Alert is ready !',
         enableNotificationOnKill: true,
         androidFullScreenIntent: true);
-    print("Alarm set with settings : $settings");
     await Alarm.set(alarmSettings: settings);
 
     if (settingsId != null) {
@@ -57,10 +58,8 @@ class AlarmsViewModel extends ChangeNotifier {
           'timetz': timetz,
           'transcript_settings_id': settingsId
         }, onConflict: "created_by");
-        print("Alarm pushed on supabase");
       } catch (e) {
-        //log("Error pushing alarm: $e", level: Level.WARNING.value);
-        print("Error pushing alarm: $e");
+        log("Error pushing alarm: $e", level: Level.SEVERE.value);
       }
     }
   }
@@ -81,20 +80,19 @@ class AlarmsViewModel extends ChangeNotifier {
   }
 
   Future<void> checkAndroidScheduleExactAlarmPermission() async {
-    final scheduleExactAlarmStatus = await Permission.scheduleExactAlarm.status;
-    print('Schedule exact alarm permission: $scheduleExactAlarmStatus.');
-    if (!scheduleExactAlarmStatus.isGranted) {
-      print('Requesting schedule exact alarm permission...');
-      final res = await Permission.scheduleExactAlarm.request();
-      print(
-          'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
-    }
-    final notificationStatus = await Permission.notification.status;
-    print('Notification permission: $notificationStatus.');
-    if (!notificationStatus.isGranted) {
-      print('Requesting notification permission...');
-      final res = await Permission.notification.request();
-      print('Notification permission ${res.isGranted ? '' : 'not'} granted.');
+    try {
+      final scheduleExactAlarmStatus =
+          await Permission.scheduleExactAlarm.status;
+      if (!scheduleExactAlarmStatus.isGranted) {
+        await Permission.scheduleExactAlarm.request();
+      }
+
+      final notificationStatus = await Permission.notification.status;
+      if (!notificationStatus.isGranted) {
+        await Permission.notification.request();
+      }
+    } catch (e) {
+      log("Could not get correct permissions: $e", level: Level.SEVERE.value);
     }
   }
 }

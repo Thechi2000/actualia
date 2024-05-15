@@ -94,10 +94,8 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         try {
           await nsvm.pushSettings(toSend);
           if (auth.isOnboardingRequired) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ProvidersWizardView()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProvidersWizardView()));
           } else {
             if (context.mounted) Navigator.pop(context);
           }
