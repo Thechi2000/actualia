@@ -45,6 +45,7 @@ class _TelegramProviderFactory extends _ProviderFactory {
 class _RSSFeedProviderFactory extends _ProviderFactory {
   const _RSSFeedProviderFactory();
 
+  /// Simple paths which may point to a rss feed.
   static const paths = [
     "/feed/",
     "/rss/",
@@ -53,8 +54,14 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
     "/rss.xml",
     "/blog/rss.xml"
   ];
-  static final _rssUrlRegex = new RegExp(r'"([^"]*(feed|rss)[^"]*)"');
 
+  /// Regex matching any XML attribute containing either "rss" or "feed"
+  static final _rssUrlRegex =
+      RegExp(r'"([^"]*(feed|rss)[^"]*)"', caseSensitive: false);
+
+  /// Checks whether a url is a rss document.
+  ///
+  /// To do so, it requests the url, parses it as a XML file and looks for a <rss></rss> tag.
   Future<bool> _isRss(Uri url) async {
     try {
       var document = XmlDocument.parse((await http.get(url)).body);
@@ -64,9 +71,10 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
     }
   }
 
-  List<String> _listRssUrl(String document) {
+  /// List all the urls that may point to a rss feed in a string. Should be used on HTML documents.
+  List<String> _listRssUrl(String input) {
     var r = _rssUrlRegex
-        .allMatches(document)
+        .allMatches(input)
         .map((m) => m.group(1))
         .whereType<String>()
         .toList();
