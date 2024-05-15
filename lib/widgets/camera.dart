@@ -9,13 +9,13 @@ class Camera extends StatefulWidget {
   const Camera({super.key});
 
   @override
-  State<Camera> createState() => _CameraState();
+  State<Camera> createState() => CameraState();
 }
 
-class _CameraState extends State<Camera> {
+class CameraState extends State<Camera> {
   final ImagePicker _picker = ImagePicker();
 
-  Future<XFile?> _takePicture() async {
+  Future<XFile?> takePicture() async {
     final permission = await Permission.camera.request();
 
     if (permission.isGranted) {
@@ -33,7 +33,7 @@ class _CameraState extends State<Camera> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: _takePicture,
+      onPressed: takePicture,
       icon: const Icon(Icons.camera_alt),
     );
   }

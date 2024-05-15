@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NewsRecognitionViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
+  final ImagePicker _picker = ImagePicker();
 
   NewsRecognitionViewModel(SupabaseClient supabaseClient) {
     supabase = supabaseClient;
@@ -34,5 +37,20 @@ class NewsRecognitionViewModel extends ChangeNotifier {
           level: Level.WARNING.value);
       throw Exception("Failed to invoke process-image function");
     }
+  }
+
+  Future<XFile?> takePicture() async {
+    final permission = await Permission.camera.request();
+
+    if (permission.isGranted) {
+      final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+      if (photo != null) {
+        debugPrint('Path to picture: ${photo.path}');
+        return photo;
+      }
+    } else {
+      log('Permission denied', level: Level.WARNING.value);
+    }
+    return null;
   }
 }

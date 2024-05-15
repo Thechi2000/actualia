@@ -1,9 +1,12 @@
 import 'dart:developer';
 
+import 'package:actualia/viewmodels/news_recognition.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 
 import '../models/navigation_menu.dart';
 import '../widgets/navigation_menu.dart';
@@ -20,14 +23,23 @@ class _MasterView extends State<MasterView> {
   late List<Destination> _destinations;
 
   void setCurrentViewState(Views view) {
-    if (view == Views.CAMERA) {
-      log("Camera button pressed on navigation bar",
-          level: Level.WARNING.value);
-    } else {
+    if (view != Views.CAMERA) {
       setState(() {
         _currentViews = view;
       });
     }
+  }
+
+  void cameraButtonPressed(Views view) {
+    log("Camera button pressed on navigation bar", level: Level.INFO.value);
+    debugPrint("Camera button pressed");
+    NewsRecognitionViewModel newsRecognitionVM =
+        Provider.of<NewsRecognitionViewModel>(context, listen: false);
+    Future<XFile?> image =
+        Future.microtask(() => newsRecognitionVM.takePicture());
+    image.then((value) {
+      if (value != null) newsRecognitionVM.recognizeText(value.path);
+    });
   }
 
   @override
@@ -41,7 +53,7 @@ class _MasterView extends State<MasterView> {
       Destination(
           view: Views.CAMERA,
           icon: Icons.camera_alt,
-          onPressed: setCurrentViewState),
+          onPressed: cameraButtonPressed),
       Destination(
           view: Views.FEED, icon: Icons.feed, onPressed: setCurrentViewState)
     ];
