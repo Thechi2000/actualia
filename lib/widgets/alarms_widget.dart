@@ -54,7 +54,7 @@ class _PickTimeButton extends State<PickTimeButton> {
   Widget build(BuildContext context) {
     return RawMaterialButton(
       onPressed: pickTime,
-      fillColor: THEME_BUTTON, //Colors.grey[200],
+      fillColor: THEME_BUTTON,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Container(
