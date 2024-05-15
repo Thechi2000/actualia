@@ -227,10 +227,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text("OK"));
 
-    await tester.tap(find.byKey(const Key("Switch-on-off")));
+    await tester.tap(find.byKey(const Key("switch-on-off")));
     await tester.drag(find.byType(Slider), Offset.fromDirection(30));
-    await tester.tap(find.byKey(const Key("Switch-loop")));
-    await tester.tap(find.byKey(const Key("Switch-vibrate")));
+    await tester.tap(find.byKey(const Key("switch-loop")));
+    await tester.tap(find.byKey(const Key("switch-vibrate")));
 
     await tester.pumpAndSettle();
     await tester.tap(find.text("Done"));
