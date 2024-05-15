@@ -53,15 +53,24 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
     "/rss.xml",
     "/blog/rss.xml"
   ];
+  static final _rssUrlRegex = new RegExp(r'"([^"]*(feed|rss)[^"]*)"');
 
   Future<bool> _isRss(Uri url) async {
     try {
-      var file = await http.get(url);
-      var document = XmlDocument.parse(file.body);
+      var document = XmlDocument.parse((await http.get(url)).body);
       return document.findAllElements("rss").isNotEmpty;
     } catch (e) {
       return false;
     }
+  }
+
+  List<String> _listRssUrl(String document) {
+    var r = _rssUrlRegex
+        .allMatches(document)
+        .map((m) => m.group(1))
+        .whereType<String>()
+        .toList();
+    return r;
   }
 
   @override
@@ -69,9 +78,14 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
       ProviderType type, List<String> values) async {
     try {
       var url = Uri.parse(values[0]);
+      var document = (await http.get(url)).body;
 
       // Finds a related RSS feed by iterating over a list of predefined uris often used for feeds.
-      var urls = [url, ...paths.map((e) => url.resolve(e))];
+      var urls = [
+        url,
+        ...paths.map((e) => url.resolve(e)),
+        ..._listRssUrl(document).map((e) => Uri.tryParse(e)).whereType<Uri>()
+      ];
 
       var feeds = (await Future.wait(
               urls.map((e) => _isRss(e).then((value) => (e, value)))))
