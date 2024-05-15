@@ -85,8 +85,6 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   Future<void> getNewsList() async {
-    print("suzdgfshidufh");
-
     try {
       var response = await fetchNewsList();
 
