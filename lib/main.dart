@@ -72,7 +72,6 @@ class _AppState extends State<App> {
 
     Widget home;
     if (alarmsModel.isAlarmActive) {
-      print("On affiche l'alerte !");
       home = const NewsAlertView();
       Future.microtask(
           () => {_navKey.currentState?.popUntil((r) => r.isFirst)});

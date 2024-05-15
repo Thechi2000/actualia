@@ -37,7 +37,6 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
       vibrate = true;
       volume = 0.3;
       assetAudio = 'assets/audio/boom.mp3';
-      print("Loaded new alarm settings");
     } else {
       enabled = true;
       selectedDateTime = previousAlarm.dateTime;
@@ -45,7 +44,6 @@ class _NewsAlertSetupViewState extends State<NewsAlertSetupView> {
       vibrate = previousAlarm.vibrate;
       volume = previousAlarm.volume!;
       assetAudio = previousAlarm.assetAudioPath;
-      print("Loaded previous alarm settings");
     }
   }
 

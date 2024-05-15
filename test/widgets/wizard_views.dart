@@ -5,7 +5,6 @@ import "package:actualia/viewmodels/alarms.dart";
 import "package:actualia/viewmodels/news_settings.dart";
 import "package:actualia/viewmodels/providers.dart";
 import "package:actualia/views/alarm_wizard.dart";
-import "package:actualia/views/interests_wizard_view.dart";
 import "package:actualia/views/providers_wizard_view.dart";
 import "package:actualia/widgets/alarms_widget.dart";
 import "package:actualia/widgets/top_app_bar.dart";

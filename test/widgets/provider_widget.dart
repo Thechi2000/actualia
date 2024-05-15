@@ -10,16 +10,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class FakeSupabase extends Fake implements SupabaseClient {}
 
 class MockProvidersViewModel extends ProvidersViewModel {
-  final List<(ProviderType, List<String>)> providers;
+  final List<EditedProviderData> providers;
 
   MockProvidersViewModel(this.providers) : super(FakeSupabase());
 
   @override
-  List<(ProviderType, List<String>)> get editedProviders => providers;
+  List<EditedProviderData> get editedProviders => providers;
 
   @override
   void updateEditedProvider(int index, ProviderType type, List<String> values) {
-    providers[index] = (type, values);
+    providers[index] = (type, values, null);
   }
 }
 
@@ -48,7 +48,7 @@ void main() {
     await tester.pumpWidget(ProviderWrapper(
         w,
         MockProvidersViewModel(const [
-          (ProviderType.telegram, ["clicnews"])
+          (ProviderType.telegram, ["clicnews"], null)
         ])));
 
     expect(find.textContaining("Telegram"), findsOneWidget);
@@ -64,7 +64,7 @@ void main() {
               deleted = true;
             }),
         MockProvidersViewModel(const [
-          (ProviderType.telegram, ["clicnews"])
+          (ProviderType.telegram, ["clicnews"], null)
         ])));
 
     await tester.tap(find.byIcon(Icons.delete));
@@ -76,7 +76,7 @@ void main() {
   testWidgets("Can change type", (tester) async {
     var w = ProviderWidget(idx: 0, onDelete: (e) {});
     var pvm = MockProvidersViewModel(List.of([
-      (ProviderType.telegram, List<String>.of(["clicnews"]))
+      (ProviderType.telegram, List<String>.of(["clicnews"]), null)
     ]));
     await tester.pumpWidget(ProviderWrapper(w, pvm));
 
@@ -93,7 +93,7 @@ void main() {
   testWidgets("Can change field", (tester) async {
     var w = ProviderWidget(idx: 0, onDelete: (e) {});
     var pvm = MockProvidersViewModel(List.of([
-      (ProviderType.telegram, List<String>.of(["clicnews"]))
+      (ProviderType.telegram, List<String>.of(["clicnews"]), null)
     ]));
     await tester.pumpWidget(ProviderWrapper(w, pvm));
 
@@ -103,5 +103,20 @@ void main() {
     expect(find.textContaining("Telegram"), findsOneWidget);
     expect(find.textContaining("clic_bonplans"), findsOneWidget);
     expect(listEquals(pvm.providers[0].$2, ["clic_bonplans"]), isTrue);
+  });
+
+  testWidgets("Errors are displayed", (tester) async {
+    var w = ProviderWidget(idx: 0, onDelete: (e) {});
+    var pvm = MockProvidersViewModel(List.of([
+      (
+        ProviderType.telegram,
+        List<String>.of(["clicnews."]),
+        ["Must be a channel name or an invite link"]
+      )
+    ]));
+    await tester.pumpWidget(ProviderWrapper(w, pvm));
+
+    expect(find.textContaining("Must be a channel name or an invite link"),
+        findsOneWidget);
   });
 }
