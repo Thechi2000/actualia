@@ -6,6 +6,7 @@ import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/views/profile_view.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
+import 'package:actualia/widgets/alarms_widget.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -88,8 +89,8 @@ class MockProvidersViewModel extends ProvidersViewModel {
   }
 }
 
-class MockAlarmsViewModelViewModel extends AlarmsViewModel {
-  MockAlarmsViewModelViewModel(super.supabaseClient);
+class MockAlarmsViewModel extends AlarmsViewModel {
+  MockAlarmsViewModel(super.supabaseClient);
 
   AlarmSettings? _alarm;
   void internalSetAlarm(AlarmSettings? a) {
@@ -146,11 +147,12 @@ void main() {
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
-        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
+        MockAlarmsViewModel(FakeSupabaseClient())));
 
     expect(find.text('Logout'), findsOne);
 
     testButton(String text) async {
+      debugPrint("[DEBUG] testing $text");
       await tester.dragUntilVisible(
           find.text(text), find.byType(ListView), Offset.fromDirection(90.0));
       await tester.tap(find.text(findRichText: true, text));
@@ -159,7 +161,7 @@ void main() {
 
     expect(find.text("Interests"), findsOne);
     expect(find.text("Sources"), findsOne);
-    await testButton('Alarm');
+    expect(find.text("Alarm"), findsOne);
     await testButton('Storage');
     await testButton('Narrator');
     await testButton('Accessibility');
@@ -172,7 +174,7 @@ void main() {
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
-        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
+        MockAlarmsViewModel(FakeSupabaseClient())));
 
     expect(find.text("test.test@epfl.ch"), findsOne);
   });
@@ -183,7 +185,7 @@ void main() {
         MockNewsSettingsViewModel(),
         MockProvidersViewModel(),
         MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
-        MockAlarmsViewModelViewModel(FakeSupabaseClient())));
+        MockAlarmsViewModel(FakeSupabaseClient())));
 
     expect(find.text("Interests"), findsOne);
     await tester.tap(find.text("Interests"));
@@ -202,5 +204,33 @@ void main() {
     //check wizard not on screen anymore
     expect(find.byType(InterestWizardView), findsNothing);
     expect(find.text("Interests"), findsOne);
+  });
+
+  testWidgets("Alarm button work as intended", (tester) async {
+    await tester.pumpWidget(ProfilePageWrapper(
+        const ProfilePageView(),
+        MockNewsSettingsViewModel(),
+        MockProvidersViewModel(),
+        MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin()),
+        MockAlarmsViewModel(FakeSupabaseClient())));
+
+    await tester.tap(find.text("Alarm"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(PickTimeButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.keyboard_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("OK"));
+
+    await tester.tap(find.byKey(const Key("switch-on-off")));
+    await tester.drag(find.byType(Slider), Offset.fromDirection(30));
+    await tester.tap(find.byKey(const Key("switch-loop")));
+    await tester.tap(find.byKey(const Key("switch-vibrate")));
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Done"));
+    await tester.pumpAndSettle();
+    expect(find.byType(ProfilePageView), findsOneWidget);
   });
 }

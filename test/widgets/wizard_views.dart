@@ -1,9 +1,13 @@
 import "package:actualia/models/auth_model.dart";
 import "package:actualia/models/news_settings.dart";
 import "package:actualia/models/providers.dart";
+import "package:actualia/viewmodels/alarms.dart";
 import "package:actualia/viewmodels/news_settings.dart";
 import "package:actualia/viewmodels/providers.dart";
+import "package:actualia/views/alarm_wizard.dart";
 import "package:actualia/views/interests_wizard_view.dart";
+import "package:actualia/widgets/alarms_widget.dart";
+import "package:actualia/widgets/wizard_widgets.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:google_sign_in/google_sign_in.dart";
@@ -36,6 +40,22 @@ class MockProvidersViewModel extends ProvidersViewModel {
   @override
   Future<bool> pushNewsProviders() async {
     return true;
+  }
+}
+
+class MockAlarmsViewModel extends AlarmsViewModel {
+  bool _alarmSet = false;
+
+  @override
+  bool get isAlarmSet => _alarmSet;
+
+  MockAlarmsViewModel(super.supabaseClient);
+
+  @override
+  Future<void> setAlarm(DateTime time, String assetAudio, bool loopAudio,
+      bool vibrate, double volume, int? settingsId) async {
+    _alarmSet = true;
+    debugPrint("Alarm set do not worry");
   }
 }
 
@@ -83,6 +103,7 @@ class WizardWrapper extends StatelessWidget {
   final Widget wizard;
   final NewsSettingsViewModel nsvm;
   final ProvidersViewModel pvm;
+  final AlarmsViewModel? avm;
   final AuthModel auth;
 
   const WizardWrapper(
@@ -90,6 +111,7 @@ class WizardWrapper extends StatelessWidget {
       required this.nsvm,
       required this.auth,
       required this.pvm,
+      this.avm,
       super.key});
 
   @override
@@ -106,7 +128,10 @@ class WizardWrapper extends StatelessWidget {
                 create: (context) => nsvm),
             ChangeNotifierProvider<ProvidersViewModel>(
                 create: (context) => pvm),
-            ChangeNotifierProvider<AuthModel>(create: (context) => auth)
+            ChangeNotifierProvider<AuthModel>(create: (context) => auth),
+            ChangeNotifierProvider<AlarmsViewModel>(
+                create: (context) =>
+                    avm ?? MockAlarmsViewModel(FakeSupabaseClient()))
           ],
           child: wizard,
         ));
@@ -149,11 +174,11 @@ void main() {
       await tester.tap(find.text(buttonText));
     }
 
-    await testSelector(Key("countries-selector"), "Chad", "Next");
+    await testSelector(const Key("countries-selector"), "Chad", "Next");
     await tester.pumpAndSettle();
-    await testSelector(Key("cities-selector"), "Basel", "Next");
+    await testSelector(const Key("cities-selector"), "Basel", "Next");
     await tester.pumpAndSettle();
-    await testSelector(Key("interests-selector"), "Gaming", "Next");
+    await testSelector(const Key("interests-selector"), "Gaming", "Next");
   });
 
   testWidgets(
@@ -183,9 +208,9 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await select(Key("countries-selector"), "Antarctica", "Next");
-    await select(Key("cities-selector"), "Basel", "Next");
-    await select(Key("interests-selector"), "Biology", "Finish");
+    await select(const Key("countries-selector"), "Antarctica", "Next");
+    await select(const Key("cities-selector"), "Basel", "Next");
+    await select(const Key("interests-selector"), "Biology", "Finish");
 
     expect(vm.wasTriggered, isTrue);
   });
@@ -239,5 +264,22 @@ void main() {
     await tester.tap(find.text("Cancel"));
     await tester.pumpAndSettle();
     expect(find.text("Select countries"), findsOne);
+  });
+
+  testWidgets("Alarm wizard: display everything correctly", (tester) async {
+    AlarmsViewModel avm = MockAlarmsViewModel(FakeSupabaseClient());
+    await tester.pumpWidget(WizardWrapper(
+      wizard: const AlarmWizardView(),
+      nsvm: MockNewsSettingsViewModel(),
+      auth: MockAuthModel(FakeSupabaseClient(), FakeGoogleSignin(),
+          isOnboardingRequired: false),
+      pvm: MockProvidersViewModel(),
+      avm: avm,
+    ));
+
+    expect(find.byType(PickTimeButton), findsOneWidget);
+    expect(find.byType(WizardNavigationBottomBar), findsOneWidget);
+    await tester.tap(find.text("Validate"));
+    expect(avm.isAlarmSet, isTrue);
   });
 }
