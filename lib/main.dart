@@ -5,6 +5,7 @@ import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/alarms.dart';
 import 'package:actualia/views/loading_view.dart';
+import 'package:actualia/views/master_view.dart';
 import 'package:actualia/views/news_alert_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
@@ -83,7 +84,7 @@ class _AppState extends State<App> {
           home = const InterestWizardView();
         }
       } else {
-        home = const NewsView();
+        home = const MasterView();
       }
     } else {
       home = const Scaffold(
