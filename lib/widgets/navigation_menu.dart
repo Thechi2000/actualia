@@ -16,11 +16,9 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
   Views _currentView = Views.NEWS;
 
   void setCurrentViewState(Views view) {
-    if (view != Views.CAMERA) {
-      setState(() {
-        _currentView = view;
-      });
-    }
+    setState(() {
+      _currentView = view;
+    });
   }
 
   @override
@@ -39,10 +37,6 @@ class _ActualiaBottomNavigationBar extends State<ActualiaBottomNavigationBar> {
               setCurrentViewState(dest.view);
               dest.onPressed(_currentView);
             },
-            // constraints: const BoxConstraints(
-            //   minHeight: 50,
-            //   minWidth: 100
-            // ),
             child: dest.view == _currentView
                 ? Icon(
                     dest.icon,
