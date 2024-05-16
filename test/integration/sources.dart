@@ -22,6 +22,7 @@ class MockHttp extends BaseMockedHttpClient {
             "transcript": {
               "totalArticles": 5,
               "totalNewsByLLM": "5",
+              "fullTranscript": "full-transcript",
               "news": [
                 {
                   "transcript":
