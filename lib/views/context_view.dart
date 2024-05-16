@@ -14,7 +14,7 @@ class ContextView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
                 UNIT_PADDING * 2, UNIT_PADDING * 2, UNIT_PADDING * 2, 0),
             child: Text(
-              "Here is some context regarding the text you just photographed.",
+              "Here is some context regarding the text you just photographed:",
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
