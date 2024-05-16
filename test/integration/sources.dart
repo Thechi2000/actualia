@@ -22,6 +22,8 @@ class MockHttp extends BaseMockedHttpClient {
             "transcript": {
               "totalArticles": 5,
               "totalNewsByLLM": "5",
+              "intro": "Hello! This is your daily news",
+              "outro": "That's all for today. Have a great day!",
               "fullTranscript": "full-transcript",
               "news": [
                 {
@@ -223,19 +225,19 @@ void main() {
   testWidgets('User can consult source articles by tapping on them',
       (tester) async {
     await tester.pumpWidget(AppWrapper(httpClient: MockHttp()));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(minutes: 1));
 
     await tester.tap(find.byKey(const Key("signin-guest")));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(minutes: 1));
 
     await tester.tap(find.textContaining("Amazon Gaming Week sale is live"));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(minutes: 1));
 
     expect(find.textContaining("Tom's Guide"), findsWidgets);
     expect(find.textContaining("must-play video games"), findsWidgets);
 
     await tester.tap(find.byType(BackButtonIcon));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(minutes: 1));
 
     expect(
         find.textContaining("The best new gadgets right now."), findsWidgets);
