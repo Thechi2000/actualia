@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-
 import '../models/navigation_menu.dart';
 import '../widgets/navigation_menu.dart';
 
