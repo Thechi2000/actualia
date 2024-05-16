@@ -2,7 +2,6 @@ import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/no_news_view.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/widgets/news_text.dart';
-import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:actualia/viewmodels/news.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -52,31 +51,7 @@ class _NewsViewState extends State<NewsView> {
           });
     }
 
-    return Scaffold(
-      appBar: const TopAppBar(),
-      body: body,
-      floatingActionButton: ExpandableFab(
-        distance: 112,
-        children: [
-          ActionButton(
-            onPressed: () =>
-                Share.share(newsViewModel.newsList.first.fullTranscript),
-            icon: const Icon(Icons.text_fields),
-          ),
-          ActionButton(
-            onPressed: () async => await Share.shareXFiles([
-              XFile(
-                  '${(await getApplicationDocumentsDirectory()).path}/audios/${newsViewModel.newsList.first.transcriptId}.mp3')
-            ], text: 'Check my personalized news audio!'),
-            icon: const Icon(Icons.audiotrack),
-          ),
-          ActionButton(
-            onPressed: () => Share.share(
-                'https://actualia.app/shared/${newsViewModel.newsList.first.transcriptId}'),
-            icon: const Icon(Icons.link),
-          ),
-        ],
-      ),
-    );
+    return body;
+
   }
 }
