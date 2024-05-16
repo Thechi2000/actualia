@@ -15,6 +15,17 @@ class NewsRecognitionViewModel extends ChangeNotifier {
     supabase = supabaseClient;
   }
 
+  Future<String?> ocr(String filePath) async {
+    try {
+      final textFromImage = await recognizeText(filePath);
+      log("Text from image: $textFromImage", level: Level.INFO.value);
+      return await invokeProcessImage(textFromImage);
+    } catch (e) {
+      log("Error processing image: $e", level: Level.WARNING.value);
+      throw Exception("Failed to process image");
+    }
+  }
+
   Future<String> recognizeText(String filePath) async {
     final inputImage = InputImage.fromFilePath(filePath);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
@@ -24,7 +35,7 @@ class NewsRecognitionViewModel extends ChangeNotifier {
     return recognizedText.text;
   }
 
-  Future<void> invokeProcessImage(String textFromImage) async {
+  Future<String?> invokeProcessImage(String textFromImage) async {
     try {
       final processImageResponse = await supabase.functions
           .invoke('process-image', body: {"textFromImage": textFromImage});

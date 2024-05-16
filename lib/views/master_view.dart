@@ -21,6 +21,7 @@ class MasterView extends StatefulWidget {
 class _MasterView extends State<MasterView> {
   Views _currentViews = Views.NEWS;
   late List<Destination> _destinations;
+  late String? _ocrText;
 
   void setCurrentViewState(Views view) {
     if (view != Views.CAMERA) {
@@ -30,16 +31,18 @@ class _MasterView extends State<MasterView> {
     }
   }
 
-  void cameraButtonPressed(Views view) {
+  Future<void> cameraButtonPressed(Views view) async {
     log("Camera button pressed on navigation bar", level: Level.INFO.value);
-    debugPrint("Camera button pressed");
     NewsRecognitionViewModel newsRecognitionVM =
         Provider.of<NewsRecognitionViewModel>(context, listen: false);
-    Future<XFile?> image =
-        Future.microtask(() => newsRecognitionVM.takePicture());
-    image.then((value) {
-      if (value != null) newsRecognitionVM.recognizeText(value.path);
-    });
+    XFile? image = await newsRecognitionVM.takePicture();
+
+    if (image != null) {
+      _ocrText = await newsRecognitionVM.ocr(image.path);
+      setState(() {
+        _currentViews = Views.CONTEXT;
+      });
+    }
   }
 
   @override
@@ -71,6 +74,9 @@ class _MasterView extends State<MasterView> {
         break;
       case Views.FEED:
         body = const Center(child: Text("To be implemented"));
+        break;
+      case Views.CONTEXT:
+        body = Center(child: Text(_ocrText ?? "No text found"));
         break;
       default:
         body = const Center(child: Text("SHOULD NOT BE DISPLAYED"));
