@@ -22,14 +22,13 @@ class AlarmsViewModel extends ChangeNotifier {
     supabase = supabaseClient;
     if (!Alarm.ringStream.hasListener) {
       Alarm.ringStream.stream.listen((_) {
-        print("ringStream.stream.listen callback called");
         isAlarmRinging = true;
         isAlarmActive = true;
         notifyListeners();
       });
     } else {
-      print(
-          "WARNING: Alarm.ringStream already had a listener ! Callback ignored");
+      log("Alarm.ringStream already had a listener ! Callback ignored",
+          level: Level.WARNING.value);
     }
     checkAndroidScheduleExactAlarmPermission();
   }
@@ -48,7 +47,6 @@ class AlarmsViewModel extends ChangeNotifier {
         notificationBody: 'Your customized News Alert is ready !',
         enableNotificationOnKill: true,
         androidFullScreenIntent: true);
-    print("Alarm set with settings : $settings");
     await Alarm.set(alarmSettings: settings);
 
     if (settingsId != null) {
@@ -60,10 +58,8 @@ class AlarmsViewModel extends ChangeNotifier {
           'timetz': timetz,
           'transcript_settings_id': settingsId
         }, onConflict: "created_by");
-        print("Alarm pushed on supabase");
       } catch (e) {
-        //log("Error pushing alarm: $e", level: Level.WARNING.value);
-        print("Error pushing alarm: $e");
+        log("Error pushing alarm: $e", level: Level.SEVERE.value);
       }
     }
   }
