@@ -52,7 +52,8 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
     "/blog/feed/",
     "/blog/rss/",
     "/rss.xml",
-    "/blog/rss.xml"
+    "/blog/rss.xml",
+    "/pageslug?format=rss"
   ];
 
   /// Regex matching any XML attribute containing either "rss" or "feed"
