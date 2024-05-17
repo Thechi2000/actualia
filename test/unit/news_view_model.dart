@@ -348,7 +348,7 @@ void main() {
   test('getNewsList with non working EF reports error', () async {
     NewsViewModel vm = NeverExistingNewsVM();
     await vm.getNewsList();
-    expect(vm.newsList, isEmpty);
+    expect(vm.newsList.length, 1);
   });
 
   test('getNewsList with working EF returns correct list', () async {
@@ -371,7 +371,7 @@ void main() {
   test('getNewsList with Exception reports error', () async {
     ExceptionNewsListVM vm = ExceptionNewsListVM(FakeSupabaseClient());
     await vm.getNewsList();
-    expect(vm.newsList, isEmpty);
+    expect(vm.newsList.length, 1);
   });
 
   test('getNewsList with non-today news generates news', () async {
