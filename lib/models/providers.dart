@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 import 'package:dartz/dartz.dart';
@@ -24,8 +26,8 @@ class _DefaultProviderFactory extends _ProviderFactory {
               .join(", ")));
 }
 
-class _TelegramProviderFactory extends _ProviderFactory {
-  const _TelegramProviderFactory();
+class TelegramProviderFactory extends _ProviderFactory {
+  const TelegramProviderFactory();
 
   static final _telegramIdRegex =
       RegExp(r"^(?:https://t\.me/|@)?([a-zA-Z0-9_-]+)$");
@@ -42,8 +44,10 @@ class _TelegramProviderFactory extends _ProviderFactory {
   }
 }
 
-class _RSSFeedProviderFactory extends _ProviderFactory {
-  const _RSSFeedProviderFactory();
+class RSSFeedProviderFactory extends _ProviderFactory {
+  const RSSFeedProviderFactory({this.client});
+
+  final http.Client? client;
 
   /// Simple paths which may point to a rss feed.
   static const paths = [
@@ -60,12 +64,20 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
   static final _rssUrlAttributeRegex =
       RegExp(r'"([^"]*(feed|rss)[^"]*)"', caseSensitive: false);
 
+  Future<http.Response> _get(Uri url) {
+    if (client != null) {
+      return client!.get(url);
+    } else {
+      return http.get(url);
+    }
+  }
+
   /// Checks whether a url is a rss document.
   ///
   /// To do so, it requests the url, parses it as a XML file and looks for a <rss></rss> tag.
   Future<bool> _isRss(Uri url) async {
     try {
-      var document = XmlDocument.parse((await http.get(url)).body);
+      var document = XmlDocument.parse((await _get(url)).body);
       return document.findAllElements("rss").isNotEmpty;
     } catch (e) {
       return false;
@@ -75,7 +87,7 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
   Future<List<Uri>> _listFromSitemap(Uri url) async {
     try {
       var document =
-          XmlDocument.parse((await http.get(url.resolve("/sitemap.xml"))).body);
+          XmlDocument.parse((await _get(url.resolve("/sitemap.xml"))).body);
 
       return document
           .findAllElements("loc")
@@ -133,9 +145,9 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
 /// List all available provider types, as well as useful information for display
 enum ProviderType {
   telegram("/telegram/channel", "Telegram",
-      parameters: ["Channel ID"], factory: _TelegramProviderFactory()),
+      parameters: ["Channel ID"], factory: TelegramProviderFactory()),
   google("/google/news/:query/en", "Google News"),
-  rss("", "RSS", parameters: ["URL"], factory: _RSSFeedProviderFactory());
+  rss("", "RSS", parameters: ["URL"], factory: RSSFeedProviderFactory());
 
   /// Base url of the provider, used for matching
   final String basePath;
