@@ -95,7 +95,8 @@ class AlreadyExistingNewsVM extends NewsViewModel {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -113,20 +114,23 @@ class NonExistingNewsVM extends NewsViewModel {
   @override
   Future<void> fetchNews(DateTime date) {
     if (invokedTranscriptFunction) {
-      setNews(News(
-          date: DateTime.now().toIso8601String(),
-          title: "News",
-          transcriptId: -1,
-          audio: null,
-          paragraphs: [
-            Paragraph(
-                transcript: "text",
-                source: "source",
-                title: "title",
-                date: "12-04-2024",
-                content: "content",
-                url: "url")
-          ]));
+      setNews(
+        News(
+            date: DateTime.now().toIso8601String(),
+            title: "News",
+            transcriptId: -1,
+            audio: null,
+            paragraphs: [
+              Paragraph(
+                  transcript: "text",
+                  source: "source",
+                  title: "title",
+                  date: "12-04-2024",
+                  content: "content",
+                  url: "url")
+            ],
+            fullTranscript: "fullTranscript"),
+      );
     } else {
       setNews(null);
     }
@@ -170,7 +174,8 @@ class NewsListVM extends NewsViewModel {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -183,6 +188,7 @@ class NewsListVM extends NewsViewModel {
         "id": -1,
         "audio": null,
         "transcript": {
+          "fullTranscript": "fullTranscript",
           "news": [
             {
               "transcript": "text",
@@ -270,7 +276,7 @@ class NotTodayNewsListVM extends NewsViewModel {
         "title": "News",
         "id": -1,
         "audio": null,
-        "transcript": {"news": []}
+        "transcript": {"fullTranscript": "", "news": []}
       }
     ]);
   }
@@ -342,7 +348,7 @@ void main() {
   test('getNewsList with non working EF reports error', () async {
     NewsViewModel vm = NeverExistingNewsVM();
     await vm.getNewsList();
-    expect(vm.newsList, isEmpty);
+    expect(vm.newsList.length, 1);
   });
 
   test('getNewsList with working EF returns correct list', () async {
@@ -365,7 +371,7 @@ void main() {
   test('getNewsList with Exception reports error', () async {
     ExceptionNewsListVM vm = ExceptionNewsListVM(FakeSupabaseClient());
     await vm.getNewsList();
-    expect(vm.newsList, isEmpty);
+    expect(vm.newsList.length, 1);
   });
 
   test('getNewsList with non-today news generates news', () async {
@@ -405,7 +411,8 @@ void main() {
               date: "12-04-2024",
               content: "content",
               url: "url")
-        ]));
+        ],
+        fullTranscript: "fullTranscript"));
     expect(vm.generateAudioCalled, isTrue);
   });
 }
