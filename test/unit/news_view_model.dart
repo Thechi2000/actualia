@@ -285,7 +285,7 @@ class NotTodayNewsListVM extends NewsViewModel {
 //Tests for audio functions
 
 class AudioNewsVM extends NewsViewModel {
-  AudioNewsVM(SupabaseClient super.supabase);
+  AudioNewsVM(super.supabase);
   bool generateAudioCalled = false;
 
   @override
