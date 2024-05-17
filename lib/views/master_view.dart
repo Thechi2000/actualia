@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:actualia/viewmodels/news_recognition.dart';
+import 'package:actualia/views/context_view.dart';
 import 'package:actualia/views/news_view.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-
+import 'package:provider/provider.dart';
 import '../models/navigation_menu.dart';
 import '../widgets/navigation_menu.dart';
 
@@ -18,14 +21,26 @@ class MasterView extends StatefulWidget {
 class _MasterView extends State<MasterView> {
   Views _currentViews = Views.NEWS;
   late List<Destination> _destinations;
+  late String? _ocrText;
 
   void setCurrentViewState(Views view) {
-    if (view == Views.CAMERA) {
-      log("Camera button pressed on navigation bar",
-          level: Level.WARNING.value);
-    } else {
+    if (view != Views.CAMERA) {
       setState(() {
         _currentViews = view;
+      });
+    }
+  }
+
+  Future<void> cameraButtonPressed(Views view) async {
+    log("Camera button pressed on navigation bar", level: Level.INFO.value);
+    NewsRecognitionViewModel newsRecognitionVM =
+        Provider.of<NewsRecognitionViewModel>(context, listen: false);
+    XFile? image = await newsRecognitionVM.takePicture();
+
+    if (image != null) {
+      _ocrText = await newsRecognitionVM.ocr(image.path);
+      setState(() {
+        _currentViews = Views.CONTEXT;
       });
     }
   }
@@ -41,7 +56,7 @@ class _MasterView extends State<MasterView> {
       Destination(
           view: Views.CAMERA,
           icon: Icons.camera_alt,
-          onPressed: setCurrentViewState),
+          onPressed: cameraButtonPressed),
       Destination(
           view: Views.FEED, icon: Icons.feed, onPressed: setCurrentViewState)
     ];
@@ -59,6 +74,9 @@ class _MasterView extends State<MasterView> {
         break;
       case Views.FEED:
         body = const Center(child: Text("To be implemented"));
+        break;
+      case Views.CONTEXT:
+        body = ContextView(text: _ocrText ?? "No text found");
         break;
       default:
         body = const Center(child: Text("SHOULD NOT BE DISPLAYED"));
