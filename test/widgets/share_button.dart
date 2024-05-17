@@ -39,14 +39,14 @@ void main() {
 
       // Tap to open
       await tester.tap(find.byIcon(Icons.share));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(); // Wait for animation to complete
 
       // Verify expansion
       expect(find.byType(ActionButton), findsNWidgets(3));
 
       // Tap to close
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(); // Wait for animation to complete
 
       // Verify collapse
       expect(find.byType(ActionButton), findsNWidgets(1));
