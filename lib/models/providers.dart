@@ -146,7 +146,8 @@ class RSSFeedProviderFactory extends _ProviderFactory {
 enum ProviderType {
   telegram("/telegram/channel", "Telegram",
       parameters: ["Channel ID"], factory: TelegramProviderFactory()),
-  google("/google/news/:query/en", "Google News"),
+  google(
+      "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en", "Google News"),
   rss("", "RSS", parameters: ["URL"], factory: RSSFeedProviderFactory());
 
   /// Base url of the provider, used for matching
