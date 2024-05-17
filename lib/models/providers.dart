@@ -132,7 +132,9 @@ class RSSFeedProviderFactory extends _ProviderFactory {
       if (feeds.isNotEmpty) {
         return Left(NewsProvider(url: feeds.firstOrNull!.$1.toString()));
       } else {
-        return const Right(["Unable to find related rss feed"]);
+        return const Right([
+          "Unable to find related RSS feed. Please provide the complete URL instead."
+        ]);
       }
     } catch (e) {
       return const Right(["Must be a valid URL"]);
