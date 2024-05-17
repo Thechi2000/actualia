@@ -142,6 +142,9 @@ class NewsViewModel extends ChangeNotifier {
   }
 
   News parseNews(dynamic response) {
+    if (response['transcript']['totalNewsByLLM'] == "0") {
+      throw Exception("The given news item has no transcript.");
+    }
     List<dynamic> newsItems = response['transcript']['news'];
 
     List<Paragraph> paragraphs = newsItems
@@ -263,5 +266,6 @@ class NewsViewModel extends ChangeNotifier {
       ],
       fullTranscript: message,
     );
+    _newsList.insert(0, _news!);
   }
 }
