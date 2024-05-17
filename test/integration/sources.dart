@@ -225,19 +225,19 @@ void main() {
   testWidgets('User can consult source articles by tapping on them',
       (tester) async {
     await tester.pumpWidget(AppWrapper(httpClient: MockHttp()));
-    await tester.pumpAndSettle(const Duration(minutes: 1));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key("signin-guest")));
-    await tester.pumpAndSettle(const Duration(minutes: 1));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.textContaining("Amazon Gaming Week sale is live"));
-    await tester.pumpAndSettle(const Duration(minutes: 1));
+    await tester.pumpAndSettle();
 
     expect(find.textContaining("Tom's Guide"), findsWidgets);
     expect(find.textContaining("must-play video games"), findsWidgets);
 
     await tester.tap(find.byType(BackButtonIcon));
-    await tester.pumpAndSettle(const Duration(minutes: 1));
+    await tester.pumpAndSettle();
 
     expect(
         find.textContaining("The best new gadgets right now."), findsWidgets);
