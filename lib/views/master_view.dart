@@ -68,35 +68,10 @@ class _MasterView extends State<MasterView> {
 
   @override
   Widget build(BuildContext context) {
-    var firstTranscript = Provider.of<NewsViewModel>(context).newsList.first;
-
     Widget body;
-    Widget button = const SizedBox();
     switch (_currentViews) {
       case Views.NEWS:
         body = const NewsView();
-        button = ExpandableFab(
-          distance: 112,
-          children: [
-            ActionButton(
-              onPressed: () => Share.share(firstTranscript.fullTranscript),
-              icon: const Icon(Icons.text_fields),
-            ),
-            ActionButton(
-              onPressed: () async => await Share.shareXFiles([
-                XFile(
-                    // ignore: use_build_context_synchronously
-                    '${(await getApplicationDocumentsDirectory()).path}/audios/${firstTranscript.transcriptId}.mp3')
-              ], text: 'Check my personalized news audio!'),
-              icon: const Icon(Icons.audiotrack),
-            ),
-            ActionButton(
-              onPressed: () => Share.share(
-                  'https://actualia.app/shared/${firstTranscript.transcriptId}'),
-              icon: const Icon(Icons.link),
-            ),
-          ],
-        );
         break;
       case Views.CAMERA:
         body = const Center(child: Text("To be implemented"));
@@ -119,7 +94,6 @@ class _MasterView extends State<MasterView> {
         destinations: _destinations,
       ),
       body: body,
-      floatingActionButton: button,
     );
 
     return screen;
