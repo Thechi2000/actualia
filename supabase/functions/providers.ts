@@ -93,7 +93,7 @@ export async function fetchNews(
         };
       })
         .filter((i: News) => (Date.now() - i.publishedAt.getTime()) < 86400000)
-        .slice(0, 6);
+        .slice(0, 6); // Avoid to much news, since the OpenAI API limits the characters count of the request.
 
       if (topic) {
         return news;
