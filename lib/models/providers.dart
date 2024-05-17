@@ -57,7 +57,7 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
   ];
 
   /// Regex matching any XML attribute containing either "rss" or "feed"
-  static final _rssUrlRegex =
+  static final _rssUrlAttributeRegex =
       RegExp(r'"([^"]*(feed|rss)[^"]*)"', caseSensitive: false);
 
   /// Checks whether a url is a rss document.
@@ -72,9 +72,27 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
     }
   }
 
+  Future<List<Uri>> _listFromSitemap(Uri url) async {
+    try {
+      var document =
+          XmlDocument.parse((await http.get(url.resolve("/sitemap.xml"))).body);
+
+      return document
+          .findAllElements("loc")
+          .map((e) =>
+              e.innerText.contains(RegExp("(rss|feed)", caseSensitive: false))
+                  ? Uri.tryParse(e.innerText)
+                  : null)
+          .whereType<Uri>()
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   /// List all the urls that may point to a rss feed in a string. Should be used on HTML documents.
   List<String> _listRssUrl(String input) {
-    var r = _rssUrlRegex
+    var r = _rssUrlAttributeRegex
         .allMatches(input)
         .map((m) => m.group(1))
         .whereType<String>()
@@ -93,7 +111,8 @@ class _RSSFeedProviderFactory extends _ProviderFactory {
       var urls = [
         url,
         ...paths.map((e) => url.resolve(e)),
-        ..._listRssUrl(document).map((e) => Uri.tryParse(e)).whereType<Uri>()
+        ..._listRssUrl(document).map((e) => Uri.tryParse(e)).whereType<Uri>(),
+        ...(await _listFromSitemap(url))
       ];
 
       var feeds = (await Future.wait(
