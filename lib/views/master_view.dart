@@ -1,15 +1,12 @@
 import 'dart:developer';
 
-import 'package:actualia/viewmodels/news.dart';
 import 'package:actualia/viewmodels/news_recognition.dart';
 import 'package:actualia/views/context_view.dart';
 import 'package:actualia/views/news_view.dart';
-import 'package:actualia/widgets/share_button.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/navigation_menu.dart';
@@ -87,7 +84,6 @@ class _MasterView extends State<MasterView> {
         break;
     }
 
-    var newsViewModel;
     Widget screen = Scaffold(
       appBar: const TopAppBar(),
       bottomNavigationBar: ActualiaBottomNavigationBar(
