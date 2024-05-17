@@ -2,6 +2,8 @@ import { News, NewsSettings, Provider } from "../functions/model.ts";
 import { parseFeed } from "https://deno.land/x/rss@1.0.2/mod.ts";
 import OpenAI from "https://deno.land/x/openai@v4.33.0/mod.ts";
 
+const DEFAULT_FEEDS = ["https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"];
+
 /**
  * Fetch and normalize news from a given provider.
  * @param provider One or several providers where to fetch the news.
@@ -127,7 +129,7 @@ export async function fetchNews(
         provider.map((p) => singleFetch(p, newsSettings)),
       )).flat();
     } else {
-      return await singleFetch("/google/news/:query", newsSettings);
+      return await fetchNews(DEFAULT_FEEDS, newsSettings);
     }
   } else {
     return await singleFetch(provider, newsSettings);
