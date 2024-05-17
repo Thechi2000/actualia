@@ -162,7 +162,7 @@ class NewsViewModel extends ChangeNotifier {
         transcriptId: response['id'],
         audio: response['audio'],
         paragraphs: paragraphs,
-        fullTranscript: response['transcript']['full-transcript']);
+        fullTranscript: response['transcript']['fullTranscript']);
   }
 
   /// Invokes a cloud function to generate news transcripts.

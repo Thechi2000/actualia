@@ -96,7 +96,7 @@ class AlreadyExistingNewsVM extends NewsViewModel {
               content: "content",
               url: "url")
         ],
-        fullTranscript: "full-transcript"));
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -129,7 +129,7 @@ class NonExistingNewsVM extends NewsViewModel {
                   content: "content",
                   url: "url")
             ],
-            fullTranscript: "full-transcript"),
+            fullTranscript: "fullTranscript"),
       );
     } else {
       setNews(null);
@@ -175,7 +175,7 @@ class NewsListVM extends NewsViewModel {
               content: "content",
               url: "url")
         ],
-        fullTranscript: "full-transcript"));
+        fullTranscript: "fullTranscript"));
     return Future.value();
   }
 
@@ -188,7 +188,7 @@ class NewsListVM extends NewsViewModel {
         "id": -1,
         "audio": null,
         "transcript": {
-          "full-transcript": "full-transcript",
+          "fullTranscript": "fullTranscript",
           "news": [
             {
               "transcript": "text",
@@ -276,7 +276,7 @@ class NotTodayNewsListVM extends NewsViewModel {
         "title": "News",
         "id": -1,
         "audio": null,
-        "transcript": {"full-transcript": "", "news": []}
+        "transcript": {"fullTranscript": "", "news": []}
       }
     ]);
   }
@@ -412,7 +412,7 @@ void main() {
               content: "content",
               url: "url")
         ],
-        fullTranscript: "full-transcript"));
+        fullTranscript: "fullTranscript"));
     expect(vm.generateAudioCalled, isTrue);
   });
 }
