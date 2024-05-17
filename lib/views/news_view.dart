@@ -52,6 +52,5 @@ class _NewsViewState extends State<NewsView> {
     }
 
     return body;
-
   }
 }
