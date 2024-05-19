@@ -30,11 +30,11 @@ class _NewsViewState extends State<NewsView> {
         const LoadingView(text: "Please wait while we fetch the news for you.");
 
     final newsViewModel = Provider.of<NewsViewModel>(context);
-    final _newsList = newsViewModel.newsList;
+    final newsList = newsViewModel.newsList;
     final hasNews = newsViewModel.hasNews;
     Widget body;
 
-    if (_newsList.isEmpty) {
+    if (newsList.isEmpty) {
       if (hasNews) {
         body = loading;
       } else {
@@ -44,12 +44,12 @@ class _NewsViewState extends State<NewsView> {
                 "The first one will be generated the first time the alarm goes off.");
       }
     } else {
-      var firstTranscript = _newsList.first;
+      var firstTranscript = newsList.first;
       body = Scaffold(
           body: ListView.builder(
-              itemCount: _newsList.length,
+              itemCount: newsList.length,
               itemBuilder: (context, index) {
-                return NewsText(news: _newsList[index]);
+                return NewsText(news: newsList[index]);
               }),
           floatingActionButton: ExpandableFab(
             distance: 112,

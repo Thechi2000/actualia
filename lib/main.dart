@@ -17,7 +17,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:actualia/viewmodels/news.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -100,18 +99,10 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
-      home: Test(),
-      // locale: Locale("fr"),
+      home: home,
       navigatorKey: _navKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );
-  }
-}
-
-class Test extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text(AppLocalizations.of(context)!.helloWorld);
   }
 }

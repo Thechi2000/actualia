@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePageView> {
   Widget build(BuildContext context) {
     AuthModel authModel = Provider.of<AuthModel>(context);
 
-    String? _username = authModel.user?.email;
+    String? username = authModel.user?.email;
 
     Widget profilePage = Center(
         child: ListView(
@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                       ),
                       child: Text(
                           style: Theme.of(context).textTheme.bodyMedium,
-                          _username ?? "Unknown User")),
+                          username ?? "Unknown User")),
                   FilledButton.tonal(
                     onPressed: () async {
                       Navigator.pop(context);

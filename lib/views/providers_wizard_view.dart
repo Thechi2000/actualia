@@ -70,13 +70,15 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             pvm.updateProvidersFromEdited();
             if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
               Fluttertoast.showToast(msg: "Error while updating providers");
-            } else if (auth.isOnboardingRequired) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AlarmWizardView()));
             } else if (context.mounted) {
-              Navigator.pop(context);
+              if (auth.isOnboardingRequired) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AlarmWizardView()));
+              } else if (context.mounted) {
+                Navigator.pop(context);
+              }
             }
           },
         ),

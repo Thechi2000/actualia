@@ -94,13 +94,15 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             wantsInterests: true);
         try {
           await nsvm.pushSettings(toSend);
-          if (auth.isOnboardingRequired) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ProvidersWizardView()));
-          } else {
-            if (context.mounted) Navigator.pop(context);
+          if (context.mounted) {
+            if (auth.isOnboardingRequired) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProvidersWizardView()));
+            } else {
+              Navigator.pop(context);
+            }
           }
         } catch (e) {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);

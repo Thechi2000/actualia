@@ -34,8 +34,10 @@ class _NewsAlertViewState extends State<NewsAlertView> {
   @override
   Widget build(BuildContext context) {
     AlarmsViewModel alarms = Provider.of(context);
-    if (transcriptId == null)
-      Future.microtask(() async => fetchTranscriptId(context));
+    if (transcriptId == null) {
+      Future.microtask(
+          () async => {if (context.mounted) fetchTranscriptId(context)});
+    }
 
     Widget maybePlayer = transcriptId != null
         ? PlayButton(

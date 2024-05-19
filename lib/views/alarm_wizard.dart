@@ -55,8 +55,7 @@ class _AlarmWizardView extends State<AlarmWizardView> {
               await auth.setOnboardingIsDone();
             }
             if (context.mounted) {
-              Navigator.popUntil(
-                  context, (route) => !route.hasActiveRouteBelow);
+              Navigator.popUntil(context, (route) => route.isFirst);
             }
           },
           showRight: true,
@@ -73,7 +72,10 @@ class _AlarmWizardView extends State<AlarmWizardView> {
             if (auth.isOnboardingRequired) {
               await auth.setOnboardingIsDone();
             }
-            Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
+
+            if (context.mounted) {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            }
           },
         )
       ],
