@@ -100,6 +100,7 @@ class _AppState extends State<App> {
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
       home: home,
+      locale: const Locale("fr"),
       navigatorKey: _navKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

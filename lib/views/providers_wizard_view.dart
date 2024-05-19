@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../models/auth_model.dart';
 import 'alarm_wizard.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProvidersWizardView extends StatefulWidget {
   const ProvidersWizardView({super.key});
@@ -37,13 +38,15 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             idx: e.$1, onDelete: (w) => pvm.removeEditedProvider(e.$1)))
         .toList();
 
-    Widget body = const LoadingView(text: "Loading your sources");
+    Widget body =
+        LoadingView(text: AppLocalizations.of(context)!.providersWizardLoading);
     if (pvm.isPushing) {
-      body = const LoadingView(text: "Updating");
+      body = LoadingView(
+          text: AppLocalizations.of(context)!.providersWizardUpdating);
     } else if (items != null) {
       var items_ = items as List<ProviderWidget>;
       body = Column(children: [
-        Text("Choose the sources for your news",
+        Text(AppLocalizations.of(context)!.providersWizardTitle,
             style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: UNIT_PADDING),
         Expanded(
@@ -57,19 +60,24 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
                 FilledButton.tonalIcon(
                     icon: const Icon(Icons.add),
                     onPressed: () => pvm.addEditedProvider(),
-                    label: const Text("Add"))
+                    label: Text(AppLocalizations.of(context)!.add))
               ],
             )
           ],
         )),
         WizardNavigationBottomBar(
           showCancel: !auth.isOnboardingRequired,
-          rText: auth.isOnboardingRequired ? "Next" : "Done",
+          rText: auth.isOnboardingRequired
+              ? AppLocalizations.of(context)!.next
+              : AppLocalizations.of(context)!.done,
           onCancel: () => Navigator.pop(context),
           rOnPressed: () async {
             pvm.updateProvidersFromEdited();
             if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
-              Fluttertoast.showToast(msg: "Error while updating providers");
+              if (context.mounted) {
+                Fluttertoast.showToast(
+                    msg: AppLocalizations.of(context)!.providersUpdateError);
+              }
             } else if (context.mounted) {
               if (auth.isOnboardingRequired) {
                 Navigator.push(

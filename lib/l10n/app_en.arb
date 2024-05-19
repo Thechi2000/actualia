@@ -2,5 +2,28 @@
   "helloWorld": "Hello World!",
   "@helloWorld": {
     "description": "The conventional newborn programmer greeting"
+  },
+  "remove": "Remove",
+  "notImplemented": "Not implemented yet !",
+  "cancel": "Cancel",
+  "button": "Button",
+  "next": "Next",
+  "add": "Add",
+  "done": "Done",
+  "providersWizardLoading": "Loading your sources",
+  "@providersWizardLoading": {
+    "description": "Description of the loading screen during provider fetching in the wizard"
+  },
+  "providersWizardUpdating": "Updating",
+  "@providersWizardUpdating": {
+    "description": "Description of the loading screen during provider update in the wizard"
+  },
+  "providersWizardTitle": "Choose the sources for your news",
+  "@providersWizardTitle": {
+    "description": "Title of the provider wizard"
+  },
+  "providersUpdateError": "An error occurred while updating",
+  "@providersUpdateError": {
+    "description": "Error toast when provider update fails"
   }
 }

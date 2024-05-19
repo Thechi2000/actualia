@@ -4,10 +4,11 @@ import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
-  final String buttonText;
+  final String? buttonText;
   final List<(Object, String)> items;
   final List<(Object, String)> selectedItems;
   final void Function(List<(Object, String)>) onPressed;
@@ -19,7 +20,7 @@ class WizardSelector extends StatefulWidget {
       required this.onPressed,
       this.selectedItems = const [],
       this.title = "",
-      this.buttonText = "Next",
+      this.buttonText,
       this.isInitialOnboarding = false,
       this.onCancel,
       super.key});
@@ -68,7 +69,7 @@ class _WizardSelector extends State<WizardSelector> {
       showCancel: !widget.isInitialOnboarding,
       onCancel: widget.onCancel,
       showRight: true,
-      rText: widget.buttonText,
+      rText: widget.buttonText ?? AppLocalizations.of(context)!.next,
       rOnPressed: () {
         widget.onPressed(_selectedItems);
       },
@@ -122,16 +123,16 @@ class WizardSelectorTitle extends StatelessWidget {
 class WizardNavigationBottomBar extends StatelessWidget {
   final bool showCancel;
   final bool showRight;
-  final String rText;
-  final String cancelText;
+  final String? rText;
+  final String? cancelText;
   final void Function()? rOnPressed;
   final void Function()? onCancel;
 
   const WizardNavigationBottomBar(
       {this.showCancel = true,
       this.showRight = true,
-      this.rText = "right button",
-      this.cancelText = "Cancel",
+      this.rText,
+      this.cancelText,
       this.rOnPressed,
       this.onCancel,
       super.key});
@@ -147,7 +148,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
               backgroundColor:
                   MaterialStateColor.resolveWith((states) => THEME_BUTTON)),
           child: Text(
-            rText,
+            rText ?? AppLocalizations.of(context)!.button,
             style: Theme.of(context).textTheme.bodyLarge,
           ));
     }
@@ -158,7 +159,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
               backgroundColor:
                   MaterialStateColor.resolveWith((states) => THEME_BUTTON)),
           child: Text(
-            cancelText,
+            cancelText ?? AppLocalizations.of(context)!.cancel,
             style: Theme.of(context).textTheme.bodyLarge,
           ));
     }
@@ -171,12 +172,9 @@ class WizardNavigationBottomBar extends StatelessWidget {
 
 class WizardScaffold extends StatelessWidget {
   final PreferredSizeWidget topBar;
-  final Widget body;
+  final Widget? body;
 
-  const WizardScaffold(
-      {this.topBar = const TopAppBar(),
-      this.body = const Text("unimplemented"),
-      super.key});
+  const WizardScaffold({this.topBar = const TopAppBar(), this.body, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +183,7 @@ class WizardScaffold extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
         alignment: Alignment.topCenter,
-        child: body,
+        child: body ?? Text(AppLocalizations.of(context)!.notImplemented),
       ),
     );
   }
@@ -270,7 +268,7 @@ class _ProviderWidgetState extends State<ProviderWidget> {
               const SizedBox(height: UNIT_PADDING / 2),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 FilledButton.tonalIcon(
-                    label: const Text("Remove"),
+                    label: Text(AppLocalizations.of(context)!.remove),
                     onPressed: () => widget.onDelete(widget),
                     icon: const Icon(Icons.delete))
               ]),

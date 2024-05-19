@@ -1,3 +1,14 @@
 {
-    "helloWorld": "Bonjour monde!"
+    "helloWorld": "Bonjour monde!",
+    "remove": "Enlever",
+    "notImplemented": "Pas encore implémenté !",
+    "cancel": "Annuler",
+    "button": "Bouton",
+    "next": "Suivant",
+    "add": "Ajouter",
+    "done": "Terminer",
+    "providersWizardLoading": "Chargement de vos sources",
+    "providersWizardUpdating": "Enregistrement",
+    "providersWizardTitle": "Choisissez les sources pour vos news",
+    "providersUpdateError": "Une erreur est survenue durant l'enregistrement"
 }
