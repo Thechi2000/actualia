@@ -1,6 +1,5 @@
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/views/interests_wizard_view.dart';
-import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -29,12 +28,20 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle? titleSmallStyle = Theme.of(context).textTheme.titleSmall;
-    TextStyle? displaySmallStyle = Theme.of(context).textTheme.displaySmall;
+    const titleSmall = TextStyle(
+        fontFamily: "EB Garamond",
+        fontSize: 14.0,
+        height: 1.4,
+        fontWeight: FontWeight.w300);
+    const bodyTextStyle = TextStyle(
+        fontFamily: "Fira Code",
+        fontSize: 14.0,
+        height: 1.4,
+        fontWeight: FontWeight.w300);
 
     const pageDecoration = PageDecoration(
-      titleTextStyle: titleSmallStyle!,
-      bodyTextStyle: displaySmallStyle!,
+      titleTextStyle: titleSmall,
+      bodyTextStyle: bodyTextStyle,
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: THEME_LIGHTGRAY,
       imagePadding: EdgeInsets.zero,
