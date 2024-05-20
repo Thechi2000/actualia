@@ -94,13 +94,7 @@ void main() async {
     await tester.pumpAndSettle();
 
     // Pass the pre-onboarding view
-    await tester.tap(find.text("Next"));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text("Next"));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text("Next"));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text("Done"));
+    await tester.tap(find.text("Skip"));
     await tester.pumpAndSettle();
 
     // Util function to select an interest entry from a given list.
