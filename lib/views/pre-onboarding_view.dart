@@ -1,4 +1,5 @@
 import 'package:actualia/utils/themes.dart';
+import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,14 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomePage()), // TODO
+      MaterialPageRoute(
+          builder: (_) =>
+              const InterestWizardView()), // For testing purposes, we can replace this with HomePage()
     );
   }
 
   Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/$assetName', width: width);
+    return Image.asset('assets/img/$assetName', width: width);
   }
 
   @override
@@ -48,21 +51,21 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
           title: "Welcome to ActualIA",
           body:
               "Get your own 1 minute daily summary of news that you choose, tailored to your needs.",
-          image: _buildImage('img/onboarding1.png'),
+          image: _buildImage('onboarding1.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Personalized news feed",
           body:
               "Wake up with the latest in tech, politics, society, or any subject you’d like. ",
-          image: _buildImage('img/onboarding2.png'),
+          image: _buildImage('onboarding2.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Stay informed, always",
           body:
               "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye.",
-          image: _buildImage('img/onboarding3.png'),
+          image: _buildImage('onboarding3.png'),
           decoration: pageDecoration,
         ),
       ],
@@ -92,6 +95,7 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
   }
 }
 
+// For testing purposes, we create a dummy HomePage widget with a return button
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

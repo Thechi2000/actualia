@@ -75,8 +75,7 @@ class _AppState extends State<App> {
     NewsSettingsViewModel newsSettings = Provider.of(context);
 
     Widget home;
-    home = PreOnBoardingPage();
-/*     if (alarmsModel.isAlarmActive) {
+    if (alarmsModel.isAlarmActive) {
       home = const NewsAlertView();
       Future.microtask(
           () => {_navKey.currentState?.popUntil((r) => r.isFirst)});
@@ -86,7 +85,7 @@ class _AppState extends State<App> {
         if (newsSettings.settings == null || pvm.newsProviders == null) {
           home = const LoadingView(text: 'Fetching your settings...');
         } else {
-          home = const InterestWizardView();
+          home = const PreOnBoardingPage();
         }
       } else {
         home = const MasterView();
@@ -95,7 +94,7 @@ class _AppState extends State<App> {
       home = const Scaffold(
         body: LoginView(),
       );
-    } */
+    }
 
     return MaterialApp(
       title: 'ActualIA',
