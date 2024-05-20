@@ -23,17 +23,18 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
+  Widget _buildImage(String assetName, [double width = 250]) {
     return Image.asset('assets/img/$assetName', width: width);
   }
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 19.0);
+    TextStyle? titleSmallStyle = Theme.of(context).textTheme.titleSmall;
+    TextStyle? displaySmallStyle = Theme.of(context).textTheme.displaySmall;
 
     const pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
-      bodyTextStyle: bodyStyle,
+      titleTextStyle: titleSmallStyle!,
+      bodyTextStyle: displaySmallStyle!,
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: THEME_LIGHTGRAY,
       imagePadding: EdgeInsets.zero,
@@ -45,7 +46,7 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
       allowImplicitScrolling: true,
       autoScrollDuration: 3000,
       infiniteAutoScroll: true,
-      globalHeader: const TopAppBar(enableProfileButton: false),
+      // globalHeader: const TopAppBar(enableProfileButton: false), // if we want to enable header
       pages: [
         PageViewModel(
           title: "Welcome to ActualIA",
