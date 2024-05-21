@@ -39,9 +39,6 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
     return IntroductionScreen(
       key: introKey,
       globalBackgroundColor: THEME_LIGHTGRAY,
-      allowImplicitScrolling: true,
-      autoScrollDuration: 3000,
-      infiniteAutoScroll: true,
       // globalHeader: const TopAppBar(enableProfileButton: false), // if we want to enable header
       pages: [
         PageViewModel(
