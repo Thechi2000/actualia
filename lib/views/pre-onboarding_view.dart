@@ -88,34 +88,3 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
     );
   }
 }
-
-// For testing purposes, we create a dummy HomePage widget with a return button
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  void _onBackToIntro(context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const PreOnBoardingPage()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text("This is the screen after Introduction"),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () => _onBackToIntro(context),
-              child: const Text('Back to Introduction'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
