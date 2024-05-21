@@ -28,21 +28,10 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    const titleSmall = TextStyle(
-        fontFamily: "EB Garamond",
-        fontSize: 14.0,
-        height: 1.4,
-        fontWeight: FontWeight.w300);
-    const bodyTextStyle = TextStyle(
-        fontFamily: "Fira Code",
-        fontSize: 14.0,
-        height: 1.4,
-        fontWeight: FontWeight.w300);
-
-    const pageDecoration = PageDecoration(
-      titleTextStyle: titleSmall,
-      bodyTextStyle: bodyTextStyle,
-      bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    var pageDecoration = PageDecoration(
+      titleTextStyle: Theme.of(context).textTheme.titleMedium!,
+      bodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
+      bodyPadding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: THEME_LIGHTGRAY,
       imagePadding: EdgeInsets.zero,
     );
