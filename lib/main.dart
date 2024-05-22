@@ -70,7 +70,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context)!;
     AuthModel authModel = Provider.of(context);
     AlarmsViewModel alarmsModel = Provider.of(context);
     ProvidersViewModel pvm = Provider.of(context);
@@ -85,7 +84,7 @@ class _AppState extends State<App> {
       newsSettings = Provider.of(context);
       if (authModel.isOnboardingRequired) {
         if (newsSettings.settings == null || pvm.newsProviders == null) {
-          home = LoadingView(text: loc.loading);
+          home = LoadingView(text: AppLocalizations.of(context)!.loading);
         } else {
           home = const PreOnBoardingPage();
         }

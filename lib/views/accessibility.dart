@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:locale_names/locale_names.dart';
 
 class AccessibilityView extends StatelessWidget {
   const AccessibilityView({super.key});
@@ -37,7 +38,7 @@ class AccessibilityView extends StatelessWidget {
                           .map((l) => DropdownMenuItem(
                               value: l.toLanguageTag(),
                               child: Text(
-                                l.toLanguageTag(),
+                                Locale(l.languageCode).nativeDisplayLanguage,
                                 style: Theme.of(context).textTheme.bodyLarge,
                               )))
                           .toList(),
