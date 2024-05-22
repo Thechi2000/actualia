@@ -92,7 +92,8 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             interests: _selectedInterests,
             wantsCities: true,
             wantsCountries: true,
-            wantsInterests: true);
+            wantsInterests: true,
+            locale: AppLocalizations.of(context)!.localeName);
         try {
           await nsvm.pushSettings(toSend);
           if (context.mounted) {

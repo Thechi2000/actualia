@@ -60,5 +60,7 @@
   "onboardingTitle2": "Personalized news feed",
   "onboardingDescription2": "Wake up with the latest in tech, politics, society, or any subject you'd like.",
   "onboardingTitle3": "Stay informed, always",
-  "onboardingDescription3": "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye."
+  "onboardingDescription3": "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye.",
+  "accessibilityLanguage": "Language",
+  "accessibilityUpdateError": "Error during update"
 }

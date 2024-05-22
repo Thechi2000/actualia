@@ -44,5 +44,7 @@
     "onboardingTitle2": "Flux d'information personnalisé",
     "onboardingDescription2": "Réveillez vous avec les dernières nouvelles en politique, science, ou n'importe quel sujet qui vous intéresse.",
     "onboardingTitle3": "Restez toujours informé",
-    "onboardingDescription3": "Vous pouvez lire et écoutez votre résumé personnel, ou consulter les sources originelles."
+    "onboardingDescription3": "Vous pouvez lire et écoutez votre résumé personnel, ou consulter les sources originelles.",
+    "accessibilityLanguage": "Langue",
+    "accessibilityUpdateError": "Erreur lors de l'enregistrement"
 }
