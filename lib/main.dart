@@ -83,7 +83,7 @@ class _AppState extends State<App> {
       newsSettings = Provider.of(context);
       if (authModel.isOnboardingRequired) {
         if (newsSettings.settings == null || pvm.newsProviders == null) {
-          home = const LoadingView(text: 'Fetching your settings...');
+          home = LoadingView(text: AppLocalizations.of(context)!.loading);
         } else {
           home = const InterestWizardView();
         }

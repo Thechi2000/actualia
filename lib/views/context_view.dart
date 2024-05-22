@@ -1,5 +1,6 @@
 import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContextView extends StatelessWidget {
   final String text;
@@ -14,7 +15,7 @@ class ContextView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
                 UNIT_PADDING * 2, UNIT_PADDING * 2, UNIT_PADDING * 2, 0),
             child: Text(
-              "Here is some context regarding the text you just photographed:",
+              AppLocalizations.of(context)!.newsContextHeading,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!

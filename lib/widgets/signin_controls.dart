@@ -3,6 +3,7 @@ import 'package:actualia/utils/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignInControls extends StatefulWidget {
   const SignInControls({super.key});
@@ -37,7 +38,7 @@ class _SignInControls extends State<SignInControls> {
                           child: googleLogo),
                       Text(
                           style: Theme.of(context).textTheme.titleSmall,
-                          "Sign in with Google"),
+                          AppLocalizations.of(context)!.googleSignin),
                     ]),
               ),
               onPressed: () async {
@@ -52,7 +53,7 @@ class _SignInControls extends State<SignInControls> {
                 key: const Key("signin-guest"),
                 child: Text(
                     style: Theme.of(context).textTheme.titleSmall,
-                    "Sign in as guest"),
+                    AppLocalizations.of(context)!.guestSignin),
               )),
           if (_error != null) ...<Widget>[
             Text(

@@ -5,6 +5,7 @@ import 'package:actualia/widgets/alarms_widget.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AlarmWizardView extends StatefulWidget {
   const AlarmWizardView({super.key});
@@ -40,7 +41,7 @@ class _AlarmWizardView extends State<AlarmWizardView> {
     Widget body = Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Choose your first alarm!",
+        Text(AppLocalizations.of(context)!.setFirstAlarm,
             style: Theme.of(context).textTheme.titleLarge),
         PickTimeButton(
             initialTime: _selectedTime,

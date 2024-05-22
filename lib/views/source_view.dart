@@ -3,6 +3,7 @@ import 'package:actualia/widgets/sources_view_widgets.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SourceView extends StatefulWidget {
   final String article;
@@ -75,7 +76,7 @@ class _SourceViewState extends State<SourceView> {
                         },
                         child: Text(
                             style: Theme.of(context).textTheme.displaySmall,
-                            "View site"),
+                            AppLocalizations.of(context)!.sourceView),
                       ))
                 ],
               )

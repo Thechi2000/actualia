@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InterestWizardView extends StatefulWidget {
   const InterestWizardView({super.key});
@@ -51,7 +52,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _step = WizardStep.CITIES;
         });
       },
-      title: "Select countries",
+      title: AppLocalizations.of(context)!.wizardCountriesTitle,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         Navigator.pop(context);
@@ -68,7 +69,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _step = WizardStep.INTERESTS;
         });
       },
-      title: "Select cities",
+      title: AppLocalizations.of(context)!.wizardCitiesTitle,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {
@@ -108,8 +109,10 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
       },
-      title: "Select interests",
-      buttonText: auth.isOnboardingRequired ? "Next" : "Finish",
+      title: AppLocalizations.of(context)!.wizardInterestsTitle,
+      buttonText: auth.isOnboardingRequired
+          ? AppLocalizations.of(context)!.next
+          : AppLocalizations.of(context)!.done,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {

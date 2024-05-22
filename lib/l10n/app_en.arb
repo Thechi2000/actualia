@@ -10,6 +10,9 @@
   "next": "Next",
   "add": "Add",
   "done": "Done",
+  "loading": "Loading",
+  "test": "Test",
+  "profileGreeting": "Hello!",
   "providersWizardLoading": "Loading your sources",
   "@providersWizardLoading": {
     "description": "Description of the loading screen during provider fetching in the wizard"
@@ -25,5 +28,30 @@
   "providersUpdateError": "An error occurred while updating",
   "@providersUpdateError": {
     "description": "Error toast when provider update fails"
-  }
+  },
+  "profileInterests": "Interests",
+  "profileSources": "Sources",
+  "profileAlarm": "Alarm",
+  "profileStorage": "Storage",
+  "profileNarrator": "Narrator",
+  "profileAccessibility": "Accessibility",
+  "profileUnknownUser": "Unknown user",
+  "googleSignin": "Sign in in with Google",
+  "guestSignin": "Sign in as guest",
+  "logout": "Log out",
+  "setFirstAlarm": "Choose your first alarm!",
+  "newsContextHeading": "Here is some context regarding the text you just photographed:",
+  "newsContextNoText": "No text found",
+  "wizardCountriesTitle": "Select countries",
+  "wizardCitiesTitle": "Select cities",
+  "wizardInterestsTitle": "Select interests",
+  "alarmDismiss": "Dismiss alarm",
+  "newsLoading": "Please wait while we fetch the news for you",
+  "newsEmptyTitle": "You don't have any news yet",
+  "newsEmptyDescription": "The first one will be generated the first time the alarm goes off.",
+  "newsShareAudio": "Check my personalized news audio!",
+  "sourceView": "View on original website",
+  "rssFeedNotFound": "Unable to find related RSS feed.",
+  "rssInvalidUrl": "Must be a valid URL",
+  "telegramInvalidId": "Must be a channel name or an invite link"
 }

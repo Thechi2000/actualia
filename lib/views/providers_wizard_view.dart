@@ -73,8 +73,8 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
           onCancel: () => Navigator.pop(context),
           rOnPressed: () async {
             pvm.updateProvidersFromEdited();
-            if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
-              if (context.mounted) {
+            if (!await pvm.pushNewsProviders(AppLocalizations.of(context)!)) {
+              if (context.mounted && Platform.isAndroid) {
                 Fluttertoast.showToast(
                     msg: AppLocalizations.of(context)!.providersUpdateError);
               }

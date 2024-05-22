@@ -4,6 +4,7 @@ import 'package:actualia/widgets/play_button.dart';
 import 'package:actualia/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NewsAlertView extends StatefulWidget {
   const NewsAlertView({super.key});
@@ -63,7 +64,7 @@ class _NewsAlertViewState extends State<NewsAlertView> {
               alarms.stopAlarms();
               alarms.dismissAlarm();
             },
-            child: const Text("Dismiss alarm")),
+            child: Text(AppLocalizations.of(context)!.alarmDismiss)),
       ],
     );
 
