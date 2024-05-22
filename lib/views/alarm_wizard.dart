@@ -35,14 +35,14 @@ class _AlarmWizardView extends State<AlarmWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     AlarmsViewModel avm = Provider.of<AlarmsViewModel>(context);
     AuthModel auth = Provider.of<AuthModel>(context);
 
     Widget body = Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(AppLocalizations.of(context)!.setFirstAlarm,
-            style: Theme.of(context).textTheme.titleLarge),
+        Text(loc.setFirstAlarm, style: Theme.of(context).textTheme.titleLarge),
         PickTimeButton(
             initialTime: _selectedTime,
             onTimeSelected: (time) {
@@ -50,7 +50,7 @@ class _AlarmWizardView extends State<AlarmWizardView> {
             }),
         WizardNavigationBottomBar(
           showCancel: true,
-          cancelText: AppLocalizations.of(context)!.skip,
+          cancelText: loc.skip,
           onCancel: () async {
             if (auth.isOnboardingRequired) {
               await auth.setOnboardingIsDone();

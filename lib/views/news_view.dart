@@ -27,8 +27,9 @@ class _NewsViewState extends State<NewsView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget loading =
-        LoadingView(text: AppLocalizations.of(context)!.newsLoading);
+    var loc = AppLocalizations.of(context)!;
+
+    Widget loading = LoadingView(text: loc.newsLoading);
 
     final newsViewModel = Provider.of<NewsViewModel>(context);
     final newsList = newsViewModel.newsList;
@@ -40,8 +41,7 @@ class _NewsViewState extends State<NewsView> {
         body = loading;
       } else {
         body = NoNewsView(
-            title: AppLocalizations.of(context)!.newsEmptyTitle,
-            text: AppLocalizations.of(context)!.newsEmptyDescription);
+            title: loc.newsEmptyTitle, text: loc.newsEmptyDescription);
       }
     } else {
       var firstTranscript = newsList.first;
@@ -63,7 +63,7 @@ class _NewsViewState extends State<NewsView> {
                   XFile(
                       // ignore: use_build_context_synchronously
                       '${(await getApplicationDocumentsDirectory()).path}/audios/${firstTranscript.transcriptId}.mp3')
-                ], text: AppLocalizations.of(context)!.newsShareAudio),
+                ], text: loc.newsShareAudio),
                 icon: const Icon(Icons.audiotrack),
               ),
               ActionButton(

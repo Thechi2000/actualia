@@ -44,6 +44,8 @@ class _SourceViewState extends State<SourceView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: TopAppBar(
         enableReturnButton: true,
@@ -76,7 +78,7 @@ class _SourceViewState extends State<SourceView> {
                         },
                         child: Text(
                             style: Theme.of(context).textTheme.displaySmall,
-                            AppLocalizations.of(context)!.sourceView),
+                            loc.sourceView),
                       ))
                 ],
               )

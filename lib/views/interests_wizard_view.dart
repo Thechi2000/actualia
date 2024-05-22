@@ -38,6 +38,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     final NewsSettingsViewModel nsvm =
         Provider.of<NewsSettingsViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
@@ -52,7 +53,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _step = WizardStep.CITIES;
         });
       },
-      title: AppLocalizations.of(context)!.wizardCountriesTitle,
+      title: loc.wizardCountriesTitle,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         Navigator.pop(context);
@@ -69,7 +70,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           _step = WizardStep.INTERESTS;
         });
       },
-      title: AppLocalizations.of(context)!.wizardCitiesTitle,
+      title: loc.wizardCitiesTitle,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {
@@ -93,7 +94,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             wantsCities: true,
             wantsCountries: true,
             wantsInterests: true,
-            locale: AppLocalizations.of(context)!.localeName);
+            locale: loc.localeName);
         try {
           await nsvm.pushSettings(toSend);
           if (context.mounted) {
@@ -110,10 +111,8 @@ class _InterestWizardViewState extends State<InterestWizardView> {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
       },
-      title: AppLocalizations.of(context)!.wizardInterestsTitle,
-      buttonText: auth.isOnboardingRequired
-          ? AppLocalizations.of(context)!.next
-          : AppLocalizations.of(context)!.done,
+      title: loc.wizardInterestsTitle,
+      buttonText: auth.isOnboardingRequired ? loc.next : loc.done,
       isInitialOnboarding: auth.isOnboardingRequired,
       onCancel: () {
         setState(() {

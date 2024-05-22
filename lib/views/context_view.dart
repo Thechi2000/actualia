@@ -8,6 +8,8 @@ class ContextView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
@@ -15,7 +17,7 @@ class ContextView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
                 UNIT_PADDING * 2, UNIT_PADDING * 2, UNIT_PADDING * 2, 0),
             child: Text(
-              AppLocalizations.of(context)!.newsContextHeading,
+              loc.newsContextHeading,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!

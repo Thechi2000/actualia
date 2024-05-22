@@ -17,6 +17,7 @@ class _SignInControls extends State<SignInControls> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     AuthModel authModel = Provider.of(context);
     SvgPicture googleLogo = SvgPicture.asset('assets/img/g_logo.svg');
 
@@ -38,7 +39,7 @@ class _SignInControls extends State<SignInControls> {
                           child: googleLogo),
                       Text(
                           style: Theme.of(context).textTheme.titleSmall,
-                          AppLocalizations.of(context)!.googleSignin),
+                          loc.googleSignin),
                     ]),
               ),
               onPressed: () async {
@@ -53,7 +54,7 @@ class _SignInControls extends State<SignInControls> {
                 key: const Key("signin-guest"),
                 child: Text(
                     style: Theme.of(context).textTheme.titleSmall,
-                    AppLocalizations.of(context)!.guestSignin),
+                    loc.guestSignin),
               )),
           if (_error != null) ...<Widget>[
             Text(

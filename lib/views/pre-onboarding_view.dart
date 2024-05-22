@@ -27,6 +27,8 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     var pageDecoration = PageDecoration(
       titleTextStyle: Theme.of(context).textTheme.titleMedium!,
       bodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
@@ -41,20 +43,20 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
       // globalHeader: const TopAppBar(enableProfileButton: false), // if we want to enable header
       pages: [
         PageViewModel(
-          title: AppLocalizations.of(context)!.onboardingTitle1,
-          body: AppLocalizations.of(context)!.onboardingDescription1,
+          title: loc.onboardingTitle1,
+          body: loc.onboardingDescription1,
           image: _buildImage('onboarding1.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: AppLocalizations.of(context)!.onboardingTitle2,
-          body: AppLocalizations.of(context)!.onboardingDescription2,
+          title: loc.onboardingTitle2,
+          body: loc.onboardingDescription2,
           image: _buildImage('onboarding2.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: AppLocalizations.of(context)!.onboardingTitle3,
-          body: AppLocalizations.of(context)!.onboardingDescription3,
+          title: loc.onboardingTitle3,
+          body: loc.onboardingDescription3,
           image: _buildImage('onboarding3.png'),
           decoration: pageDecoration,
         ),
@@ -67,11 +69,9 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
       showBackButton: false,
       //rtl: true, // Display as right-to-left
       back: const Icon(Icons.arrow_back),
-      skip: Text(AppLocalizations.of(context)!.skip,
-          style: const TextStyle(fontWeight: FontWeight.w600)),
+      skip: Text(loc.skip, style: const TextStyle(fontWeight: FontWeight.w600)),
       next: const Icon(Icons.arrow_forward),
-      done: Text(AppLocalizations.of(context)!.done,
-          style: const TextStyle(fontWeight: FontWeight.w600)),
+      done: Text(loc.done, style: const TextStyle(fontWeight: FontWeight.w600)),
       curve: Curves.fastLinearToSlowEaseIn,
       controlsMargin: const EdgeInsets.all(16),
       controlsPadding: kIsWeb

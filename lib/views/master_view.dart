@@ -66,26 +66,24 @@ class _MasterView extends State<MasterView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     Widget body;
     switch (_currentViews) {
       case Views.NEWS:
         body = const NewsView();
         break;
       case Views.CAMERA:
-        body =
-            Center(child: Text(AppLocalizations.of(context)!.notImplemented));
+        body = Center(child: Text(loc.notImplemented));
         break;
       case Views.FEED:
-        body =
-            Center(child: Text(AppLocalizations.of(context)!.notImplemented));
+        body = Center(child: Text(loc.notImplemented));
         break;
       case Views.CONTEXT:
-        body = ContextView(
-            text: _ocrText ?? AppLocalizations.of(context)!.newsContextNoText);
+        body = ContextView(text: _ocrText ?? loc.newsContextNoText);
         break;
       default:
-        body =
-            Center(child: Text(AppLocalizations.of(context)!.notImplemented));
+        body = Center(child: Text(loc.notImplemented));
         break;
     }
 

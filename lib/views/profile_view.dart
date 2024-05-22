@@ -98,6 +98,7 @@ class _ProfilePageState extends State<ProfilePageView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     AuthModel authModel = Provider.of<AuthModel>(context);
 
     String? username = authModel.user?.email;
@@ -116,7 +117,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                 children: <Widget>[
                   Text(
                       style: Theme.of(context).textTheme.titleLarge,
-                      AppLocalizations.of(context)!.profileGreeting),
+                      loc.profileGreeting),
                   Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: UNIT_PADDING,
@@ -124,9 +125,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                       ),
                       child: Text(
                           style: Theme.of(context).textTheme.bodyMedium,
-                          username ??
-                              AppLocalizations.of(context)!
-                                  .profileUnknownUser)),
+                          username ?? loc.profileUnknownUser)),
                   FilledButton.tonal(
                     onPressed: () async {
                       Navigator.pop(context);
@@ -134,7 +133,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                     },
                     child: Text(
                         style: const TextStyle(fontFamily: "Fira Code"),
-                        AppLocalizations.of(context)!.logout),
+                        loc.logout),
                   )
                 ])),
 
@@ -150,7 +149,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                     dense: true,
                     title: Text(
                         style: Theme.of(context).textTheme.displaySmall,
-                        row.displayName(AppLocalizations.of(context)!)),
+                        row.displayName(loc)),
                     titleAlignment: ListTileTitleAlignment.center,
                     onTap: () {
                       handleRowTap(row);
@@ -169,7 +168,7 @@ class _ProfilePageState extends State<ProfilePageView> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(AppLocalizations.of(context)!.done,
+                  child: Text(loc.done,
                       style: const TextStyle(color: Colors.black)))),
         ]),
       ],

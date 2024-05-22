@@ -34,6 +34,8 @@ class _NewsAlertViewState extends State<NewsAlertView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     AlarmsViewModel alarms = Provider.of(context);
     if (transcriptId == null) {
       Future.microtask(
@@ -64,7 +66,7 @@ class _NewsAlertViewState extends State<NewsAlertView> {
               alarms.stopAlarms();
               alarms.dismissAlarm();
             },
-            child: Text(AppLocalizations.of(context)!.alarmDismiss)),
+            child: Text(loc.alarmDismiss)),
       ],
     );
 

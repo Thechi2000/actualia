@@ -42,6 +42,8 @@ class _WizardSelector extends State<WizardSelector> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     Widget title = WizardSelectorTitle(title: widget.title);
 
     Widget body = Expanded(
@@ -69,7 +71,7 @@ class _WizardSelector extends State<WizardSelector> {
       showCancel: !widget.isInitialOnboarding,
       onCancel: widget.onCancel,
       showRight: true,
-      rText: widget.buttonText ?? AppLocalizations.of(context)!.next,
+      rText: widget.buttonText ?? loc.next,
       rOnPressed: () {
         widget.onPressed(_selectedItems);
       },
@@ -139,6 +141,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     Widget right = const SizedBox();
     Widget cancel = const SizedBox();
     if (showRight) {
@@ -148,7 +151,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
               backgroundColor:
                   MaterialStateColor.resolveWith((states) => THEME_BUTTON)),
           child: Text(
-            rText ?? AppLocalizations.of(context)!.button,
+            rText ?? loc.button,
             style: Theme.of(context).textTheme.bodyLarge,
           ));
     }
@@ -159,7 +162,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
               backgroundColor:
                   MaterialStateColor.resolveWith((states) => THEME_BUTTON)),
           child: Text(
-            cancelText ?? AppLocalizations.of(context)!.cancel,
+            cancelText ?? loc.cancel,
             style: Theme.of(context).textTheme.bodyLarge,
           ));
     }
@@ -178,12 +181,14 @@ class WizardScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: topBar,
       body: Container(
         padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
         alignment: Alignment.topCenter,
-        child: body ?? Text(AppLocalizations.of(context)!.notImplemented),
+        child: body ?? Text(loc.notImplemented),
       ),
     );
   }
@@ -202,6 +207,7 @@ class ProviderWidget extends StatefulWidget {
 class _ProviderWidgetState extends State<ProviderWidget> {
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     var pvm = Provider.of<ProvidersViewModel>(context);
 
     var type = pvm.editedProviders[widget.idx].$1;
@@ -268,7 +274,7 @@ class _ProviderWidgetState extends State<ProviderWidget> {
               const SizedBox(height: UNIT_PADDING / 2),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 FilledButton.tonalIcon(
-                    label: Text(AppLocalizations.of(context)!.remove),
+                    label: Text(loc.remove),
                     onPressed: () => widget.onDelete(widget),
                     icon: const Icon(Icons.delete))
               ]),

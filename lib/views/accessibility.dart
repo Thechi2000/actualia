@@ -13,6 +13,7 @@ class AccessibilityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     var nsvm = Provider.of<NewsSettingsViewModel>(context);
 
     return WizardScaffold(
@@ -27,11 +28,11 @@ class AccessibilityView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.accessibilityLanguage,
+                      loc.accessibilityLanguage,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     DropdownButton(
-                      value: AppLocalizations.of(context)!.localeName,
+                      value: loc.localeName,
                       items: AppLocalizations.supportedLocales
                           .map((l) => DropdownMenuItem(
                               value: l.toLanguageTag(),
@@ -49,12 +50,11 @@ class AccessibilityView extends StatelessWidget {
       )),
       WizardNavigationBottomBar(
         showCancel: true,
-        rText: AppLocalizations.of(context)!.done,
+        rText: loc.done,
         rOnPressed: () async {
           if (!await nsvm.pushSettings(null)) {
             if (context.mounted && Platform.isAndroid) {
-              Fluttertoast.showToast(
-                  msg: AppLocalizations.of(context)!.accessibilityUpdateError);
+              Fluttertoast.showToast(msg: loc.accessibilityUpdateError);
             }
           } else {
             if (context.mounted) {

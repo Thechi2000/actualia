@@ -31,6 +31,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     final AuthModel auth = Provider.of<AuthModel>(context);
     final ProvidersViewModel pvm = Provider.of<ProvidersViewModel>(context);
     items = pvm.editedProviders.indexed
@@ -38,15 +39,13 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             idx: e.$1, onDelete: (w) => pvm.removeEditedProvider(e.$1)))
         .toList();
 
-    Widget body =
-        LoadingView(text: AppLocalizations.of(context)!.providersWizardLoading);
+    Widget body = LoadingView(text: loc.providersWizardLoading);
     if (pvm.isPushing) {
-      body = LoadingView(
-          text: AppLocalizations.of(context)!.providersWizardUpdating);
+      body = LoadingView(text: loc.providersWizardUpdating);
     } else if (items != null) {
       var items_ = items as List<ProviderWidget>;
       body = Column(children: [
-        Text(AppLocalizations.of(context)!.providersWizardTitle,
+        Text(loc.providersWizardTitle,
             style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: UNIT_PADDING),
         Expanded(
@@ -60,23 +59,20 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
                 FilledButton.tonalIcon(
                     icon: const Icon(Icons.add),
                     onPressed: () => pvm.addEditedProvider(),
-                    label: Text(AppLocalizations.of(context)!.add))
+                    label: Text(loc.add))
               ],
             )
           ],
         )),
         WizardNavigationBottomBar(
           showCancel: !auth.isOnboardingRequired,
-          rText: auth.isOnboardingRequired
-              ? AppLocalizations.of(context)!.next
-              : AppLocalizations.of(context)!.done,
+          rText: auth.isOnboardingRequired ? loc.next : loc.done,
           onCancel: () => Navigator.pop(context),
           rOnPressed: () async {
             pvm.updateProvidersFromEdited();
-            if (!await pvm.pushNewsProviders(AppLocalizations.of(context)!)) {
+            if (!await pvm.pushNewsProviders(loc)) {
               if (context.mounted && Platform.isAndroid) {
-                Fluttertoast.showToast(
-                    msg: AppLocalizations.of(context)!.providersUpdateError);
+                Fluttertoast.showToast(msg: loc.providersUpdateError);
               }
             } else if (context.mounted) {
               if (auth.isOnboardingRequired) {
