@@ -45,6 +45,7 @@ function returnSharePage(title: string, message: string) {
   <html>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta content="width=device-width,initial-scale=1" name="viewport">
   <div class="mockup-browser border bg-base-300">
      <div class="mockup-browser-toolbar">
         <div class="input">${title}</div>
