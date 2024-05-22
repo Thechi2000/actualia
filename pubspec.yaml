@@ -60,6 +60,7 @@ dependencies:
   http: ^1.2.1
   flutter_localizations:
     sdk: flutter
+  introduction_screen: ^3.1.14
 
 dev_dependencies:
   flutter_test:
