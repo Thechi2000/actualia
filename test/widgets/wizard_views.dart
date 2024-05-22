@@ -56,7 +56,6 @@ class MockAlarmsViewModel extends AlarmsViewModel {
   Future<void> setAlarm(DateTime time, String assetAudio, bool loopAudio,
       bool vibrate, double volume, int? settingsId) async {
     _alarmSet = true;
-    debugPrint("Alarm set do not worry");
   }
 }
 

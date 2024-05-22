@@ -28,7 +28,6 @@ class _NewsAlertViewState extends State<NewsAlertView> {
       setState(() {
         transcriptId = news.news!.transcriptId;
       });
-      debugPrint("[FETCHTRANSCRIPT] id: $transcriptId");
     }
   }
 

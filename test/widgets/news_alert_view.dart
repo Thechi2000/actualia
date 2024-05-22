@@ -26,7 +26,6 @@ class ExistingNewsNVM extends AlreadyExistingNewsVM {
 
   @override
   Future<void> getAudioFile(News news) async {
-    debugPrint("[GETAUDIO]");
     return;
   }
 }

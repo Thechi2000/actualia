@@ -155,7 +155,6 @@ void main() {
     expect(find.text('Log out'), findsOne);
 
     testButton(String text) async {
-      debugPrint("[DEBUG] testing $text");
       await tester.dragUntilVisible(
           find.text(text), find.byType(ListView), Offset.fromDirection(90.0));
       await tester.tap(find.text(findRichText: true, text));

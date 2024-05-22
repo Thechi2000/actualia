@@ -83,7 +83,6 @@ class _ProfilePageState extends State<ProfilePageView> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const AccessibilityView()));
       default:
-        debugPrint("Click on ${e.key}");
         Fluttertoast.showToast(
             msg: AppLocalizations.of(context)!.notImplemented,
             toastLength: Toast.LENGTH_SHORT,
