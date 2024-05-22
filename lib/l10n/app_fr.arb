@@ -8,6 +8,7 @@
     "done": "Terminer",
     "loading": "Chargement",
     "test": "Essayer",
+    "skip": "Ignorer",
     "profileGreeting": "Bonjour !",
     "providersWizardLoading": "Chargement de vos sources",
     "providersWizardUpdating": "Enregistrement",
@@ -37,5 +38,11 @@
     "sourceView": "Voir sur le site d'origine",
     "rssFeedNotFound": "Impossible de trouver un flux RSS associé",
     "rssInvalidUrl": "Doit être une URL valide",
-    "telegramInvalidId": "Doit être un identifiant de canal ou un lien d'invitation"
+    "telegramInvalidId": "Doit être un identifiant de canal ou un lien d'invitation",
+    "onboardingTitle1": "Bienvenue sur ActualIA",
+    "onboardingDescription1": "Obtenez les informations du jour résumée en une minute, choisies spécifiquement pour vous.",
+    "onboardingTitle2": "Flux d'information personnalisé",
+    "onboardingDescription2": "Réveillez vous avec les dernières nouvelles en politique, science, ou n'importe quel sujet qui vous intéresse.",
+    "onboardingTitle3": "Restez toujours informé",
+    "onboardingDescription3": "Vous pouvez lire et écoutez votre résumé personnel, ou consulter les sources originelles."
 }

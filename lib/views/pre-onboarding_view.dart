@@ -3,6 +3,7 @@ import 'package:actualia/views/interests_wizard_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PreOnBoardingPage extends StatefulWidget {
   const PreOnBoardingPage({super.key});
@@ -16,9 +17,7 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-          builder: (_) =>
-              const InterestWizardView()), // For testing purposes, we can replace this with HomePage()
+      MaterialPageRoute(builder: (_) => const InterestWizardView()),
     );
   }
 
@@ -42,23 +41,20 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
       // globalHeader: const TopAppBar(enableProfileButton: false), // if we want to enable header
       pages: [
         PageViewModel(
-          title: "Welcome to ActualIA",
-          body:
-              "Get your own 1 minute daily summary of news that you choose, tailored to your needs.",
+          title: AppLocalizations.of(context)!.onboardingTitle1,
+          body: AppLocalizations.of(context)!.onboardingDescription1,
           image: _buildImage('onboarding1.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Personalized news feed",
-          body:
-              "Wake up with the latest in tech, politics, society, or any subject you’d like. ",
+          title: AppLocalizations.of(context)!.onboardingTitle2,
+          body: AppLocalizations.of(context)!.onboardingDescription2,
           image: _buildImage('onboarding2.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Stay informed, always",
-          body:
-              "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye.",
+          title: AppLocalizations.of(context)!.onboardingTitle3,
+          body: AppLocalizations.of(context)!.onboardingDescription3,
           image: _buildImage('onboarding3.png'),
           decoration: pageDecoration,
         ),
@@ -71,9 +67,11 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
       showBackButton: false,
       //rtl: true, // Display as right-to-left
       back: const Icon(Icons.arrow_back),
-      skip: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
+      skip: Text(AppLocalizations.of(context)!.skip,
+          style: const TextStyle(fontWeight: FontWeight.w600)),
       next: const Icon(Icons.arrow_forward),
-      done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
+      done: Text(AppLocalizations.of(context)!.done,
+          style: const TextStyle(fontWeight: FontWeight.w600)),
       curve: Curves.fastLinearToSlowEaseIn,
       controlsMargin: const EdgeInsets.all(16),
       controlsPadding: kIsWeb

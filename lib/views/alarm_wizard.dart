@@ -50,7 +50,7 @@ class _AlarmWizardView extends State<AlarmWizardView> {
             }),
         WizardNavigationBottomBar(
           showCancel: true,
-          cancelText: "Skip",
+          cancelText: AppLocalizations.of(context)!.skip,
           onCancel: () async {
             if (auth.isOnboardingRequired) {
               await auth.setOnboardingIsDone();

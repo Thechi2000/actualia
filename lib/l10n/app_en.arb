@@ -12,6 +12,7 @@
   "done": "Done",
   "loading": "Loading",
   "test": "Test",
+  "skip": "Skip",
   "profileGreeting": "Hello!",
   "providersWizardLoading": "Loading your sources",
   "@providersWizardLoading": {
@@ -53,5 +54,11 @@
   "sourceView": "View on original website",
   "rssFeedNotFound": "Unable to find related RSS feed.",
   "rssInvalidUrl": "Must be a valid URL",
-  "telegramInvalidId": "Must be a channel name or an invite link"
+  "telegramInvalidId": "Must be a channel name or an invite link",
+  "onboardingTitle1": "Welcome to ActualIA",
+  "onboardingDescription1": "Get your own 1 minute daily summary of news that you choose, tailored to your needs.",
+  "onboardingTitle2": "Personalized news feed",
+  "onboardingDescription2": "Wake up with the latest in tech, politics, society, or any subject you'd like.",
+  "onboardingTitle3": "Stay informed, always",
+  "onboardingDescription3": "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye."
 }
