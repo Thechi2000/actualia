@@ -9,6 +9,7 @@
     "loading": "Chargement",
     "test": "Essayer",
     "skip": "Ignorer",
+    "readMore": "Voir plus",
     "profileGreeting": "Bonjour !",
     "providersWizardLoading": "Chargement de vos sources",
     "providersWizardUpdating": "Enregistrement",
@@ -30,10 +31,10 @@
     "wizardCountriesTitle": "Sélectionner des pays",
     "wizardCitiesTitle": "Sélectionner des villes",
     "wizardInterestsTitle": "Sélectionner vos intérêts",
-    "alarmDismiss": "Arrêter l'alarme",
     "newsLoading": "Veulliez patienter pendant que la news est générée",
     "newsEmptyTitle": "Vous n'avez pas encore de news",
     "newsEmptyDescription": "La première sera générée lorsque votre alarme s'activera",
+    "newsEmptyGenerateButton": "Générer maintenant",
     "newsShareAudio": "Regardez mon audio personnalisé",
     "sourceView": "Voir sur le site d'origine",
     "rssFeedNotFound": "Impossible de trouver un flux RSS associé",
@@ -46,5 +47,9 @@
     "onboardingTitle3": "Restez toujours informé",
     "onboardingDescription3": "Vous pouvez lire et écoutez votre résumé personnel, ou consulter les sources originelles.",
     "accessibilityLanguage": "Langue",
-    "accessibilityUpdateError": "Erreur lors de l'enregistrement"
+    "accessibilityUpdateError": "Erreur lors de l'enregistrement",
+    "alarmDismiss": "Arrêter",
+    "alarmLoop": "Répétez l'audio",
+    "alarmNotSet": "Alarme désactivée",
+    "alarmSetFor": "Alarme activée pour {date} prochain"
 }

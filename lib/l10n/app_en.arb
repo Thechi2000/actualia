@@ -10,6 +10,7 @@
   "test": "Test",
   "skip": "Skip",
   "profileGreeting": "Hello!",
+  "readMore": "Read more",
   "providersWizardLoading": "Loading your sources",
   "@providersWizardLoading": {
     "description": "Description of the loading screen during provider fetching in the wizard"
@@ -42,10 +43,10 @@
   "wizardCountriesTitle": "Select countries",
   "wizardCitiesTitle": "Select cities",
   "wizardInterestsTitle": "Select interests",
-  "alarmDismiss": "Dismiss alarm",
   "newsLoading": "Please wait while we fetch the news for you",
   "newsEmptyTitle": "You don't have any news yet",
   "newsEmptyDescription": "The first one will be generated the first time the alarm goes off.",
+  "newsEmptyGenerateButton": "Generate now",
   "newsShareAudio": "Check my personalized news audio!",
   "sourceView": "View on original website",
   "rssFeedNotFound": "Unable to find related RSS feed.",
@@ -58,5 +59,15 @@
   "onboardingTitle3": "Stay informed, always",
   "onboardingDescription3": "You can listen to your customized news feed, read a transcript, and always look into the original sources of the headlines that caught your eye.",
   "accessibilityLanguage": "Language",
-  "accessibilityUpdateError": "Error during update"
+  "accessibilityUpdateError": "Error during update",
+  "alarmDismiss": "Dismiss alarm",
+  "alarmLoop": "Loop alarm audio",
+  "alarmNotSet": "Alarm not set",
+  "alarmSetFor": "Alarm set for next {date}",
+  "@alarmSetFor": {
+    "date": {
+      "type": "DateTime",
+      "format": "EEEE"
+    }
+  }
 }
