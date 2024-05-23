@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:actualia/utils/locales.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:locale_names/locale_names.dart';
 
 class AccessibilityView extends StatelessWidget {
   const AccessibilityView({super.key});
@@ -38,7 +38,7 @@ class AccessibilityView extends StatelessWidget {
                           .map((l) => DropdownMenuItem(
                               value: l.toLanguageTag(),
                               child: Text(
-                                Locale(l.languageCode).nativeDisplayLanguage,
+                                LOCALES[l.languageCode]!,
                                 style: Theme.of(context).textTheme.bodyLarge,
                               )))
                           .toList(),
