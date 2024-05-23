@@ -65,9 +65,11 @@
   "alarmNotSet": "Alarm not set",
   "alarmSetFor": "Alarm set for next {date}",
   "@alarmSetFor": {
-    "date": {
-      "type": "DateTime",
-      "format": "EEEE"
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "EEEE"
+      }
     }
   }
 }
