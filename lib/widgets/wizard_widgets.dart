@@ -135,7 +135,8 @@ class WizardNavigationBottomBar extends StatelessWidget {
                     (states) => THEME_LIGHTGRAY)),
             child: Text(
               rText,
-              style: theme.textTheme.titleMedium?.copyWith(color: THEME_BUTTON),
+              style: theme.textTheme.bodyMedium?.copyWith(color: THEME_BUTTON),
+              textScaler: const TextScaler.linear(2),
             )),
       );
     }
@@ -150,7 +151,8 @@ class WizardNavigationBottomBar extends StatelessWidget {
               child: Text(
                 cancelText,
                 style:
-                    theme.textTheme.titleMedium?.copyWith(color: THEME_BUTTON),
+                    theme.textTheme.bodyMedium?.copyWith(color: THEME_BUTTON),
+                textScaler: const TextScaler.linear(2),
               )));
     }
 
