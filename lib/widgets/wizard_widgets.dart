@@ -53,8 +53,7 @@ class _WizardSelector extends State<WizardSelector> {
                                 onSelected: (v) {
                                   widget.onSelected(e);
                                 },
-                                selected: widget.selectedItems.contains(
-                                    e))) //_selectedItems.contains(e)))
+                                selected: widget.selectedItems.contains(e)))
                             .toList())))));
 
     return Column(
