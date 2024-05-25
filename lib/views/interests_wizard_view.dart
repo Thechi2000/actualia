@@ -35,7 +35,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     super.dispose();
   }
 
-  void setListState<T>(T item, List<T> list) {
+  void updateListStateOnSelection<T>(T item, List<T> list) {
     setState(() {
       list.contains(item) ? list.remove(item) : list.add(item);
     });
@@ -55,7 +55,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       items: predefined.predefinedCountries.map((e) => (e, e)).toList(),
       selectedItems: _selectedCountries.map((e) => (e, e)).toList(),
       onSelected: (item) {
-        setListState(item.$2, _selectedCountries);
+        updateListStateOnSelection(item.$2, _selectedCountries);
       },
       title: "Select countries",
       key: const Key("countries-selector"),
@@ -77,7 +77,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       items: predefined.predefinedCities.map((e) => (e, e)).toList(),
       selectedItems: _selectedCities.map((e) => (e, e)).toList(),
       onSelected: (item) {
-        setListState(item.$2, _selectedCities);
+        updateListStateOnSelection(item.$2, _selectedCities);
       },
       title: "Select cities",
       key: const Key("cities-selector"),
@@ -101,7 +101,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       items: predefined.predefinedInterests.map((e) => (e, e)).toList(),
       selectedItems: _selectedInterests.map((e) => (e, e)).toList(),
       onSelected: (item) {
-        setListState(item.$2, _selectedInterests);
+        updateListStateOnSelection(item.$2, _selectedInterests);
       },
       title: "Select interests",
       key: const Key("interests-selector"),
