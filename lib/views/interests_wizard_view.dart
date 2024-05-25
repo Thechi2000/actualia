@@ -35,101 +35,130 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     super.dispose();
   }
 
+  void setListState<T>(T item, List<T> list) {
+    setState(() {
+      list.contains(item) ? list.remove(item) : list.add(item);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final NewsSettingsViewModel nsvm =
         Provider.of<NewsSettingsViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
     final NewsSettings predefined = NewsSettings.defaults();
+    _selectedCountries = nsvm.settings!.countries;
+    _selectedCities = nsvm.settings!.cities;
+    _selectedInterests = nsvm.settings!.interests;
 
     Widget countriesSelector = WizardSelector(
       items: predefined.predefinedCountries.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.countries.map((e) => (e, e)).toList(),
-      onPressed: (selected) {
-        setState(() {
-          _selectedCountries = selected.map((e) => e.$2).toList();
-          _step = WizardStep.CITIES;
-        });
+      selectedItems: _selectedCountries.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        setListState(item.$2, _selectedCountries);
       },
       title: "Select countries",
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        Navigator.pop(context);
-      },
       key: const Key("countries-selector"),
     );
 
+    Widget countriesBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          Navigator.pop(context);
+        },
+        rText: "Next",
+        rOnPressed: () {
+          setState(() {
+            _step = WizardStep.CITIES;
+          });
+        });
+
     Widget citiesSelector = WizardSelector(
       items: predefined.predefinedCities.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.cities.map((e) => (e, e)).toList(),
-      onPressed: (selected) {
-        setState(() {
-          _selectedCities = selected.map((e) => e.$2).toList();
-          _step = WizardStep.INTERESTS;
-        });
+      selectedItems: _selectedCities.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        setListState(item.$2, _selectedCities);
       },
       title: "Select cities",
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        setState(() {
-          _step = WizardStep.COUNTRIES;
-        });
-      },
       key: const Key("cities-selector"),
     );
 
+    Widget citiesBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          setState(() {
+            _step = WizardStep.COUNTRIES;
+          });
+        },
+        rText: "Next",
+        rOnPressed: () {
+          setState(() {
+            _step = WizardStep.INTERESTS;
+          });
+        });
+
     Widget interestsSelector = WizardSelector(
       items: predefined.predefinedInterests.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.interests.map((e) => (e, e)).toList(),
-      onPressed: (selected) async {
-        setState(() {
-          _selectedInterests = selected.map((e) => e.$2).toList();
-        });
-        NewsSettings toSend = NewsSettings(
-            cities: _selectedCities,
-            countries: _selectedCountries,
-            interests: _selectedInterests,
-            wantsCities: true,
-            wantsCountries: true,
-            wantsInterests: true);
-        try {
-          await nsvm.pushSettings(toSend);
-          if (auth.isOnboardingRequired) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ProvidersWizardView()));
-          } else {
-            if (context.mounted) Navigator.pop(context);
-          }
-        } catch (e) {
-          log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
-        }
+      selectedItems: _selectedInterests.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        setListState(item.$2, _selectedInterests);
       },
       title: "Select interests",
-      buttonText: auth.isOnboardingRequired ? "Next" : "Finish",
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        setState(() {
-          _step = WizardStep.CITIES;
-        });
-      },
       key: const Key("interests-selector"),
     );
 
+    Widget interestsBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          setState(() {
+            _step = WizardStep.CITIES;
+          });
+        },
+        rText: auth.isOnboardingRequired ? "Next" : "Finish",
+        rOnPressed: () async {
+          NewsSettings toSend = NewsSettings(
+              cities: _selectedCities,
+              countries: _selectedCountries,
+              interests: _selectedInterests,
+              wantsCities: true,
+              wantsCountries: true,
+              wantsInterests: true);
+          try {
+            await nsvm.pushSettings(toSend);
+            if (auth.isOnboardingRequired) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProvidersWizardView()));
+            } else {
+              if (context.mounted) Navigator.pop(context);
+            }
+          } catch (e) {
+            log("Error in wizard: $e",
+                name: "ERROR", level: Level.WARNING.value);
+          }
+        });
+
     Widget? body;
+    Widget? bottomBar;
     switch (_step) {
       case WizardStep.COUNTRIES:
         body = countriesSelector;
+        bottomBar = countriesBottomBar;
         break;
       case WizardStep.CITIES:
         body = citiesSelector;
+        bottomBar = citiesBottomBar;
         break;
       case WizardStep.INTERESTS:
         body = interestsSelector;
+        bottomBar = interestsBottomBar;
         break;
     }
 
-    return WizardScaffold(body: body);
+    return WizardScaffold(
+      body: body,
+      bottomBar: bottomBar,
+    );
   }
 }

@@ -62,27 +62,29 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
             )
           ],
         )),
-        WizardNavigationBottomBar(
-          showCancel: !auth.isOnboardingRequired,
-          rText: auth.isOnboardingRequired ? "Next" : "Done",
-          onCancel: () => Navigator.pop(context),
-          rOnPressed: () async {
-            pvm.updateProvidersFromEdited();
-            if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
-              Fluttertoast.showToast(msg: "Error while updating providers");
-            } else if (auth.isOnboardingRequired) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AlarmWizardView()));
-            } else if (context.mounted) {
-              Navigator.pop(context);
-            }
-          },
-        ),
       ]);
     }
 
-    return WizardScaffold(body: Material(child: body));
+    Widget bottomBar = WizardNavigationBottomBar(
+      showCancel: !auth.isOnboardingRequired,
+      rText: auth.isOnboardingRequired ? "Next" : "Done",
+      onCancel: () => Navigator.pop(context),
+      rOnPressed: () async {
+        pvm.updateProvidersFromEdited();
+        if (!await pvm.pushNewsProviders() && Platform.isAndroid) {
+          Fluttertoast.showToast(msg: "Error while updating providers");
+        } else if (auth.isOnboardingRequired) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AlarmWizardView()));
+        } else if (context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+    );
+
+    return WizardScaffold(
+      body: Material(child: body),
+      bottomBar: bottomBar,
+    );
   }
 }

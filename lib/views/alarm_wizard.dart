@@ -47,40 +47,41 @@ class _AlarmWizardView extends State<AlarmWizardView> {
             onTimeSelected: (time) {
               _selectedTime = time;
             }),
-        WizardNavigationBottomBar(
-          showCancel: true,
-          cancelText: "Skip",
-          onCancel: () async {
-            if (auth.isOnboardingRequired) {
-              await auth.setOnboardingIsDone();
-            }
-            if (context.mounted) {
-              Navigator.popUntil(
-                  context, (route) => !route.hasActiveRouteBelow);
-            }
-          },
-          showRight: true,
-          rText: "Validate",
-          rOnPressed: () async {
-            avm.setAlarm(
-                _selectedTime,
-                assetAudio,
-                loopAudio,
-                vibrate,
-                volume,
-                Provider.of<NewsSettingsViewModel>(context, listen: false)
-                    .settingsId);
-            if (auth.isOnboardingRequired) {
-              await auth.setOnboardingIsDone();
-            }
-            Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
-          },
-        )
       ],
+    );
+
+    Widget bottomBar = WizardNavigationBottomBar(
+      showCancel: true,
+      cancelText: "Skip",
+      onCancel: () async {
+        if (auth.isOnboardingRequired) {
+          await auth.setOnboardingIsDone();
+        }
+        if (context.mounted) {
+          Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
+        }
+      },
+      showRight: true,
+      rText: "Validate",
+      rOnPressed: () async {
+        avm.setAlarm(
+            _selectedTime,
+            assetAudio,
+            loopAudio,
+            vibrate,
+            volume,
+            Provider.of<NewsSettingsViewModel>(context, listen: false)
+                .settingsId);
+        if (auth.isOnboardingRequired) {
+          await auth.setOnboardingIsDone();
+        }
+        Navigator.popUntil(context, (route) => !route.hasActiveRouteBelow);
+      },
     );
 
     return WizardScaffold(
       body: body,
+      bottomBar: bottomBar,
     );
   }
 }
