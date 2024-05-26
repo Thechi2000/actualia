@@ -54,7 +54,7 @@ class MockHttp extends BaseMockedHttpClient {
           expect(
               jsonDecode(req.body),
               equals({
-                "providers": ["/google/news/:category"]
+                "providers": ["gnews"]
               }));
           return response([], 200, req);
         default:
