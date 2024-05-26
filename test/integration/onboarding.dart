@@ -125,6 +125,9 @@ void main() async {
     await tester.tap(find.textContaining("Next"));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.text("Validate"));
+    await tester.pumpAndSettle();
+
     // Open the profile view.
     await tester.tap(find.byKey(const Key('profile')));
     await tester.pumpAndSettle();
