@@ -174,7 +174,9 @@ class WizardScaffold extends StatelessWidget {
   final Widget body;
 
   const WizardScaffold(
-      {this.topBar = const TopAppBar(),
+      {this.topBar = const TopAppBar(
+        enableProfileButton: false,
+      ),
       this.body = const Text("unimplemented"),
       super.key});
 
