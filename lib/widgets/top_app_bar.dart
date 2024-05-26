@@ -35,7 +35,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return AppBar(
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: enableReturnButton,
       centerTitle: true,
       title: Container(
         padding: const EdgeInsets.symmetric(vertical: UNIT_PADDING),

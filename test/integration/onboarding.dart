@@ -125,7 +125,7 @@ void main() async {
     await tester.tap(find.textContaining("Next"));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text("Validate"));
+    await tester.tap(find.text("Skip"));
     await tester.pumpAndSettle();
 
     // Open the profile view.
