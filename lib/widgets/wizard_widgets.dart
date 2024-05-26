@@ -5,6 +5,7 @@ import 'package:actualia/utils/themes.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WizardSelector extends StatefulWidget {
   final String title;
@@ -34,6 +35,8 @@ class _WizardSelector extends State<WizardSelector> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     Widget title = WizardSelectorTitle(title: widget.title);
 
     Widget body = Expanded(
@@ -104,22 +107,23 @@ class WizardSelectorTitle extends StatelessWidget {
 class WizardNavigationBottomBar extends StatelessWidget {
   final bool showCancel;
   final bool showRight;
-  final String rText;
-  final String cancelText;
+  final String? rText;
+  final String? cancelText;
   final void Function()? rOnPressed;
   final void Function()? onCancel;
 
   const WizardNavigationBottomBar(
       {this.showCancel = true,
       this.showRight = true,
-      this.rText = "right button",
-      this.cancelText = "Cancel",
+      this.rText,
+      this.cancelText,
       this.rOnPressed,
       this.onCancel,
       super.key});
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     Widget right = const SizedBox();
     Widget cancel = const SizedBox();
     ThemeData theme = Theme.of(context);
@@ -133,7 +137,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
                 backgroundColor: MaterialStateColor.resolveWith(
                     (states) => THEME_LIGHTGRAY)),
             child: Text(
-              rText,
+              rText ?? loc.button,
               style: theme.textTheme.bodyMedium?.copyWith(color: THEME_BUTTON),
               textScaler: const TextScaler.linear(2),
             )),
@@ -148,7 +152,7 @@ class WizardNavigationBottomBar extends StatelessWidget {
                   backgroundColor: MaterialStateColor.resolveWith(
                       (states) => THEME_LIGHTGRAY)),
               child: Text(
-                cancelText,
+                cancelText ?? loc.cancel,
                 style:
                     theme.textTheme.bodyMedium?.copyWith(color: THEME_BUTTON),
                 textScaler: const TextScaler.linear(2),
@@ -176,13 +180,15 @@ class WizardScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: topBar,
       bottomNavigationBar: bottomBar,
       body: Container(
         padding: const EdgeInsets.fromLTRB(48.0, 48.0, 48.0, 48.0),
         alignment: Alignment.topCenter,
-        child: body,
+        child: body ?? Text(loc.notImplemented),
       ),
     );
   }
@@ -201,6 +207,7 @@ class ProviderWidget extends StatefulWidget {
 class _ProviderWidgetState extends State<ProviderWidget> {
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     var pvm = Provider.of<ProvidersViewModel>(context);
 
     var type = pvm.editedProviders[widget.idx].$1;
@@ -267,7 +274,7 @@ class _ProviderWidgetState extends State<ProviderWidget> {
               const SizedBox(height: UNIT_PADDING / 2),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 FilledButton.tonalIcon(
-                    label: const Text("Remove"),
+                    label: Text(loc.remove),
                     onPressed: () => widget.onDelete(widget),
                     icon: const Icon(Icons.delete))
               ]),

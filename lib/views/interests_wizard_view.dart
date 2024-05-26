@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import '../widgets/wizard_widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InterestWizardView extends StatefulWidget {
   const InterestWizardView({super.key});
@@ -43,6 +44,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
 
   @override
   Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context)!;
     final NewsSettingsViewModel nsvm =
         Provider.of<NewsSettingsViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
@@ -57,7 +59,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       onSelected: (item) {
         updateListStateOnSelection(item.$2, _selectedCountries);
       },
-      title: "Select countries",
+      title: loc.wizardCountriesTitle,
       key: const Key("countries-selector"),
     );
 
@@ -66,7 +68,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         onCancel: () {
           Navigator.pop(context);
         },
-        rText: "Next",
+        rText: loc.next,
         rOnPressed: () {
           setState(() {
             _step = WizardStep.CITIES;
@@ -79,7 +81,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       onSelected: (item) {
         updateListStateOnSelection(item.$2, _selectedCities);
       },
-      title: "Select cities",
+      title: loc.wizardCitiesTitle,
       key: const Key("cities-selector"),
     );
 
@@ -90,7 +92,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             _step = WizardStep.COUNTRIES;
           });
         },
-        rText: "Next",
+        rText: loc.next,
         rOnPressed: () {
           setState(() {
             _step = WizardStep.INTERESTS;
@@ -103,7 +105,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       onSelected: (item) {
         updateListStateOnSelection(item.$2, _selectedInterests);
       },
-      title: "Select interests",
+      title: loc.wizardInterestsTitle,
       key: const Key("interests-selector"),
     );
 
@@ -114,7 +116,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             _step = WizardStep.CITIES;
           });
         },
-        rText: auth.isOnboardingRequired ? "Next" : "Finish",
+        rText: auth.isOnboardingRequired ? loc.next : loc.done,
         rOnPressed: () async {
           NewsSettings toSend = NewsSettings(
               cities: _selectedCities,
@@ -122,7 +124,8 @@ class _InterestWizardViewState extends State<InterestWizardView> {
               interests: _selectedInterests,
               wantsCities: true,
               wantsCountries: true,
-              wantsInterests: true);
+              wantsInterests: true,
+              locale: loc.localeName);
           try {
             await nsvm.pushSettings(toSend);
             if (auth.isOnboardingRequired) {
