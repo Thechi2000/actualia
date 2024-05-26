@@ -16,8 +16,8 @@ class PreOnBoardingPageState extends State<PreOnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
   void _onIntroEnd(context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const InterestWizardView()),
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const InterestWizardView()),
     );
   }
 
