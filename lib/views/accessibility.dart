@@ -46,7 +46,32 @@ class AccessibilityView extends StatelessWidget {
                     )
                   ]),
             ),
-          )
+          ),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Choose an item',
+                    style: Theme.of(context).textTheme.bodyLarge),
+                const SizedBox(height: 10.0),
+                Wrap(
+                  spacing: 5.0,
+                  runSpacing: 3.0,
+                  children: List<Widget>.generate(
+                    10,
+                    (int index) {
+                      return ChoiceChip(
+                        label: Text('Item $index'),
+                        selected: false,
+                        onSelected: (bool selected) {},
+                      );
+                    },
+                  ).toList(),
+                ),
+              ],
+            ),
+          ),
         ],
       )),
       WizardNavigationBottomBar(
