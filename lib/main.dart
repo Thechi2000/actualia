@@ -1,3 +1,4 @@
+
 //coverage:ignore-file
 
 import 'package:actualia/models/auth_model.dart';
@@ -5,7 +6,6 @@ import 'package:actualia/viewmodels/news_recognition.dart';
 import 'package:actualia/viewmodels/providers.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/alarms.dart';
-import 'package:actualia/views/accessibility.dart';
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/master_view.dart';
 import 'package:actualia/views/news_alert_view.dart';
@@ -101,7 +101,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'ActualIA',
       theme: ACTUALIA_THEME,
-      home: AccessibilityView(),
+      home: home,
       locale: Locale(newsSettings.locale),
       navigatorKey: _navKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
