@@ -1,4 +1,3 @@
-
 //coverage:ignore-file
 
 import 'package:actualia/models/auth_model.dart';
