@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
   if (error || transcript === null) {
     return new Response(
       returnSharePage("Error", "The transcript does not exist"),
-      { status: 200, headers: { "Content-Type": "html" } },
+      { status: 404, headers: { "Content-Type": "html" } },
     );
   }
 
@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
   if (transcript?.is_public === false) {
     return new Response(
       returnSharePage("Error", "The transcript is not public"),
-      { status: 200, headers: { "Content-Type": "html" } },
+      { status: 403, headers: { "Content-Type": "html" } },
     );
   }
 
