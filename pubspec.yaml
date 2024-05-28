@@ -61,6 +61,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   introduction_screen: ^3.1.14
+  choice: ^2.3.2
 
 dev_dependencies:
   flutter_test:

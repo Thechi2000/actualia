@@ -8,6 +8,7 @@ class NewsSettings {
   bool wantsCountries;
   bool wantsInterests;
   String locale;
+  String userPrompt;
 
   // Predefined lists
   List<String> predefinedCities = [
@@ -36,6 +37,34 @@ class NewsSettings {
     'Events',
   ];
 
+  List<String> predefinedTitlePrompts = [
+    'What are you interested in?',
+    'What are you looking for?',
+    'What do you want to know?',
+    'What are you curious about?',
+    'What are you passionate about?',
+    'What are you excited about?',
+    'What are you eager to learn?',
+    'What are you eager to know?',
+    'What are you eager to discover?',
+    'What are you eager to explore?',
+    'What are you eager to experience?',
+  ];
+
+  List<String> predefinedPrompts = [
+    'What are you interested in?',
+    'What are you looking for?',
+    'What do you want to know?',
+    'What are you curious about?',
+    'What are you passionate about?',
+    'What are you excited about?',
+    'What are you eager to learn?',
+    'What are you eager to know?',
+    'What are you eager to discover?',
+    'What are you eager to explore?',
+    'What are you eager to experience?',
+  ];
+
   NewsSettings(
       {required this.cities,
       required this.countries,
@@ -43,7 +72,8 @@ class NewsSettings {
       required this.wantsCities,
       required this.wantsCountries,
       required this.wantsInterests,
-      required this.locale});
+      required this.locale,
+      required this.userPrompt});
 
   factory NewsSettings.defaults() {
     return NewsSettings(
@@ -54,6 +84,7 @@ class NewsSettings {
       wantsCountries: false,
       wantsInterests: false,
       locale: 'en',
+      userPrompt: '',
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/utils/locales.dart';
 import 'package:actualia/utils/themes.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
 import 'package:actualia/widgets/wizard_widgets.dart';
+import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,6 +18,7 @@ class AccessibilityView extends StatelessWidget {
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
     var nsvm = Provider.of<NewsSettingsViewModel>(context);
+    final NewsSettings predefined = NewsSettings.defaults();
 
     return WizardScaffold(
         body: Column(children: [
@@ -47,31 +50,33 @@ class AccessibilityView extends StatelessWidget {
                   ]),
             ),
           ),
-          Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Choose an item',
-                    style: Theme.of(context).textTheme.bodyLarge),
-                const SizedBox(height: 10.0),
-                Wrap(
-                  spacing: 5.0,
-                  runSpacing: 3.0,
-                  children: List<Widget>.generate(
-                    10,
-                    (int index) {
-                      return ChoiceChip(
-                        label: Text('Item $index'),
-                        selected: false,
-                        onSelected: (bool selected) {},
-                      );
+          SizedBox(
+            width: 250,
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              child: PromptedChoice<String>.single(
+                title: 'Choose a prompt',
+                value: nsvm.userPrompt,
+                onChanged: nsvm.setUserPrompt,
+                itemCount: predefined.predefinedPrompts.length,
+                itemBuilder: (state, i) {
+                  return RadioListTile(
+                    value: predefined.predefinedPrompts[i],
+                    groupValue: state.single,
+                    onChanged: (value) {
+                      state.select(predefined.predefinedPrompts[i]);
                     },
-                  ).toList(),
-                ),
-              ],
+                    title: ChoiceText(
+                      predefined.predefinedPrompts[i],
+                      highlight: state.search?.value,
+                    ),
+                  );
+                },
+                promptDelegate: ChoicePrompt.delegateBottomSheet(),
+                anchorBuilder: ChoiceAnchor.create(inline: true),
+              ),
             ),
-          ),
+          )
         ],
       )),
       WizardNavigationBottomBar(
