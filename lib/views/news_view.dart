@@ -1,5 +1,6 @@
 import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/no_news_view.dart';
+import 'package:actualia/widgets/error.dart';
 import 'package:flutter/material.dart';
 import 'package:actualia/widgets/news_text.dart';
 import 'package:actualia/viewmodels/news.dart';
@@ -36,6 +37,9 @@ class _NewsViewState extends State<NewsView> {
 
     if (newsViewModel.isLoading) {
       body = loading;
+    } else if (newsViewModel.hasError) {
+      body =
+          ErrorDisplayWidget(description: newsViewModel.getErrorMessage(loc));
     } else if (newsViewModel.isEmpty) {
       body =
           NoNewsView(title: loc.newsEmptyTitle, text: loc.newsEmptyDescription);

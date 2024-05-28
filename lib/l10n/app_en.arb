@@ -71,5 +71,9 @@
         "format": "EEEE"
       }
     }
-  }
+  },
+  "errorTitle": "An error occurred",
+  "errorNewsFetch": "Unable to fetch news.",
+  "errorNoNews": "There are no news for you on this date.",
+  "errorNewsGeneration": "Something went wrong while generating news. Please try again later."
 }

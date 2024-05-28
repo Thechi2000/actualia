@@ -7,20 +7,35 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-typedef Content = Either<List<News>, String>;
+typedef _Content = Either<List<News>, _ErrorType>;
+
+enum _ErrorType { fetch, noNews, generation }
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
 
-  Content? _content;
+  _Content? _content;
 
   News? get news => newsList?.firstOrNull;
   List<News>? get newsList => _content?.fold((l) => l, (r) => null);
-  String? get error => _content?.fold((l) => null, (r) => r);
   bool get isEmpty => newsList?.isEmpty ?? true;
   bool get isLoading => _content == null;
+
+  bool get hasError => _content?.isRight() ?? false;
+  String getErrorMessage(AppLocalizations loc) {
+    final error = (_content?.fold((l) => null, (r) => r))!;
+    switch (error) {
+      case _ErrorType.fetch:
+        return loc.errorNewsFetch;
+      case _ErrorType.noNews:
+        return loc.errorNoNews;
+      case _ErrorType.generation:
+        return loc.errorNewsGeneration;
+    }
+  }
 
   @protected
   void setNews(News? news) {
@@ -33,8 +48,7 @@ class NewsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  @protected
-  void setError(String error) {
+  void _setError(_ErrorType error) {
     _content = Right(error);
     notifyListeners();
   }
@@ -56,7 +70,7 @@ class NewsViewModel extends ChangeNotifier {
           date.day == today.day) {
         await generateAndGetNews();
       } else {
-        setError('There are no news for you on this date.');
+        _setError(_ErrorType.noNews);
       }
     }
   }
@@ -90,7 +104,7 @@ class NewsViewModel extends ChangeNotifier {
       setNewsList([parseNews(response), ...newsList ?? []]);
     } catch (e) {
       log("Error fetching news: $e", level: Level.WARNING.value);
-      setError("Unable to reach the server.");
+      _setError(_ErrorType.fetch);
     }
   }
 
@@ -116,7 +130,7 @@ class NewsViewModel extends ChangeNotifier {
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
-      setError("Unable to fetch the news.");
+      _setError(_ErrorType.fetch);
     }
   }
 
@@ -127,8 +141,7 @@ class NewsViewModel extends ChangeNotifier {
     await fetchNews(DateTime.now());
 
     if (isEmpty) {
-      setError(
-          'Something went wrong while generating news. Please try again later.');
+      _setError(_ErrorType.generation);
     } else {
       getAudioFile(news!).whenComplete(() => notifyListeners());
     }
