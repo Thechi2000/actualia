@@ -51,5 +51,12 @@
     "alarmDismiss": "Arrêter",
     "alarmLoop": "Répétez l'audio",
     "alarmNotSet": "Alarme désactivée",
-    "alarmSetFor": "Alarme activée pour {date} prochain"
+    "alarmSetFor": "Alarme activée pour {date} prochain",
+    "explainingUserPrompt": "Vous pouvez personnaliser votre fil d'actualité grâce à ces prompts prédéfinis.\n - Lire les actualités...",
+    "prompt1": "comme si tu avais 5ans",
+    "prompt2": "comme si tu étais un robot",
+    "prompt3": "comme si tu étais un animateur radio",
+    "prompt4": "avec beaucoup d'enthousiasme",
+    "prompt5": "avec beaucoup de sarcasme",
+    "prompt6": "avec de l'humour"
 }
