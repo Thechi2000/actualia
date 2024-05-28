@@ -10,6 +10,14 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   );
 
+  // check if transcriptId is provided
+  if (!transcriptId) {
+    return new Response(
+      returnSharePage("Error", "Transcript ID is missing"),
+      { status: 400, headers: { "Content-Type": "html" } },
+    );
+  }
+
   // get the transcript from the database
   const { data: transcript, error } = await supabaseClient
     .from("news")
