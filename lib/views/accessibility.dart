@@ -71,7 +71,7 @@ class AccessibilityView extends StatelessWidget {
             child: Card(
               clipBehavior: Clip.antiAlias,
               child: PromptedChoice<String>.single(
-                title: '',
+                title: 'Prompt',
                 value: nsvm.userPrompt,
                 onChanged: nsvm.setUserPrompt,
                 itemCount: predefinedPrompts.length,
