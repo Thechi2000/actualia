@@ -69,8 +69,12 @@ class _NewsViewState extends State<NewsView> {
                 icon: const Icon(Icons.audiotrack),
               ),
               ActionButton(
-                onPressed: () => Share.share(
-                    'https://actualia.pages.dev/share?transcriptId=${firstTranscript.transcriptId}'),
+                onPressed: () {
+                  Provider.of<NewsViewModel>(context, listen: false)
+                      .setNewsPublicInDatabase(firstTranscript);
+                  Share.share(
+                      'https://actualia.pages.dev/share?transcriptId=${firstTranscript.transcriptId}');
+                },
                 icon: const Icon(Icons.link),
               ),
             ],
