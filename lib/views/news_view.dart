@@ -32,19 +32,16 @@ class _NewsViewState extends State<NewsView> {
     Widget loading = LoadingView(text: loc.newsLoading);
 
     final newsViewModel = Provider.of<NewsViewModel>(context);
-    final newsList = newsViewModel.newsList;
-    final hasNews = newsViewModel.hasNews;
     Widget body;
 
-    if (newsList.isEmpty) {
-      if (hasNews) {
-        body = loading;
-      } else {
-        body = NoNewsView(
-            title: loc.newsEmptyTitle, text: loc.newsEmptyDescription);
-      }
+    if (newsViewModel.isLoading) {
+      body = loading;
+    } else if (newsViewModel.isEmpty) {
+      body =
+          NoNewsView(title: loc.newsEmptyTitle, text: loc.newsEmptyDescription);
     } else {
-      var firstTranscript = newsList.first;
+      final newsList = newsViewModel.newsList!;
+      var firstTranscript = newsViewModel.news!;
       body = Scaffold(
           body: ListView.builder(
               itemCount: newsList.length,

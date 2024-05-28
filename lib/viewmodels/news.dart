@@ -2,30 +2,44 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:actualia/models/news.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
+typedef Content = Either<List<News>, String>;
+
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
-  News? _news;
-  News? get news => _news;
-  List<News> _newsList = [];
-  List<News> get newsList => _newsList;
-  bool hasNews = true;
+
+  Content? _content;
+
+  News? get news => newsList?.firstOrNull;
+  List<News>? get newsList => _content?.fold((l) => l, (r) => null);
+  String? get error => _content?.fold((l) => null, (r) => r);
+  bool get isEmpty => newsList?.isEmpty ?? true;
+  bool get isLoading => _content == null;
 
   @protected
   void setNews(News? news) {
-    _news = news;
+    setNewsList(news != null ? [news] : []);
   }
 
   @protected
   void setNewsList(List<News> newsList) {
-    _newsList = newsList;
+    _content = Left(newsList);
+    notifyListeners();
   }
 
+  @protected
+  void setError(String error) {
+    _content = Right(error);
+    notifyListeners();
+  }
+
+  @protected
   NewsViewModel(this.supabase);
 
   /// Retrieves news for the specified date.
@@ -35,19 +49,16 @@ class NewsViewModel extends ChangeNotifier {
   /// If the news is still not found, it sets an error message.
   Future<void> getNews(DateTime date) async {
     await fetchNews(date);
-
-    if (_news == null || _news!.paragraphs.isEmpty) {
+    if (isEmpty) {
       DateTime today = DateTime.now();
       if (date.year == today.year &&
           date.month == today.month &&
           date.day == today.day) {
         await generateAndGetNews();
       } else {
-        setNewsError(date, 'No news found for this date.',
-            'There are no news for you on this date.');
+        setError('There are no news for you on this date.');
       }
     }
-    notifyListeners();
   }
 
   /// Fetches news for the specified date from the database.
@@ -72,15 +83,14 @@ class NewsViewModel extends ChangeNotifier {
       final response = supabaseResponse.isEmpty ? {} : supabaseResponse.first;
 
       if (response['error'] != null || response.isEmpty) {
-        _news = null;
+        setNewsList([]);
         return;
       }
 
-      _news = parseNews(response);
-      notifyListeners();
+      setNewsList([parseNews(response), ...newsList ?? []]);
     } catch (e) {
       log("Error fetching news: $e", level: Level.WARNING.value);
-      _news = null;
+      setError("Unable to reach the server.");
     }
   }
 
@@ -89,18 +99,16 @@ class NewsViewModel extends ChangeNotifier {
       var response = await fetchNewsList();
 
       if (response.isEmpty) {
-        _newsList = [];
-        hasNews = false;
+        setNewsList([]);
       } else {
-        hasNews = true;
-        _newsList = response.map<News>((news) => parseNews(news)).toList();
+        setNewsList(response.map<News>((news) => parseNews(news)).toList());
 
-        Future.wait(_newsList.map((e) => getAudioFile(e)))
+        Future.wait(newsList!.map((e) => getAudioFile(e)))
             .whenComplete(() => notifyListeners());
 
         // If the date of the first news is more than 12 hours ago, call the cloud function
         if (DateTime.now()
-                .difference(DateTime.parse(_newsList[0].date))
+                .difference(DateTime.parse(newsList![0].date))
                 .inHours >
             12) {
           await generateAndGetNews();
@@ -108,11 +116,8 @@ class NewsViewModel extends ChangeNotifier {
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
-      _newsList = [];
-      setNewsError(DateTime.now(), "Error fetching news list",
-          "Got the following error : ${e.toString()}");
+      setError("Unable to fetch the news.");
     }
-    notifyListeners();
   }
 
   Future<void> generateAndGetNews() async {
@@ -121,15 +126,12 @@ class NewsViewModel extends ChangeNotifier {
     // We only fetch one news since we already fetched the list and it was either empty or needed a single entry to be added
     await fetchNews(DateTime.now());
 
-    if (_news == null || _news!.paragraphs.isEmpty) {
-      setNewsError(DateTime.now(), 'News generation failed and no news found.',
+    if (isEmpty) {
+      setError(
           'Something went wrong while generating news. Please try again later.');
     } else {
-      hasNews = true;
-      _newsList.insert(0, _news!);
-      getAudioFile(_news!).whenComplete(() => notifyListeners());
+      getAudioFile(news!).whenComplete(() => notifyListeners());
     }
-    notifyListeners();
   }
 
   Future<List<dynamic>> fetchNewsList() async {
@@ -246,26 +248,5 @@ class NewsViewModel extends ChangeNotifier {
       log("Can't find audio file at $filePath", level: Level.WARNING.value);
       return null;
     }
-  }
-
-  /// Sets an error message for the news.
-  void setNewsError(DateTime date, String title, String message) {
-    _news = News(
-      date: date.toString().substring(0, 10),
-      title: title,
-      transcriptId: -1,
-      audio: null,
-      paragraphs: [
-        Paragraph(
-            transcript: message,
-            source: 'System',
-            title: '',
-            date: '',
-            content: '',
-            url: '')
-      ],
-      fullTranscript: message,
-    );
-    _newsList.insert(0, _news!);
   }
 }
