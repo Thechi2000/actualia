@@ -74,7 +74,7 @@ class _ProvidersWizardView extends State<ProvidersWizardView> {
       rOnPressed: () async {
         pvm.updateProvidersFromEdited();
         if (!await pvm.pushNewsProviders(loc)) {
-          if (context.mounted && Platform.isAndroid) {
+          if (Platform.isAndroid) {
             Fluttertoast.showToast(msg: loc.providersUpdateError);
           }
         } else if (context.mounted) {
