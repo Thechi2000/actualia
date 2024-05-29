@@ -38,6 +38,12 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     super.dispose();
   }
 
+  void updateListStateOnSelection<T>(T item, List<T> list) {
+    setState(() {
+      list.contains(item) ? list.remove(item) : list.add(item);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context)!;
@@ -45,114 +51,127 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         Provider.of<NewsSettingsViewModel>(context);
     final AuthModel auth = Provider.of<AuthModel>(context);
     final NewsSettings predefined = NewsSettings.defaults();
+    _selectedCountries = nsvm.settings!.countries;
+    _selectedCities = nsvm.settings!.cities;
+    _selectedInterests = nsvm.settings!.interests;
 
     Widget countriesSelector = WizardSelector(
       items: predefined.predefinedCountries.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.countries.map((e) => (e, e)).toList(),
-      onPressed: (selected) {
-        setState(() {
-          _selectedCountries = selected.map((e) => e.$2).toList();
-          _step = WizardStep.CITIES;
-        });
+      selectedItems: _selectedCountries.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        updateListStateOnSelection(item.$2, _selectedCountries);
       },
       title: loc.wizardCountriesTitle,
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        Navigator.pop(context);
-      },
       key: const Key("countries-selector"),
     );
 
+    Widget countriesBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          Navigator.pop(context);
+        },
+        rText: loc.next,
+        rOnPressed: () {
+          setState(() {
+            _step = WizardStep.CITIES;
+          });
+        });
+
     Widget citiesSelector = WizardSelector(
       items: predefined.predefinedCities.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.cities.map((e) => (e, e)).toList(),
-      onPressed: (selected) {
-        setState(() {
-          _selectedCities = selected.map((e) => e.$2).toList();
-          _step = WizardStep.INTERESTS;
-        });
+      selectedItems: _selectedCities.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        updateListStateOnSelection(item.$2, _selectedCities);
       },
       title: loc.wizardCitiesTitle,
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        setState(() {
-          _step = WizardStep.COUNTRIES;
-        });
-      },
       key: const Key("cities-selector"),
     );
 
+    Widget citiesBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          setState(() {
+            _step = WizardStep.COUNTRIES;
+          });
+        },
+        rText: loc.next,
+        rOnPressed: () {
+          setState(() {
+            _step = WizardStep.INTERESTS;
+          });
+        });
+
     Widget interestsSelector = WizardSelector(
       items: predefined.predefinedInterests.map((e) => (e, e)).toList(),
-      selectedItems: nsvm.settings!.interests.map((e) => (e, e)).toList(),
-      onPressed: (selected) {
-        setState(() {
-          _selectedInterests = selected.map((e) => e.$2).toList();
-        });
-        NewsSettings toSend = NewsSettings(
-            cities: _selectedCities,
-            countries: _selectedCountries,
-            interests: _selectedInterests,
-            wantsCities: true,
-            wantsCountries: true,
-            wantsInterests: true,
-            locale: loc.localeName);
-        try {
-          setState(() {
-            _step = WizardStep.LOADING;
-          });
-          nsvm.pushSettings(toSend).then((value) {
-            if (value) {
-              if (context.mounted) {
-                if (auth.isOnboardingRequired) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProvidersWizardView()));
-                } else {
-                  Navigator.pop(context);
-                }
-              }
-            } else {
-              setState(() {
-                _step = WizardStep.ERROR;
-              });
-            }
-          });
-        } catch (e) {
-          log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
-        }
+      selectedItems: _selectedInterests.map((e) => (e, e)).toList(),
+      onSelected: (item) {
+        updateListStateOnSelection(item.$2, _selectedInterests);
       },
       title: loc.wizardInterestsTitle,
-      buttonText: auth.isOnboardingRequired ? loc.next : loc.done,
-      isInitialOnboarding: auth.isOnboardingRequired,
-      onCancel: () {
-        setState(() {
-          _step = WizardStep.CITIES;
-        });
-      },
       key: const Key("interests-selector"),
     );
 
+    Widget interestsBottomBar = WizardNavigationBottomBar(
+        showCancel: !auth.isOnboardingRequired,
+        onCancel: () {
+          setState(() {
+            _step = WizardStep.CITIES;
+          });
+        },
+        rText: auth.isOnboardingRequired ? loc.next : loc.done,
+        rOnPressed: () async {
+          NewsSettings toSend = NewsSettings(
+              cities: _selectedCities,
+              countries: _selectedCountries,
+              interests: _selectedInterests,
+              wantsCities: true,
+              wantsCountries: true,
+              wantsInterests: true,
+              locale: loc.localeName);
+          try {
+            await nsvm.pushSettings(toSend);
+            if (auth.isOnboardingRequired) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProvidersWizardView()));
+            } else {
+              if (context.mounted) Navigator.pop(context);
+            }
+          } catch (e) {
+            log("Error in wizard: $e",
+                name: "ERROR", level: Level.WARNING.value);
+          }
+        });
+
     Widget? body;
+    Widget? bottomBar;
     switch (_step) {
       case WizardStep.COUNTRIES:
         body = countriesSelector;
+        bottomBar = countriesBottomBar;
         break;
       case WizardStep.CITIES:
         body = citiesSelector;
+        bottomBar = citiesBottomBar;
         break;
       case WizardStep.INTERESTS:
         body = interestsSelector;
+        bottomBar = interestsBottomBar;
         break;
       case WizardStep.LOADING:
         body = LoadingView(text: loc.interestsWizardUpdating);
+        bottomBar = const SizedBox();
         break;
       case WizardStep.ERROR:
         body = ErrorDisplayWidget(description: loc.interestsUpdateError);
+        bottomBar = const SizedBox();
         break;
     }
 
-    return WizardScaffold(body: body);
+    return WizardScaffold(
+      body: body,
+      bottomBar: bottomBar,
+    );
   }
 }
