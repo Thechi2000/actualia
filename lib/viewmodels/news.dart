@@ -9,30 +9,31 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-typedef _Content = Either<List<News>, _ErrorType>;
+typedef Content = Either<List<News>, ErrorType>;
 
-enum _ErrorType { fetch, noNews, generation }
+enum ErrorType { fetch, noNews, generation }
 
 /// View model for managing news data.
 class NewsViewModel extends ChangeNotifier {
   late final SupabaseClient supabase;
 
-  _Content? _content;
+  Content? _content;
+  Content? get content => _content;
 
   News? get news => newsList?.firstOrNull;
-  List<News>? get newsList => _content?.fold((l) => l, (r) => null);
+  List<News>? get newsList => content?.fold((l) => l, (r) => null);
   bool get isEmpty => newsList?.isEmpty ?? true;
-  bool get isLoading => _content == null;
+  bool get isLoading => content == null;
 
-  bool get hasError => _content?.isRight() ?? false;
+  bool get hasError => content?.isRight() ?? false;
   String getErrorMessage(AppLocalizations loc) {
-    final error = (_content?.fold((l) => null, (r) => r))!;
+    final error = (content?.fold((l) => null, (r) => r))!;
     switch (error) {
-      case _ErrorType.fetch:
+      case ErrorType.fetch:
         return loc.errorNewsFetch;
-      case _ErrorType.noNews:
+      case ErrorType.noNews:
         return loc.errorNoNews;
-      case _ErrorType.generation:
+      case ErrorType.generation:
         return loc.errorNewsGeneration;
     }
   }
@@ -48,7 +49,7 @@ class NewsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setError(_ErrorType error) {
+  void _setError(ErrorType error) {
     _content = Right(error);
     notifyListeners();
   }
@@ -70,7 +71,7 @@ class NewsViewModel extends ChangeNotifier {
           date.day == today.day) {
         await generateAndGetNews();
       } else {
-        _setError(_ErrorType.noNews);
+        _setError(ErrorType.noNews);
       }
     }
   }
@@ -104,7 +105,7 @@ class NewsViewModel extends ChangeNotifier {
       setNewsList([parseNews(response), ...newsList ?? []]);
     } catch (e) {
       log("Error fetching news: $e", level: Level.WARNING.value);
-      _setError(_ErrorType.fetch);
+      _setError(ErrorType.fetch);
     }
   }
 
@@ -130,7 +131,7 @@ class NewsViewModel extends ChangeNotifier {
       }
     } catch (e) {
       log("Error fetching news list: $e", level: Level.WARNING.value);
-      _setError(_ErrorType.fetch);
+      _setError(ErrorType.fetch);
     }
   }
 
@@ -141,7 +142,7 @@ class NewsViewModel extends ChangeNotifier {
     await fetchNews(DateTime.now());
 
     if (isEmpty) {
-      _setError(_ErrorType.generation);
+      _setError(ErrorType.generation);
     } else {
       getAudioFile(news!).whenComplete(() => notifyListeners());
     }
