@@ -33,6 +33,10 @@ class _InterestWizardViewState extends State<InterestWizardView> {
 
   @override
   void dispose() {
+    log("dispose called", name: "DEBUG", level: Level.INFO.value);
+    _selectedCountries = List<String>.empty();
+    _selectedCities = List<String>.empty();
+    _selectedInterests = List<String>.empty();
     super.dispose();
   }
 
