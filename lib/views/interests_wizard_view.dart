@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
+import 'package:actualia/widgets/error.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +19,7 @@ class InterestWizardView extends StatefulWidget {
 }
 
 // ignore: constant_identifier_names
-enum WizardStep { COUNTRIES, CITIES, INTERESTS }
+enum WizardStep { COUNTRIES, CITIES, INTERESTS, LOADING, ERROR }
 
 class _InterestWizardViewState extends State<InterestWizardView> {
   late List<String> _selectedInterests;
@@ -156,6 +158,14 @@ class _InterestWizardViewState extends State<InterestWizardView> {
       case WizardStep.INTERESTS:
         body = interestsSelector;
         bottomBar = interestsBottomBar;
+        break;
+      case WizardStep.LOADING:
+        body = LoadingView(text: loc.interestsWizardUpdating);
+        bottomBar = const SizedBox();
+        break;
+      case WizardStep.ERROR:
+        body = ErrorDisplayWidget(description: loc.interestsUpdateError);
+        bottomBar = const SizedBox();
         break;
     }
 
