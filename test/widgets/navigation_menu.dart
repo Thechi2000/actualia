@@ -14,7 +14,7 @@ void main() {
             expect(view, Views.NEWS);
           }),
       Destination(
-          view: Views.CAMERA,
+          view: Views.CAMERA_LOADING,
           icon: Icons.camera_alt,
           onPressed: (Views view) {}),
       Destination(

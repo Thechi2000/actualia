@@ -75,5 +75,9 @@
   "errorTitle": "An error occurred",
   "errorNewsFetch": "Unable to fetch news.",
   "errorNoNews": "There are no news for you on this date.",
-  "errorNewsGeneration": "Something went wrong while generating news. Please try again later."
+  "errorNewsGeneration": "Something went wrong while generating news. Please try again later.",
+  "ocrLoadingText": "Image is being processed",
+  "ocrErrorRecognition": "An error occurred while recognizing text in the image.",
+  "ocrErrorProcessing": "An error occurred while processing the text.",
+  "ocrErrorNoImage": "No picture taken. Please try again."
 }
