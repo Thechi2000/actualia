@@ -100,7 +100,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         try {
           setState(() {
             _step = WizardStep.LOADING;
-            print("loading");
           });
           nsvm.pushSettings(toSend).then((value) {
             if (value) {
@@ -120,7 +119,6 @@ class _InterestWizardViewState extends State<InterestWizardView> {
               });
             }
           });
-          print("aaaaaaaaa");
         } catch (e) {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
