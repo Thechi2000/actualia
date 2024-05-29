@@ -11,6 +11,7 @@
   "skip": "Skip",
   "profileGreeting": "Hello!",
   "readMore": "Read more",
+  "interestsUpdateError": "An error occurred while updating.",
   "providersWizardLoading": "Loading your sources",
   "@providersWizardLoading": {
     "description": "Description of the loading screen during provider fetching in the wizard"
@@ -23,7 +24,7 @@
   "@providersWizardTitle": {
     "description": "Title of the provider wizard"
   },
-  "providersUpdateError": "An error occurred while updating",
+  "providersUpdateError": "An error occurred while updating.",
   "@providersUpdateError": {
     "description": "Error toast when provider update fails"
   },
