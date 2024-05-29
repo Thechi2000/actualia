@@ -61,4 +61,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(NewsView), findsNothing);
   });
+
+  testWidgets("Can take a picture", (tester) async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    await tester.pumpWidget(MasterWrapper(const MasterView(),
+        MockNewsViewModel(), NewsRecognitionViewModel(FakeSupabaseClient())));
+  });
 }
