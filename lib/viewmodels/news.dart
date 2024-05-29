@@ -262,4 +262,16 @@ class NewsViewModel extends ChangeNotifier {
       return null;
     }
   }
+
+  void setNewsPublicInDatabase(News news) async {
+    try {
+      await supabase
+          .from('news')
+          .update({'is_public': true}).eq('id', news.transcriptId);
+      log('News set as public in the database.', level: Level.INFO.value);
+    } catch (e) {
+      log('Error setting news as public in the database: $e',
+          level: Level.WARNING.value);
+    }
+  }
 }
