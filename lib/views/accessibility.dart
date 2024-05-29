@@ -19,7 +19,7 @@ class AccessibilityView extends StatelessWidget {
 
     return WizardScaffold(
         bottomBar: WizardNavigationBottomBar(
-          showCancel: true,
+          showCancel: false,
           rText: loc.done,
           rOnPressed: () async {
             if (!await nsvm.pushSettings(null)) {
