@@ -11,6 +11,7 @@
   "skip": "Skip",
   "profileGreeting": "Hello!",
   "readMore": "Read more",
+  "interestsWizardUpdating": "Updating",
   "interestsUpdateError": "An error occurred while updating.",
   "providersWizardLoading": "Loading your sources",
   "@providersWizardLoading": {

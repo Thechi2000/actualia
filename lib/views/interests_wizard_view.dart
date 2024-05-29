@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:actualia/models/auth_model.dart';
 import 'package:actualia/models/news_settings.dart';
 import 'package:actualia/viewmodels/news_settings.dart';
+import 'package:actualia/views/loading_view.dart';
 import 'package:actualia/views/providers_wizard_view.dart';
 import 'package:actualia/widgets/error.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class InterestWizardView extends StatefulWidget {
 }
 
 // ignore: constant_identifier_names
-enum WizardStep { COUNTRIES, CITIES, INTERESTS, ERROR }
+enum WizardStep { COUNTRIES, CITIES, INTERESTS, LOADING, ERROR }
 
 class _InterestWizardViewState extends State<InterestWizardView> {
   late List<String> _selectedInterests;
@@ -84,7 +85,7 @@ class _InterestWizardViewState extends State<InterestWizardView> {
     Widget interestsSelector = WizardSelector(
       items: predefined.predefinedInterests.map((e) => (e, e)).toList(),
       selectedItems: nsvm.settings!.interests.map((e) => (e, e)).toList(),
-      onPressed: (selected) async {
+      onPressed: (selected) {
         setState(() {
           _selectedInterests = selected.map((e) => e.$2).toList();
         });
@@ -97,22 +98,29 @@ class _InterestWizardViewState extends State<InterestWizardView> {
             wantsInterests: true,
             locale: loc.localeName);
         try {
-          if (await nsvm.pushSettings(toSend)) {
-            if (context.mounted) {
-              if (auth.isOnboardingRequired) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProvidersWizardView()));
-              } else {
-                Navigator.pop(context);
+          setState(() {
+            _step = WizardStep.LOADING;
+            print("loading");
+          });
+          nsvm.pushSettings(toSend).then((value) {
+            if (value) {
+              if (context.mounted) {
+                if (auth.isOnboardingRequired) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProvidersWizardView()));
+                } else {
+                  Navigator.pop(context);
+                }
               }
+            } else {
+              setState(() {
+                _step = WizardStep.ERROR;
+              });
             }
-          } else {
-            setState(() {
-              _step = WizardStep.ERROR;
-            });
-          }
+          });
+          print("aaaaaaaaa");
         } catch (e) {
           log("Error in wizard: $e", name: "ERROR", level: Level.WARNING.value);
         }
@@ -138,6 +146,9 @@ class _InterestWizardViewState extends State<InterestWizardView> {
         break;
       case WizardStep.INTERESTS:
         body = interestsSelector;
+        break;
+      case WizardStep.LOADING:
+        body = LoadingView(text: loc.interestsWizardUpdating);
         break;
       case WizardStep.ERROR:
         body = ErrorDisplayWidget(description: loc.interestsUpdateError);
