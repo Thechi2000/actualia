@@ -8,6 +8,7 @@ class NewsSettings {
   bool wantsCountries;
   bool wantsInterests;
   String locale;
+  String userPrompt;
 
   // Predefined lists
   List<String> predefinedCities = [
@@ -980,7 +981,8 @@ class NewsSettings {
       required this.wantsCities,
       required this.wantsCountries,
       required this.wantsInterests,
-      required this.locale});
+      required this.locale,
+      required this.userPrompt});
 
   factory NewsSettings.defaults() {
     return NewsSettings(
@@ -991,6 +993,7 @@ class NewsSettings {
       wantsCountries: false,
       wantsInterests: false,
       locale: 'en',
+      userPrompt: '',
     );
   }
 }

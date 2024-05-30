@@ -195,7 +195,8 @@ void main() {
             wantsCities: false,
             wantsCountries: false,
             wantsInterests: false,
-            locale: "en"),
+            locale: "en",
+            userPrompt: ""),
         null);
     await tester.pumpWidget(WizardWrapper(
         wizard: const InterestWizardView(),
@@ -227,7 +228,8 @@ void main() {
         wantsCities: false,
         wantsCountries: false,
         wantsInterests: false,
-        locale: "en");
+        locale: "en",
+        userPrompt: "");
     final vm = ValidateVM(ns, ns);
 
     await tester.pumpWidget(WizardWrapper(
