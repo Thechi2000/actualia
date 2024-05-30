@@ -178,7 +178,8 @@ void main() {
 
     await testSelector(const Key("countries-selector"), "Chad", "Next");
     await tester.pumpAndSettle();
-    await testSelector(const Key("cities-selector"), "Basel", "Next");
+    await testSelector(
+        const Key("cities-selector"), "Abobo (Côte d'Ivoire)", "Next");
     await tester.pumpAndSettle();
     await testSelector(const Key("interests-selector"), "Gaming", "Next");
   });
@@ -188,8 +189,8 @@ void main() {
       (WidgetTester tester) async {
     final vm = ValidateVM(
         NewsSettings(
-            interests: ["Biology"],
-            cities: ["Basel"],
+            interests: ["Aviation"],
+            cities: ["Abobo (Côte d'Ivoire)"],
             countries: ["Antarctica"],
             wantsCities: false,
             wantsCountries: false,
@@ -211,8 +212,8 @@ void main() {
     }
 
     await select(const Key("countries-selector"), "Antarctica", "Next");
-    await select(const Key("cities-selector"), "Basel", "Next");
-    await select(const Key("interests-selector"), "Biology", "Done");
+    await select(const Key("cities-selector"), "Abobo (Côte d'Ivoire)", "Next");
+    await select(const Key("interests-selector"), "Aviation", "Done");
 
     expect(vm.wasTriggered, isTrue);
   });
@@ -221,7 +222,7 @@ void main() {
       (WidgetTester tester) async {
     NewsSettings ns = NewsSettings(
         interests: ["Gaming"],
-        cities: ["Basel"],
+        cities: ["Abobo (Côte d'Ivoire)"],
         countries: ["Antarctica"],
         wantsCities: false,
         wantsCountries: false,
@@ -261,7 +262,7 @@ void main() {
     expect(find.text("Cancel"), findsOne);
     await tester.tap(find.text("Next"));
     await tester.pumpAndSettle();
-    await tester.tap(find.text("Basel"));
+    await tester.tap(find.text("Abobo (Côte d'Ivoire)"));
     expect(find.text("Cancel"), findsOne);
     await tester.tap(find.text("Cancel"));
     await tester.pumpAndSettle();
