@@ -30,14 +30,11 @@ jobs:
         env:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
-          echo $KEY_PROPERTIES > android/key.properties
+          echo $KEY_PROPERTIES | tee android/key.properties
 
       - name: Test
         run: |
           cat android/key.properties
-      - name: Test
-        run: |
-          echo $KEY_PROPERTIES
       - name: Test
         run: |
           base64 < upload-keystore.jks
