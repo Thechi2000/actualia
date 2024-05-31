@@ -36,6 +36,7 @@ jobs:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           echo $KEY_PROPERTIES > android/key.properties
+          echo $KEY_PROPERTIES
 
       - name: Test
         run: |
