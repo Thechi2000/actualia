@@ -39,7 +39,10 @@ jobs:
 
       - name: Test
         run: |
-          du -sh android/key.properties upload-keystore.jks
+          cat android/key.properties
+      - name: Test
+        run: |
+          base64 < upload-keystore.jks
 
       - name: Build flutter app
         run: flutter build apk --release
