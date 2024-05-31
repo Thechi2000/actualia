@@ -37,6 +37,10 @@ jobs:
         run: |
           echo $KEY_PROPERTIES > android/key.properties
 
+      - name: Test
+        run: |
+          du -sh android/key.properties upload-keystore.jks
+
       - name: Build flutter app
         run: flutter build apk --release
 
