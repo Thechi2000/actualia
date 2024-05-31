@@ -36,14 +36,10 @@ jobs:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           echo $KEY_PROPERTIES > android/key.properties
-          echo $KEY_PROPERTIES
 
       - name: Test
         run: |
           cat android/key.properties
-      - name: Test
-        run: |
-          base64 < upload-keystore.jks
 
       - name: Build flutter app
         run: flutter build apk --release
