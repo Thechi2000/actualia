@@ -20,11 +20,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install flutter
-        uses: ./
-        with:
-          get-deps: true
-
       - name: Get keystore from secrets
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -36,14 +31,21 @@ jobs:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           echo $KEY_PROPERTIES > android/key.properties
-          echo $KEY_PROPERTIES
 
       - name: Test
         run: |
           cat android/key.properties
       - name: Test
         run: |
+          echo $KEY_PROPERTIES
+      - name: Test
+        run: |
           base64 < upload-keystore.jks
+
+      - name: Install flutter
+        uses: ./
+        with:
+          get-deps: true
 
       - name: Build flutter app
         run: flutter build apk --release
