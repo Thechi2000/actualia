@@ -25,13 +25,25 @@ jobs:
         with:
           get-deps: true
 
+      - name: Get keystore from secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo $KEYSTORE_BASE64 | base64 --decode > upload-keystore.jks
+
+      - name: Get key.properties from secrets
+        env:
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+        run: |
+          echo $KEY_PROPERTIES > android/key.properties
+
       - name: Build flutter app
-        run: flutter build apk --debug
+        run: flutter build apk --release
 
       - uses: actions/upload-artifact@master
         with:
-          name: debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
   test:
     name: Run tests
@@ -90,11 +102,11 @@ jobs:
     steps:
       - uses: actions/download-artifact@master
         with:
-          name: debug-apk
+          name: release-apk
           path: apk
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body: A new version is available.
-          files: 'apk/*'
+          files: "apk/*"
